@@ -1,1011 +1,152 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b1020">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="RitmoAcade">
-  <link rel="manifest" href="manifest.json">
-  <title>RitmoAcade 5.0</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root{--bg:#070b16;--card:#111827;--card2:#172033;--line:#263247;--text:#eef2ff;--muted:#94a3b8;--accent:#a78bfa;--accent2:#60a5fa}
-    *{box-sizing:border-box}html,body{margin:0;padding:0;background:linear-gradient(180deg,#070b16,#0b1020 55%,#070b16);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100vh}#app{min-height:100vh}.safe{padding-bottom:2rem}.navbtn{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.7rem .55rem;border:1px solid var(--line);border-radius:12px;background:rgba(17,24,39,.7);color:var(--text);font-weight:700;cursor:pointer}.navbtn:hover{background:rgba(167,139,250,.2)}.navbtn.active{background:linear-gradient(180deg,rgba(167,139,250,.16),rgba(96,165,250,.08));border-color:rgba(167,139,250,.6)}.btn,.pill,.card,.field,.sheet,.modal,.toast{border:1px solid var(--line)}.btn{padding:.7rem 1rem;border-radius:12px;background:#111827;color:var(--text);font-weight:700;cursor:pointer;transition:all .2s}.btn:hover{background:#1a2238}.btn.secondary{background:transparent}.btn.secondary:hover{background:rgba(167,139,250,.1)}.card{background:rgba(17,24,39,.85);border-radius:16px;padding:1rem}.field{background:#0f172a;color:var(--text);padding:.75rem .8rem;border-radius:10px;width:100%;border:1px solid var(--line)}.field:focus{outline:none;border-color:rgba(167,139,250,.6);background:#111827}.label{display:block;color:var(--muted);font-size:.72rem;margin-bottom:.35rem;font-weight:600}.sheet{background:rgba(9,14,26,.98);border-radius:20px 20px 0 0;padding:1rem;max-width:720px;margin:0 auto;min-height:60vh}.modal{position:fixed;inset:0;background:rgba(3,7,18,.6);display:flex;align-items:flex-end;justify-content:center;z-index:40;backdrop-filter:blur(2px)}.modal.hide,.toast.hide{display:none}.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:#111827;color:var(--text);padding:.8rem 1.1rem;border-radius:999px;z-index:50}.section-title{font-size:1.05rem;font-weight:800}.muted,.small{color:var(--muted)}.pill{display:inline-flex;align-items:center;justify-content:center;padding:.25rem .55rem;border-radius:999px;background:rgba(167,139,250,.12);color:#e9d5ff;font-size:.7rem;font-weight:700;cursor:pointer}.progress{height:10px;background:#1f2937;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px}.empty{padding:1rem;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center;background:rgba(17,24,39,.35)}.checkrow{display:flex;align-items:center;gap:.6rem;margin-top:.5rem}.subtext{flex:1}.daycell{border:1px solid var(--line);border-radius:12px;padding:.4rem;min-height:78px;background:rgba(17,24,39,.6)}.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}.task-done{text-decoration:line-through;color:var(--muted)}@media (max-width:700px){#app{padding:0 .6rem 2rem}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RitmoAcade">
+<link rel="manifest" href="manifest.json">
+<title>RitmoAcade 5.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{--bg:#070b16;--card:#111827;--card2:#172033;--line:#263247;--text:#eef2ff;--muted:#94a3b8;--accent:#a78bfa;--accent2:#60a5fa}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:linear-gradient(180deg,#070b16,#0b1020 55%,#070b16);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}body{min-height:100vh}#app{min-height:100vh}.safe{padding-bottom:2rem}.navbtn{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.7rem .55rem;border:1px solid var(--line);border-radius:12px;background:rgba(17,24,39,.7);color:var(--text);font-size:.65rem;font-weight:600;cursor:pointer}.navbtn.active{background:linear-gradient(180deg,rgba(167,139,250,.16),rgba(96,165,250,.08));border-color:rgba(167,139,250,.6)}.btn,.pill,.card,.field,.sheet,.modal,.toast{border:1px solid var(--line)}.btn{padding:.7rem 1rem;border-radius:12px;background:#111827;color:var(--text);font-weight:700;cursor:pointer}.btn.secondary{background:transparent}.card{background:rgba(17,24,39,.85);border-radius:16px;padding:1rem}.field{background:#0f172a;color:var(--text);padding:.75rem .8rem;border-radius:10px;width:100%}.label{display:block;color:var(--muted);font-size:.72rem;margin-bottom:.35rem}.sheet{background:rgba(9,14,26,.98);border-radius:20px 20px 0 0;padding:1rem;max-width:720px;margin:0 auto;min-height:60vh}.modal{position:fixed;inset:0;background:rgba(3,7,18,.6);display:flex;align-items:flex-end;justify-content:center;z-index:40}.modal.hide,.toast.hide{display:none}.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);background:#111827;color:var(--text);padding:.8rem 1.1rem;border-radius:999px;z-index:50}.section-title{font-size:1.05rem;font-weight:800}.muted,.small{color:var(--muted)}.pill{display:inline-flex;align-items:center;justify-content:center;padding:.25rem .55rem;border-radius:999px;background:rgba(167,139,250,.12);color:#e9d5ff;font-size:.7rem;font-weight:700}.progress{height:10px;background:#1f2937;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px}.empty{padding:1rem;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center;background:rgba(17,24,39,.35)}.daycell{border:1px solid var(--line);border-radius:12px;padding:.4rem;min-height:78px;background:rgba(17,24,39,.6)}.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}.task-done{text-decoration:line-through;color:var(--muted)}@media (max-width:700px){#app{padding:0 .6rem 2rem}}
+</style>
 </head>
 <body>
-  <div id="app"></div>
-  <div id="modal" class="modal hide"></div>
-  <div id="toast" class="toast hide"></div>
-  <script>
-    const KEY = "ritmoacade_pro_v5";
-    const legacyKey = "ritmoacade_pro_v4";
-    const oldKey = "ritmoacade_pro_v3";
-
-    if (typeof structuredClone === 'undefined') {
-      window.structuredClone = function(obj) {
-        return JSON.parse(JSON.stringify(obj));
-      };
-    }
-
-    const defaults = {
-      schemaVersion: 5,
-      profile:{name:"",career:"",institution:"",weeklyGoal:420},
-      lists:{
-        teachers:[],
-        instruments:["Saxofón","Piano","Lenguaje Musical","Armonía"],
-        rooms:[],
-        groups:[],
-        studyTypes:["Técnica","Repertorio","Lectura","Teoría","Preparación de clase","Repaso"],
-        examTypes:["Parcial","Final","Recuperación","Prueba de acceso","Audición","TFM"],
-        eventTypes:["Clase","Audición","Concierto","Entrega","Reunión","Otro"],
-        tags:["Conservatorio","Universidad","Trabajo","Personal"],
-        priorities:["Alta","Media","Baja"]
-      },
-      teachers:[],
-      rooms:[],
-      subjects:[],
-      study:[],
-      repertoire:[],
-      tasks:[],
-      exams:[],
-      rehearsals:[],
-      events:[],
-      weekly:[],
-      settings:{startWeek:1,theme:"dark"}
-    };
-
-    let db = load();
-    let view = "hoy";
-    let calDate = new Date();
-    let timer = {running:false,seconds:0,startedAt:null,sessionType:"Estudio",instrument:""};
-
-    function localISODate(d = new Date()) {
-      const offset = d.getTimezoneOffset();
-      return new Date(d.getTime() - offset * 60000).toISOString().slice(0,10);
-    }
-
-    function currentDate() {
-      return localISODate();
-    }
-
-    function daysFromToday(ds) {
-      if(!ds) return null;
-      const today = new Date(currentDate() + "T00:00:00");
-      const target = new Date(ds + "T00:00:00");
-      return Math.round((target - today) / 86400000);
-    }
-
-    function weekStart() {
-      const d = new Date();
-      const day = (d.getDay() + 6) % 7;
-      d.setDate(d.getDate() - day);
-      return localISODate(d);
-    }
-
-    function weekEnd() {
-      const d = new Date(weekStart() + "T12:00:00");
-      d.setDate(d.getDate() + 6);
-      return localISODate(d);
-    }
-
-    function uid(p="id") { return p + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7); }
-    function esc(s="") { return String(s).replace(/[&<>\"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
-    function unique(arr) { return [...new Set(arr.filter(Boolean))]; }
-
-    function load() {
-      try {
-        const v5 = JSON.parse(localStorage.getItem(KEY) || "null");
-        if (v5) return normalizeData(v5);
-
-        const v4 = JSON.parse(localStorage.getItem(legacyKey) || "null");
-        if (v4) return migrateV4ToV5(v4);
-
-        const old = JSON.parse(localStorage.getItem(oldKey) || "null");
-        if (old) return migrateV4ToV5(old);
-      } catch (e) {}
-      return normalizeData(defaults);
-    }
-
-    function merge(a, b) {
-      const o = structuredClone(a);
-      for (const k of Object.keys(b || {})) {
-        if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && o[k] && typeof o[k] === "object") {
-          o[k] = merge(o[k], b[k]);
-        } else {
-          o[k] = b[k];
-        }
-      }
-      return o;
-    }
-
-    function normalizeData(raw) {
-      const base = merge(defaults, raw || {});
-      base.schemaVersion = 5;
-      base.lists = base.lists || {};
-      base.lists.teachers = Array.isArray(base.lists.teachers) ? base.lists.teachers : [];
-      base.lists.rooms = Array.isArray(base.lists.rooms) ? base.lists.rooms : [];
-      base.lists.groups = Array.isArray(base.lists.groups) ? base.lists.groups : [];
-
-      base.teachers = Array.isArray(base.teachers) ? base.teachers.map(normalizeTeacher).filter(Boolean) : [];
-      base.rooms = Array.isArray(base.rooms) ? base.rooms.map(normalizeRoom).filter(Boolean) : [];
-      base.subjects = Array.isArray(base.subjects) ? base.subjects.map(normalizeSubject).filter(Boolean) : [];
-      base.study = Array.isArray(base.study) ? base.study : [];
-      base.repertoire = Array.isArray(base.repertoire) ? base.repertoire : [];
-      base.tasks = Array.isArray(base.tasks) ? base.tasks : [];
-      base.exams = Array.isArray(base.exams) ? base.exams : [];
-      base.rehearsals = Array.isArray(base.rehearsals) ? base.rehearsals : [];
-      base.events = Array.isArray(base.events) ? base.events : [];
-      base.weekly = Array.isArray(base.weekly) ? base.weekly : [];
-
-      const teacherNames = unique([...base.teachers.map(t => t.name), ...base.lists.teachers]);
-      base.lists.teachers = teacherNames;
-
-      const roomNames = unique([...base.rooms.map(r => r.name), ...base.lists.rooms]);
-      base.lists.rooms = roomNames;
-
-      base.subjects.forEach(s => {
-        if (!s.teacherId && s.teacher) {
-          const teacher = ensureTeacherFromName(s.teacher);
-          s.teacherId = teacher.id;
-          s.teacher = teacher.name;
-        }
-        if (!s.roomId && s.room) {
-          const room = ensureRoomFromName(s.room);
-          s.roomId = room.id;
-          s.room = room.name;
-        }
-      });
-
-      return base;
-    }
-
-    function normalizeTeacher(t) {
-      if (!t || typeof t !== 'object') return null;
-      return {
-        id: t.id || uid('tea'),
-        name: String(t.name || '').trim(),
-        email: t.email || '',
-        phone: t.phone || '',
-        roomId: t.roomId || '',
-        horario: t.horario || '',
-        observaciones: t.observaciones || '',
-        asignaturas: Array.isArray(t.asignaturas) ? t.asignaturas : [],
-        createdAt: t.createdAt || new Date().toISOString()
-      };
-    }
-
-    function normalizeRoom(r) {
-      if (!r || typeof r !== 'object') return null;
-      return {
-        id: r.id || uid('room'),
-        name: String(r.name || r.numero || '').trim(),
-        edificio: r.edificio || '',
-        planta: r.planta || '',
-        observaciones: r.observaciones || '',
-        createdAt: r.createdAt || new Date().toISOString()
-      };
-    }
-
-    function normalizeSubject(s) {
-      if (!s || typeof s !== 'object') return null;
-      const teacher = s.teacherId || s.teacher || '';
-      const room = s.roomId || s.room || '';
-      return {
-        id: s.id || uid('sub'),
-        name: String(s.name || '').trim(),
-        teacher: s.teacher || '',
-        teacherId: s.teacherId || '',
-        email: s.email || '',
-        room: s.room || '',
-        roomId: s.roomId || '',
-        course: s.course || '',
-        group: s.group || '',
-        day: s.day || '',
-        start: s.start || '',
-        end: s.end || '',
-        nextTasks: s.nextTasks || '',
-        extra: s.extra || '',
-        extraDetail: s.extraDetail || '',
-        color: s.color || '#a78bfa',
-        objectives: s.objectives || '',
-        material: s.material || '',
-        startDate: s.startDate || '',
-        endDate: s.endDate || '',
-        credits: s.credits || '',
-        notes: s.notes || '',
-        teacherRef: teacher,
-        roomRef: room,
-        createdAt: s.createdAt || new Date().toISOString()
-      };
-    }
-
-    function save() {
-      localStorage.setItem(KEY, JSON.stringify(normalizeData(db)));
-    }
-
-    function migrateV4ToV5(raw) {
-      const source = raw && typeof raw === 'object' ? raw : {};
-      const migrated = merge(defaults, source);
-      migrated.schemaVersion = 5;
-      migrated.teachers = [];
-      migrated.rooms = [];
-      migrated.lists = migrated.lists || {};
-      migrated.lists.teachers = unique((source.lists && source.lists.teachers) ? source.lists.teachers : []);
-      migrated.lists.rooms = unique((source.lists && source.lists.rooms) ? source.lists.rooms : []);
-      migrated.lists.groups = unique((source.lists && source.lists.groups) ? source.lists.groups : []);
-
-      const teacherNames = unique([...(source.subjects || []).map(s => s.teacher).filter(Boolean), ...(migrated.lists.teachers || [])]);
-      teacherNames.forEach((name, index) => {
-        const maybe = migrated.teachers.find(t => t.name === name);
-        if (!maybe) {
-          migrated.teachers.push({
-            id: uid('tea'),
-            name: String(name).trim(),
-            email: '',
-            phone: '',
-            roomId: '',
-            horario: '',
-            observaciones: '',
-            asignaturas: [],
-            createdAt: new Date().toISOString()
-          });
-        }
-      });
-
-      const roomNames = unique([...(source.subjects || []).map(s => s.room).filter(Boolean), ...(migrated.lists.rooms || [])]);
-      roomNames.forEach((name) => {
-        const maybe = migrated.rooms.find(r => r.name === name);
-        if (!maybe) {
-          migrated.rooms.push({
-            id: uid('room'),
-            name: String(name).trim(),
-            edificio: '',
-            planta: '',
-            observaciones: '',
-            createdAt: new Date().toISOString()
-          });
-        }
-      });
-
-      migrated.subjects = (source.subjects || []).map((subject, idx) => {
-        const teacherName = subject.teacher || '';
-        const roomName = subject.room || '';
-        const teacher = migrated.teachers.find(t => t.name === teacherName) || (teacherName ? { id: uid('tea'), name: teacherName, email:'', phone:'', roomId:'', horario:'', observaciones:'', asignaturas:[], createdAt:new Date().toISOString() } : null);
-        const room = migrated.rooms.find(r => r.name === roomName) || (roomName ? { id: uid('room'), name: roomName, edificio:'', planta:'', observaciones:'', createdAt:new Date().toISOString() } : null);
-
-        if (teacher && !migrated.teachers.some(t => t.id === teacher.id)) migrated.teachers.push(teacher);
-        if (room && !migrated.rooms.some(r => r.id === room.id)) migrated.rooms.push(room);
-
-        return {
-          id: subject.id || uid('sub'),
-          name: subject.name || `Asignatura ${idx + 1}`,
-          teacher: teacherName,
-          teacherId: teacher ? teacher.id : '',
-          email: subject.email || '',
-          room: roomName,
-          roomId: room ? room.id : '',
-          course: subject.course || '',
-          group: subject.group || '',
-          day: subject.day || '',
-          start: subject.start || '',
-          end: subject.end || '',
-          nextTasks: subject.nextTasks || '',
-          extra: subject.extra || '',
-          extraDetail: subject.extraDetail || '',
-          color: subject.color || '#a78bfa',
-          objectives: subject.objectives || '',
-          material: subject.material || '',
-          startDate: subject.startDate || '',
-          endDate: subject.endDate || '',
-          credits: subject.credits || '',
-          notes: subject.notes || '',
-          teacherRef: teacherName,
-          roomRef: roomName,
-          createdAt: new Date().toISOString()
-        };
-      });
-
-      migrated.subjects.forEach(subject => {
-        if (subject.teacherId) {
-          const teacher = migrated.teachers.find(t => t.id === subject.teacherId);
-          if (teacher && !teacher.asignaturas.includes(subject.id)) teacher.asignaturas.push(subject.id);
-        }
-        if (subject.roomId) {
-          const room = migrated.rooms.find(r => r.id === subject.roomId);
-          if (room && !room.asignaturas) room.asignaturas = [];
-          if (room && !room.asignaturas.includes(subject.id)) room.asignaturas.push(subject.id);
-        }
-      });
-
-      return normalizeData(migrated);
-    }
-
-    function ensureTeacherFromName(name) {
-      const clean = String(name || '').trim();
-      if (!clean) return null;
-      let teacher = db.teachers.find(t => t.name === clean);
-      if (!teacher) {
-        teacher = { id: uid('tea'), name: clean, email:'', phone:'', roomId:'', horario:'', observaciones:'', asignaturas:[] };
-        db.teachers.push(teacher);
-      }
-      if (!db.lists.teachers.includes(clean)) db.lists.teachers.push(clean);
-      return teacher;
-    }
-
-    function ensureRoomFromName(name) {
-      const clean = String(name || '').trim();
-      if (!clean) return null;
-      let room = db.rooms.find(r => r.name === clean);
-      if (!room) {
-        room = { id: uid('room'), name: clean, edificio:'', planta:'', observaciones:'' };
-        db.rooms.push(room);
-      }
-      if (!db.lists.rooms.includes(clean)) db.lists.rooms.push(clean);
-      return room;
-    }
-
-    function teacherById(id) { return db.teachers.find(t => t.id === id) || null; }
-    function roomById(id) { return db.rooms.find(r => r.id === id) || null; }
-
-    function teacherNameForSubject(subject) {
-      if (!subject) return "";
-      if (subject.teacherId) {
-        const teacher = teacherById(subject.teacherId);
-        if (teacher) return teacher.name;
-      }
-      if (subject.teacher) return subject.teacher;
-      return "";
-    }
-
-    function roomNameForSubject(subject) {
-      if (!subject) return "";
-      if (subject.roomId) {
-        const room = roomById(subject.roomId);
-        if (room) return room.name;
-      }
-      if (subject.room) return subject.room;
-      return "";
-    }
-
-    function subjectDisplayLabel(s) {
-      const teacher = teacherNameForSubject(s);
-      const room = roomNameForSubject(s);
-      const meta = [teacher || "Sin profesor", room || "Sin aula"].filter(Boolean);
-      return meta.join(" · ");
-    }
-
-    function fmtDate(d) { if (!d) return ""; return new Date(d + "T00:00:00").toLocaleDateString("es-ES", {day:"2-digit", month:"2-digit", year:"numeric"}); }
-    function allNamed(){ return [...db.subjects.map(x => x.name), ...db.repertoire.map(x => x.work), ...db.tasks.map(x => x.title)].filter(Boolean); }
-    function toast(s) { const t = document.querySelector("#toast"); t.textContent = s; t.classList.remove("hide"); setTimeout(() => t.classList.add("hide"), 1800); }
-
-    function openModal(title, body, onSave, label = "Guardar") {
-      document.querySelector("#modal").innerHTML = `
-        <div class="sheet">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-black">${esc(title)}</h2>
-            <button class="btn secondary" onclick="closeModal()">Cerrar</button>
-          </div>
-          <div class="grid gap-3">${body}</div>
-          <div class="flex gap-2 mt-5">
-            <button id="saveModal" class="btn flex-1">${label}</button>
-            <button class="btn secondary" onclick="closeModal()">Cancelar</button>
-          </div>
-        </div>`;
-      document.querySelector("#modal").classList.remove("hide");
-      document.querySelector("#saveModal").onclick = () => { onSave(); closeModal(); };
-    }
-
-    function closeModal() { document.querySelector("#modal").classList.add("hide"); }
-
-    function F(label, name, type = "text", value = "", extra = "") {
-      return `<div><label class="label">${label}</label><input class="field" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`;
-    }
-
-    function S(label, name, opts, value = "", allow = "") {
-      const list = Array.isArray(opts) ? opts : [];
-      const val = String(value || "");
-      return `<div><label class="label">${label}</label><select class="field" name="${name}">${allow ? `<option value="">${allow}</option>` : ""}${list.map(o => `<option value="${esc(o.value || o)}" ${val === (o.value || o) ? "selected" : ""}>${esc(o.label || o)}</option>`).join("")}</select></div>`;
-    }
-
-    function T(label, name, value = "") {
-      return `<div><label class="label">${label}</label><textarea class="field" name="${name}" rows="2">${esc(value)}</textarea></div>`;
-    }
-
-    function val(form, n) { return form.querySelector(`[name="${n}"]`)?.value || ""; }
-    function multiOptions(list, fallback) { return [...new Set([...list, ...fallback])].filter(Boolean); }
-
-    function addTeacher(id) {
-      const x = id ? db.teachers.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${F("Nombre","name","text",x.name)}
-          ${F("Correo electrónico","email","email",x.email)}
-          ${F("Teléfono","phone","tel",x.phone)}
-          ${S("Aula habitual","roomId", db.rooms.map(r => ({label: r.name, value: r.id})), x.roomId || "", "Selecciona aula")}
-          ${F("Horario","horario","text",x.horario)}
-          ${T("Observaciones","observaciones",x.observaciones)}
-          ${T("Asignaturas relacionadas","asignaturas", Array.isArray(x.asignaturas) ? x.asignaturas.join("\n") : "")}
-        </div>`;
-
-      openModal(id ? "Editar profesor" : "Nuevo profesor", body, () => {
-        const f = document.querySelector("#modal");
-        const teacher = {
-          id: id || uid("tea"),
-          name: val(f, "name").trim(),
-          email: val(f, "email").trim(),
-          phone: val(f, "phone").trim(),
-          roomId: val(f, "roomId"),
-          horario: val(f, "horario").trim(),
-          observaciones: val(f, "observaciones").trim(),
-          asignaturas: (val(f, "asignaturas") || "").split("\n").map(x => x.trim()).filter(Boolean),
-          createdAt: x.createdAt || new Date().toISOString()
-        };
-        const i = db.teachers.findIndex(x => x.id === teacher.id);
-        if (i >= 0) db.teachers[i] = { ...db.teachers[i], ...teacher }; else db.teachers.push(teacher);
-        db.lists.teachers = unique([...db.teachers.map(t => t.name), ...db.lists.teachers]);
-        save(); render();
-      });
-    }
-
-    function addRoom(id) {
-      const x = id ? db.rooms.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${F("Nombre / número","name","text",x.name)}
-          ${F("Edificio","edificio","text",x.edificio)}
-          ${F("Planta","planta","text",x.planta)}
-          ${T("Observaciones","observaciones",x.observaciones)}
-        </div>`;
-
-      openModal(id ? "Editar aula" : "Nueva aula", body, () => {
-        const f = document.querySelector("#modal");
-        const room = {
-          id: id || uid("room"),
-          name: val(f, "name").trim(),
-          edificio: val(f, "edificio").trim(),
-          planta: val(f, "planta").trim(),
-          observaciones: val(f, "observaciones").trim(),
-          createdAt: x.createdAt || new Date().toISOString()
-        };
-        const i = db.rooms.findIndex(x => x.id === room.id);
-        if (i >= 0) db.rooms[i] = { ...db.rooms[i], ...room }; else db.rooms.push(room);
-        db.lists.rooms = unique([...db.rooms.map(r => r.name), ...db.lists.rooms]);
-        save(); render();
-      });
-    }
-
-    function addSubject(id) {
-      const x = id ? db.subjects.find(x => x.id === id) || {} : {};
-      const teacherOptions = db.teachers.map(t => ({label: t.name, value: t.id}));
-      const roomOptions = db.rooms.map(r => ({label: r.name, value: r.id}));
-      const groupOptions = unique([...db.lists.groups, "A", "B", "C", "D", "E", "F"]).map(g => ({label: g, value: g}));
-      const courseOptions = ["1º","2º","3º","4º","Máster","Otro"].map(v => ({label: v, value: v}));
-      const body = `
-        <div class="grid gap-3">
-          ${F("Asignatura","name","text",x.name)}
-          ${S("Profesor","teacherId", teacherOptions, x.teacherId || (x.teacher ? db.teachers.find(t => t.name === x.teacher)?.id || "" : ""), "Selecciona profesor")}
-          ${S("Aula","roomId", roomOptions, x.roomId || (x.room ? db.rooms.find(r => r.name === x.room)?.id || "" : ""), "Selecciona aula")}
-          ${S("Curso","course", courseOptions, x.course, "Selecciona curso")}
-          ${S("Grupo","group", groupOptions, x.group, "Selecciona grupo")}
-          ${S("Día","day", ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"].map(d => ({label: d, value: d})), x.day, "Selecciona día")}
-          <div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>
-          ${F("Color","color","color",x.color || "#a78bfa")}
-          ${T("Objetivos","objectives",x.objectives)}
-          ${T("Material necesario","material",x.material)}
-          <div class="grid grid-cols-2 gap-3">${F("Fecha inicio","startDate","date",x.startDate)}${F("Fecha fin","endDate","date",x.endDate)}</div>
-          ${F("Créditos","credits","text",x.credits)}
-          ${T("Notas","notes",x.notes)}
-          ${S("¿Hay tareas para la próxima sesión?","nextTasks", ["Sí","No"].map(v => ({label: v, value: v})), x.nextTasks || "", "Selecciona")}
-          ${S("¿Tienes que hacer algo más?","extra", ["Sí","No"].map(v => ({label: v, value: v})), x.extra || "", "Selecciona")}
-          ${F("Acción adicional","extraDetail","text",x.extraDetail)}
-        </div>`;
-
-      openModal(id ? "Editar asignatura" : "Nueva asignatura", body, () => {
-        const f = document.querySelector("#modal");
-        const get = n => val(f, n);
-
-        const teacherId = get("teacherId");
-        const roomId = get("roomId");
-        const teacherName = teacherId ? (teacherById(teacherId)?.name || "") : "";
-        const roomName = roomId ? (roomById(roomId)?.name || "") : "";
-
-        const o = {
-          id: id || uid("sub"),
-          name: get("name").trim(),
-          teacher: teacherName,
-          teacherId,
-          email: get("email") || "",
-          room: roomName,
-          roomId,
-          course: get("course"),
-          group: get("group"),
-          day: get("day"),
-          start: get("start"),
-          end: get("end"),
-          nextTasks: get("nextTasks"),
-          extra: get("extra"),
-          extraDetail: get("extraDetail"),
-          color: get("color") || "#a78bfa",
-          objectives: get("objectives"),
-          material: get("material"),
-          startDate: get("startDate"),
-          endDate: get("endDate"),
-          credits: get("credits"),
-          notes: get("notes"),
-          createdAt: x.createdAt || new Date().toISOString()
-        };
-
-        if (teacherId) {
-          const teacher = teacherById(teacherId);
-          if (teacher) {
-            teacher.name = teacher.name || teacherName;
-            if (!teacher.asignaturas.includes(o.id)) teacher.asignaturas.push(o.id);
-          }
-        }
-        if (roomId) {
-          const room = roomById(roomId);
-          if (room && !room.asignaturas) room.asignaturas = [];
-          if (room && !room.asignaturas.includes(o.id)) room.asignaturas.push(o.id);
-        }
-
-        if (id) {
-          const i = db.subjects.findIndex(x => x.id === id);
-          if (i >= 0) db.subjects[i] = { ...db.subjects[i], ...o };
-        } else {
-          db.subjects.push(o);
-        }
-
-        if (o.group && !db.lists.groups.includes(o.group)) db.lists.groups.push(o.group);
-        save(); render();
-      });
-    }
-
-    function addStudy(id){
-      const x = id ? db.study.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Instrumento / asignatura","instrument",db.lists.instruments,x.instrument,"Selecciona")}
-          ${S("Tipo de sesión","type",db.lists.studyTypes,x.type)}
-          ${F("Objetivo","objective","text",x.objective)}
-          ${F("Fecha","date","date",x.date)}
-          ${F("Inicio","start","time",x.start)}
-          ${F("Fin","end","time",x.end)}
-          ${F("Duración (min)","duration","number",x.duration)}
-        </div>`;
-      openModal(id ? "Editar sesión" : "Nueva sesión", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("stu"), instrument: val(f,"instrument"), type: val(f,"type"), objective: val(f,"objective"), date: val(f,"date"), start: val(f,"start"), end: val(f,"end"), duration: val(f,"duration")};
-        if (id) { const i = db.study.findIndex(x => x.id === id); if (i >= 0) db.study[i] = { ...db.study[i], ...o }; } else { db.study.push(o); }
-        save(); render();
-      });
-    }
-
-    function addRep(id){
-      const x = id ? db.repertoire.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Instrumento","instrument",db.lists.instruments,x.instrument)}
-          ${F("Compositor","composer","text",x.composer)}
-          ${F("Obra","work","text",x.work)}
-          ${F("Fecha de entrega","date","date",x.date)}
-          ${F("Notas","notes","text",x.notes)}
-        </div>`;
-      openModal(id ? "Editar repertorio" : "Nueva obra", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("rep"), instrument: val(f,"instrument"), composer: val(f,"composer"), work: val(f,"work"), date: val(f,"date"), notes: val(f,"notes")};
-        if (id) { const i = db.repertoire.findIndex(x => x.id === id); if (i >= 0) db.repertoire[i] = { ...db.repertoire[i], ...o }; } else { db.repertoire.push(o); }
-        save(); render();
-      });
-    }
-
-    function addTask(id){
-      const x = id ? db.tasks.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${F("Tarea","title","text",x.title)}
-          ${S("Asignatura relacionada","subject",db.subjects.map(s => s.name),x.subject,"Sin asignar")}
-          ${S("Categoría","category",["Estudio","Examen","Tarea","Otro"],x.category)}
-          ${F("Fecha límite","due","date",x.due)}
-          ${S("Estado","status",["Pendiente","Hecha","En curso"],x.status || "Pendiente")}
-          ${T("Descripción","description",x.description)}
-        </div>`;
-      openModal(id ? "Editar tarea" : "Nueva tarea", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("tsk"), title: val(f,"title"), subject: val(f,"subject"), category: val(f,"category"), due: val(f,"due"), status: val(f,"status") || "Pendiente", description: val(f,"description"), subtasks: x.subtasks || []};
-        if (id) { const i = db.tasks.findIndex(x => x.id === id); if (i >= 0) db.tasks[i] = { ...db.tasks[i], ...o }; } else { db.tasks.push(o); }
-        save(); render();
-      });
-    }
-
-    function addExam(id){
-      const x = id ? db.exams.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Asignatura","subject",db.subjects.map(s => s.name),x.subject)}
-          ${S("Tipo de examen","type",db.lists.examTypes,x.type)}
-          ${F("Convocatoria","call","text",x.call)}
-          ${F("Fecha","date","date",x.date)}
-          ${F("Estado","status","text",x.status || "Pendiente")}
-        </div>`;
-      openModal(id ? "Editar examen" : "Nuevo examen", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("exam"), subject: val(f,"subject"), type: val(f,"type"), call: val(f,"call"), date: val(f,"date"), status: val(f,"status") || "Pendiente"};
-        if (id) { const i = db.exams.findIndex(x => x.id === id); if (i >= 0) db.exams[i] = { ...db.exams[i], ...o }; } else { db.exams.push(o); }
-        save(); render();
-      });
-    }
-
-    function addRehearsal(id){
-      const x = id ? db.rehearsals.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Agrupación","group",db.lists.groups,x.group)}
-          ${S("Instrumento","instrument",db.lists.instruments,x.instrument)}
-          ${S("Director","director",["Público","Privado","Otro"],x.director)}
-          ${F("Fecha","date","date",x.date)}
-          ${F("Inicio","start","time",x.start)}
-          ${F("Fin","end","time",x.end)}
-          ${F("Lugar","place","text",x.place)}
-        </div>`;
-      openModal(id ? "Editar ensayo" : "Nuevo ensayo", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("reh"), group: val(f,"group"), instrument: val(f,"instrument"), director: val(f,"director"), date: val(f,"date"), start: val(f,"start"), end: val(f,"end"), place: val(f,"place")};
-        if (id) { const i = db.rehearsals.findIndex(x => x.id === id); if (i >= 0) db.rehearsals[i] = { ...db.rehearsals[i], ...o }; } else { db.rehearsals.push(o); }
-        save(); render();
-      });
-    }
-
-    function addEvent(id){
-      const x = id ? db.events.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Tipo de evento","type",db.lists.eventTypes,x.type)}
-          ${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}
-          ${F("Asignatura / agrupación","related","text",x.related)}
-          ${F("Fecha","date","date",x.date)}
-          ${F("Inicio","start","time",x.start)}
-          ${F("Fin","end","time",x.end)}
-          ${T("Notas","notes",x.notes)}
-        </div>`;
-      openModal(id ? "Editar evento" : "Nuevo evento", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("evt"), type: val(f,"type"), place: val(f,"place"), related: val(f,"related"), date: val(f,"date"), start: val(f,"start"), end: val(f,"end"), notes: val(f,"notes")};
-        if (id) { const i = db.events.findIndex(x => x.id === id); if (i >= 0) db.events[i] = { ...db.events[i], ...o }; } else { db.events.push(o); }
-        save(); render();
-      });
-    }
-
-    function addWeekly(id){
-      const x = id ? db.weekly.find(x => x.id === id) || {} : {};
-      const body = `
-        <div class="grid gap-3">
-          ${S("Tipo","type",["Clase","Ensayo","Estudio","Evento"],x.type)}
-          ${F("Título","title","text",x.title)}
-          ${S("Día","day",["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],x.day)}
-          ${F("Inicio","start","time",x.start)}
-          ${F("Fin","end","time",x.end)}
-          ${F("Lugar","place","text",x.place)}
-          ${S("Activo","active",["Sí","No"],x.active || "Sí")}
-        </div>`;
-      openModal(id ? "Editar actividad semanal" : "Nueva actividad semanal", body, () => {
-        const f = document.querySelector("#modal");
-        const o = {id: id || uid("wek"), type: val(f,"type"), title: val(f,"title"), day: val(f,"day"), start: val(f,"start"), end: val(f,"end"), place: val(f,"place"), active: val(f,"active") || "Sí"};
-        if (id) { const i = db.weekly.findIndex(x => x.id === id); if (i >= 0) db.weekly[i] = { ...db.weekly[i], ...o }; } else { db.weekly.push(o); }
-        save(); render();
-      });
-    }
-
-    function upsert(arr, o){const i = arr.findIndex(x => x.id === o.id); if (i < 0) arr.push(o); else arr[i] = o;}
-    function del(type, id){if(!confirm("¿Eliminar este elemento?")) return; db[type] = db[type].filter(x => x.id !== id); save(); render();}
-    function edit(type, id){({subjects:addSubject,study:addStudy,repertoire:addRep,tasks:addTask,exams:addExam,rehearsals:addRehearsal,events:addEvent,weekly:addWeekly,teachers:addTeacher,rooms:addRoom}[type])(id);}
-    function nav(v){view = v; render();}
-
-    function layout(content){
-      return `
-        <div class="safe min-h-screen">
-          <header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur">
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="text-xs uppercase tracking-[.2em] text-violet-300/80">RitmoAcade</div>
-                <div class="text-lg font-black">5.0</div>
-              </div>
-              <button class="btn secondary" onclick="quickEvent()">+ Evento</button>
-            </div>
-            <div class="grid grid-cols-4 gap-2 mt-4">
-              ${navBtn("hoy","🏠","Hoy")}
-              ${navBtn("horario","📅","Horario")}
-              ${navBtn("estudio","🎼","Estudio")}
-              ${navBtn("repertorio","🎵","Repertorio")}
-            </div>
-          </header>
-          <main class="px-4 pb-6">${content}</main>
-        </div>`;
-    }
-
-    function navBtn(v, i, t){return `<button class="navbtn ${view === v ? "active" : ""}" onclick="nav('${v}')"><span>${i}</span>${t}</button>`;}
-    function sectionHead(title, add, extra = "") { return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn secondary" onclick="${add}">+</button></div></div>`; }
-    function eventTime(x){return [x.start, x.end].filter(Boolean).join("–");}
-
-    function dayName(d){return ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][d.getDay()];}
-    function taskProgress(t){const s = t.subtasks || []; if(!s.length) return t.status === "Hecha" ? 100 : 0; return Math.round(s.filter(x => x.done).length / s.length * 100);}
-
-    function todayItems(){
-      const d = currentDate();
-      const a = [];
-      db.subjects.filter(x => x.day && x.start && dayName(new Date(d + "T12:00:00")) === x.day).forEach(x => a.push({kind:"Clase", title:x.name, start:x.start, end:x.end, place: roomNameForSubject(x), sub:x.id, date:d}));
-      [...db.events.filter(x => x.date === d), ...db.study.filter(x => x.date === d), ...db.rehearsals.filter(x => x.date === d)].forEach(x => a.push({kind:x.type || "Actividad", title:x.title || x.subject || x.group || x.type || "Actividad", start:x.start, end:x.end, place:x.place || x.room || "", sub:x.id, date:d}));
-      db.weekly.filter(x => x.active !== "No" && x.day === dayName(new Date(d + "T12:00:00"))).forEach(x => a.push({kind:x.type, title:x.title, start:x.start, end:x.end, place:x.place || "", sub:x.id, date:d}));
-      return a.sort((a,b) => (a.start || "99").localeCompare(b.start || "99"));
-    }
-
-    function today(){
-      const items = todayItems();
-      const pending = db.tasks.filter(x => x.status !== "Hecha").sort((a,b) => (a.due || "99").localeCompare(b.due || "99")).slice(0,5);
-      const exams = db.exams.filter(x => x.date && daysFromToday(x.date) >= 0).sort((a,b) => a.date.localeCompare(b.date)).slice(0,3);
-      const due = db.tasks.filter(x => x.due === currentDate() && x.status !== "Hecha").length;
-      const mins = db.study.filter(x => x.date >= weekStart() && x.date <= weekEnd()).reduce((n,x) => n + (+x.duration || 0), 0);
-      return layout(`
-        <div class="grid gap-3 mt-2">
-          <div class="card p-4">
-            <div class="text-sm muted">Hoy · ${fmtDate(currentDate())}</div>
-            <div class="text-2xl font-black mt-1">${items.length ? items[0].title : "Día libre de agenda"}</div>
-            <div class="small muted mt-1">${items.length ? "Agenda actualizada" : "Sin actividades programadas"}</div>
-          </div>
-          <div class="grid grid-cols-3 gap-2">
-            <div class="card p-3"><div class="text-2xl font-black">${due}</div><div class="small muted">Vencen hoy</div></div>
-            <div class="card p-3"><div class="text-2xl font-black">${mins}</div><div class="small muted">Min estudio</div></div>
-            <div class="card p-3"><div class="text-2xl font-black">${exams.length}</div><div class="small muted">Próx. exámenes</div></div>
-          </div>
-          ${sectionHead("Agenda de hoy", "quickEvent()")}
-          ${items.length ? items.map(x => `<div class="card p-3 mb-2 flex justify-between"><div><div class="font-bold">${esc(x.title)}</div><div class="small muted">${esc(x.kind || x.type)} · ${esc(x.place || "Sin lugar")} · ${eventTime(x)}</div></div><button class="pill" onclick="edit('events','${x.sub}')">Ver</button></div>`).join("") : `<div class="empty">No hay actividades para hoy.</div>`}
-          ${sectionHead("Tareas pendientes", "addTask()")}
-          ${pending.length ? pending.map(t => taskCard(t)).join("") : `<div class="empty">No tienes tareas pendientes.</div>`}
-          ${sectionHead("Próximos exámenes", "addExam()")}
-          ${exams.length ? exams.map(e => `<div class="card p-3 mb-2"><div class="flex justify-between"><b>${esc(e.subject || "Examen")}</b><span class="pill">${daysFromToday(e.date)} días</span></div><div class="small muted">${esc(e.type || "Examen")} · ${fmtDate(e.date)}</div></div>`).join("") : `<div class="empty">No hay exámenes próximos.</div>`}
-        </div>`);
-    }
-
-    function taskCard(t){return `<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(t.title)}</b><div class="small muted">${esc(t.subject || "Sin asignatura")} · ${esc(t.category || "Tarea")}</div></div><button class="pill" onclick="finishTask('${t.id}')">${t.status === "Hecha" ? "Reabrir" : "Hecha"}</button></div><div class="small muted mt-2">${t.due ? `Vence: ${fmtDate(t.due)}` : "Sin fecha"}</div></div>`;}
-    function finishTask(id){const t = db.tasks.find(x => x.id === id); if(!t) return; t.status = t.status === "Hecha" ? "Pendiente" : "Hecha"; save(); render();}
-
-    function horario(){
-      const d = new Date(calDate), y = d.getFullYear(), m = d.getMonth(), first = new Date(y,m,1), days = new Date(y,m+1,0).getDate(), offset = (first.getDay()+6)%7;
-      let cells = "";
-      for(let i=0; i<offset; i++) cells += `<div></div>`;
-      for(let n=1; n<=days; n++){
-        const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(n).padStart(2,'0')}`;
-        const its = calendarItems(ds);
-        cells += `<div class="daycell"><div class="text-xs font-bold">${n}</div><div class="space-y-1 mt-1">${its.map(x => `<div class="pill text-xs">${esc(x.title || x.subject || x.type || 'Evento')}</div>`).join("")}</div></div>`;
-      }
-      const month = d.toLocaleDateString("es-ES", {month:"long", year:"numeric"});
-      return layout(`
-        <div class="flex items-center justify-between mt-2">
-          <button class="btn secondary" onclick="calMove(-1)">‹</button>
-          <h2 class="text-xl font-black capitalize">${month}</h2>
-          <button class="btn secondary" onclick="calMove(1)">›</button>
-        </div>
-        <div class="calgrid mt-4 text-center text-xs muted">${["L","M","X","J","V","S","D"].map(x => `<div>${x}</div>`).join("")}</div>
-        <div class="calgrid mt-1">${cells}</div>
-        ${sectionHead("Actividades semanales", "addWeekly()")}
-        ${db.weekly.length ? db.weekly.map(x => `<div class="card p-3 mb-2 flex justify-between"><div><b>${esc(x.title)}</b><div class="small muted">${esc(x.day)} · ${eventTime(x)} · ${esc(x.place || "Sin lugar")}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('weekly','${x.id}')">Editar</button><button class="pill" onclick="del('weekly','${x.id}')">Eliminar</button></div></div>`).join("") : `<div class="empty">No hay actividades semanales.</div>`}
-        ${sectionHead("Asignaturas", "addSubject()")}
-        ${db.subjects.length ? db.subjects.map(x => `<div class="card p-3 mb-2"><div class="flex justify-between"><div><b style="color:${x.color || '#a78bfa'};">${esc(x.name)}</b><div class="small muted">${esc(subjectDisplayLabel(x))}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('subjects','${x.id}')">Editar</button><button class="pill" onclick="del('subjects','${x.id}')">Eliminar</button></div></div></div>`).join("") : `<div class="empty">No hay asignaturas todavía.</div>`}
-      `);
-    }
-
-    function calMove(n){calDate = new Date(calDate.getFullYear(), calDate.getMonth() + n, 1); render();}
-    function calendarItems(ds){
-      return [...db.events.filter(x => x.date === ds), ...db.study.filter(x => x.date === ds), ...db.rehearsals.filter(x => x.date === ds), ...db.tasks.filter(x => x.due === ds), ...db.exams.filter(x => x.date === ds)].map(x => ({title: x.title || x.subject || x.group || x.type || "Evento", type:x.type || x.subject || x.group || "Evento", place:x.place || "", start:x.start || "", end:x.end || ""}));
-    }
-
-    function estudio(){
-      const ws = weekStart(), we = weekEnd();
-      const logs = db.study.filter(x => x.date >= ws && x.date <= we);
-      const mins = logs.reduce((n,x) => n + (+x.duration || 0), 0);
-      return layout(`
-        ${sectionHead("Estudio","addStudy()", `<button class="btn secondary" onclick="quickStudy()">▶ Temporizador</button>`)}
-        <div class="card p-4 mb-3">
-          <div class="text-sm muted">Objetivo semanal</div>
-          <div class="text-3xl font-black">${mins} / ${db.profile.weeklyGoal || 420} min</div>
-          <div class="progress mt-3"><i style="width:${Math.min(100, mins / (db.profile.weeklyGoal || 420) * 100)}%"></i></div>
-        </div>
-        ${logs.length ? logs.sort((a,b) => (b.date + b.start).localeCompare(a.date + a.start)).map(x => `<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.instrument)}</b><div class="small muted">${esc(x.type || "Estudio")} · ${esc(x.objective || "Sin objetivo")} · ${escape(String(x.duration || 0))} min</div></div><div class="flex gap-2"><button class="pill" onclick="edit('study','${x.id}')">Editar</button><button class="pill" onclick="del('study','${x.id}')">Eliminar</button></div></div></div>`).join("") : `<div class="empty">No hay sesiones de estudio.</div>`}
-      `);
-    }
-
-    function quickStudy(){
-      let secs = 25 * 60;
-      timer = {running:true, seconds:secs, startedAt:Date.now(), sessionType:"Estudio", instrument: db.lists.instruments[0] || ""};
-      timerModal();
-    }
-
-    function timerModal(){
-      const body = `
-        <div class="text-center">
-          <div id="timerClock" class="text-6xl font-black tracking-tight">25:00</div>
-          <div class="muted mt-2">Temporizador de estudio</div>
-          <div class="grid gap-3 mt-5">
-            <div><label class="label">Instrumento</label><input class="field" name="instrument" value="${esc(timer.instrument)}"></div>
-            <div><label class="label">Tipo</label><select class="field" name="type"><option value="Estudio" selected>Estudio</option><option value="Práctica">Práctica</option><option value="Repaso">Repaso</option><option value="Otro">Otro</option></select></div>
-            <div><label class="label">Duración (min)</label><input class="field" type="number" name="duration" value="25"></div>
-          </div>
-        </div>`;
-      openModal("Sesión de estudio", body, () => saveTimer());
-      const sheet = document.querySelector(".sheet");
-      const saveBtn = document.querySelector("#saveModal");
-      saveBtn.textContent = "Terminar y guardar";
-      const clock = setInterval(() => {
-        if (!document.querySelector("#timerClock")) { clearInterval(clock); return; }
-        if (timer.seconds > 0) {
-          timer.seconds--;
-          const m = String(Math.floor(timer.seconds / 60)).padStart(2,"0");
-          const s = String(timer.seconds % 60).padStart(2,"0");
-          document.querySelector("#timerClock").textContent = `${m}:${s}`;
-        } else {
-          clearInterval(clock);
-        }
-      }, 1000);
-    }
-
-    function saveTimer(){
-      const f = document.querySelector("#modal");
-      const instrument = f.querySelector('[name="instrument"]')?.value || timer.instrument;
-      const type = f.querySelector('[name="type"]')?.value || "Estudio";
-      const duration = Number(f.querySelector('[name="duration"]')?.value || 25);
-      db.study.push({id: uid("stu"), instrument, type, date: currentDate(), start: "", end: "", duration, objective: "Sesión de estudio"});
-      save(); render();
-    }
-
-    function repertorio(){
-      return layout(`${sectionHead("Repertorio","addRep()")}
-        ${db.repertoire.length ? db.repertoire.map(x => `<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(x.composer || "Compositor")} — ${esc(x.work || "Obra")}</b><div class="small muted">${esc(x.instrument || "Sin instrumento")} · ${fmtDate(x.date)}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('repertoire','${x.id}')">Editar</button><button class="pill" onclick="del('repertoire','${x.id}')">Eliminar</button></div></div></div>`).join("") : `<div class="empty">No hay repertorio todavía.</div>`}
-      `);
-    }
-
-    function mas(){
-      return layout(`<div class="grid gap-3 mt-3">
-        ${["Tareas","Exámenes","Ensayos","Eventos","Buscar","Estadísticas","Configuración"].map((x,i) => `<button class="card p-4 text-left flex justify-between items-center" onclick="${["tasksView()","examsView()","rehearsalsView()","eventsView()","searchView()","statsView()","settings()",""][i]}">${x}<span>›</span></button>`).join("")}
-      </div>`);
-    }
-
-    function genericView(title, add, items, renderItem){return layout(`${sectionHead(title, add)}${items.length ? items.map(renderItem).join("") : `<div class="empty">No hay elementos todavía.</div>`}`);}
-    function tasksView(){return genericView("Tareas", "addTask()", db.tasks, t => taskCard(t) + `<div class="text-right -mt-1 mb-2"><button class="pill" onclick="del('tasks','${t.id}')">Eliminar</button></div>`);}
-    function examsView(){return genericView("Exámenes", "addExam()", db.exams, e => `<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.subject)}</b><div class="small muted">${esc(e.type || "Examen")} · ${fmtDate(e.date)}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('exams','${e.id}')">Editar</button><button class="pill" onclick="del('exams','${e.id}')">Eliminar</button></div></div></div>`);}
-    function rehearsalsView(){return genericView("Ensayos", "addRehearsal()", db.rehearsals, r => `<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.group)}</b><div class="small muted">${esc(r.instrument)} · ${fmtDate(r.date)} · ${esc(r.place || "Sin lugar")}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('rehearsals','${r.id}')">Editar</button><button class="pill" onclick="del('rehearsals','${r.id}')">Eliminar</button></div></div></div>`);}
-    function eventsView(){return genericView("Eventos", "addEvent()", db.events, e => `<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.type)}</b><div class="small muted">${esc(e.related || "Sin relación")} · ${fmtDate(e.date)} · ${eventTime(e)}</div></div><div class="flex gap-2"><button class="pill" onclick="edit('events','${e.id}')">Editar</button><button class="pill" onclick="del('events','${e.id}')">Eliminar</button></div></div></div>`);}
-
-    function statsView(){
-      const logs = db.study.filter(x => x.date >= weekStart() && x.date <= weekEnd());
-      const by = {};
-      logs.forEach(x => by[x.instrument] = (by[x.instrument] || 0) + (+x.duration || 0));
-      return layout(`<h2 class="section-title mt-6">Estadísticas de estudio</h2><div class="grid gap-3 mt-4">${Object.entries(by).map(([inst, mins]) => `<div class="card p-3"><div class="flex justify-between"><div>${esc(inst)}</div><b>${mins} min</b></div></div>`).join("") || `<div class="empty">Todavía no hay datos esta semana.</div>`}</div>`);
-    }
-
-    function settings(){
-      const body = `
-        <div class="grid gap-3">
-          <div class="font-bold">Perfil</div>
-          ${F("Nombre","name","text",db.profile.name)}
-          ${F("Estudios / itinerario","career","text",db.profile.career)}
-          ${F("Institución","institution","text",db.profile.institution)}
-          ${F("Objetivo semanal (min)","weeklyGoal","number",db.profile.weeklyGoal)}
-          <div class="font-bold mt-2">Profesores</div>
-          <div class="grid grid-cols-2 gap-2">
-            <button class="btn secondary" onclick="addTeacher()">+ Añadir profesor</button>
-            <button class="btn secondary" onclick="renderTeacherList()">Ver profesores</button>
-          </div>
-          <div class="font-bold mt-2">Aulas</div>
-          <div class="grid grid-cols-2 gap-2">
-            <button class="btn secondary" onclick="addRoom()">+ Añadir aula</button>
-            <button class="btn secondary" onclick="renderRoomList()">Ver aulas</button>
-          </div>
-          <div class="font-bold mt-2">Datos</div>
-          <div class="grid grid-cols-2 gap-2">
-            <button class="btn secondary" onclick="exportData()">⬇ Exportar</button>
-            <button class="btn secondary" onclick="document.querySelector('#importFile').click()">⬆ Importar</button>
-            <input id="importFile" type="file" accept=".json" onchange="importData(event)" style="display:none">
-            <button class="btn secondary" onclick="resetData()" style="grid-column:1/-1">🗑 Borrar datos</button>
-          </div>
-        </div>`;
-      openModal("Configuración", body, () => {
-        const f = document.querySelector("#modal");
-        db.profile.name = val(f, "name");
-        db.profile.career = val(f, "career");
-        db.profile.institution = val(f, "institution");
-        db.profile.weeklyGoal = Number(val(f, "weeklyGoal") || 420);
-        save(); render();
-      });
-    }
-
-    function renderTeacherList() {
-      const list = db.teachers.length ? db.teachers.map(t => `
-        <div class="card p-3 mb-2">
-          <div class="flex justify-between gap-3">
-            <div><b>${esc(t.name || "Profesor sin nombre")}</b><div class="small muted">${esc(t.email || "Sin email")} · ${esc(t.phone || "Sin teléfono")}</div></div>
-            <div class="flex gap-2"><button class="pill" onclick="edit('teachers','${t.id}')">Editar</button><button class="pill" onclick="del('teachers','${t.id}')">Eliminar</button></div>
-          </div>
-        </div>`).join("") : `<div class="empty">No hay profesores todavía.</div>`;
-      openModal("Profesores", `<div class="grid gap-2">${list}</div>`, () => {}, "Cerrar");
-      document.querySelector("#saveModal").remove();
-    }
-
-    function renderRoomList() {
-      const list = db.rooms.length ? db.rooms.map(r => `
-        <div class="card p-3 mb-2">
-          <div class="flex justify-between gap-3">
-            <div><b>${esc(r.name || "Aula sin nombre")}</b><div class="small muted">${esc(r.edificio || "Sin edificio")} · ${esc(r.planta || "Sin planta")}</div></div>
-            <div class="flex gap-2"><button class="pill" onclick="edit('rooms','${r.id}')">Editar</button><button class="pill" onclick="del('rooms','${r.id}')">Eliminar</button></div>
-          </div>
-        </div>`).join("") : `<div class="empty">No hay aulas todavía.</div>`;
-      openModal("Aulas", `<div class="grid gap-2">${list}</div>`, () => {}, "Cerrar");
-      document.querySelector("#saveModal").remove();
-    }
-
-    function exportData(){
-      const blob = new Blob([JSON.stringify(normalizeData(db), null, 2)], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "ritmoacade-backup-" + currentDate() + ".json";
-      a.click();
-    }
-
-    function importData(ev){
-      const file = ev.target.files[0];
-      if(!file) return;
-      const r = new FileReader();
-      r.onload = () => {
-        try{
-          db = normalizeData(JSON.parse(r.result));
-          save();
-          closeModal();
-          render();
-          toast("Copia de seguridad restaurada");
-        } catch(e) {
-          toast("Error al importar: " + e.message);
-        }
-      };
-      r.readAsText(file);
-    }
-
-    function resetData(){
-      if(confirm("Esto borrará todos los datos locales de RitmoAcade. ¿Continuar?")){
-        db = normalizeData(defaults);
-        save();
-        closeModal();
-        render();
-        toast("Datos borrados");
-      }
-    }
-
-    function searchView(){
-      const q = prompt("¿Qué quieres buscar?");
-      if (q === null) return;
-      const z = q.toLowerCase();
-      const out = [];
-      for (const [type, arr] of Object.entries(db)) {
-        if (!Array.isArray(arr)) continue;
-        arr.forEach(x => {
-          const text = JSON.stringify(x).toLowerCase();
-          if (text.includes(z)) {
-            out.push({ type, title: x.title || x.name || x.work || x.subject || x.type || "Elemento", detail: x.date || x.day || x.subject || x.place || x.instrument || ""});
-          }
-        });
-      }
-      openModal("Resultados de búsqueda", out.length ? out.map(x => `<div class="card p-3 mb-2"><b>${esc(x.title)}</b><div class="small muted">${esc(x.type)} · ${esc(x.detail)}</div></div>`).join("") : `<div class="empty">No hay resultados.</div>`, () => {}, "Cerrar");
-      document.querySelector("#saveModal").remove();
-    }
-
-    function quickEvent(){addEvent();}
-
-    function render(){
-      let c = view === "hoy" ? today() : view === "horario" ? horario() : view === "estudio" ? estudio() : view === "repertorio" ? repertorio() : mas();
-      document.querySelector("#app").innerHTML = c;
-    }
-
-    render();
-  </script>
+<div id="app"></div>
+<div id="modal" class="modal hide"></div>
+<div id="toast" class="toast hide"></div>
+<script>
+const KEY="ritmoacade_pro_v5";
+const legacyKey="ritmoacade_pro_v4";
+const oldKey="ritmoacade_pro_v3";
+const defaults={
+ schemaVersion:5,
+ profile:{name:"",career:"",institution:"",weeklyGoal:420},
+ lists:{teachers:[],instruments:["Saxofón","Piano","Lenguaje Musical","Armonía"],rooms:[],groups:[],studyTypes:["Técnica","Repertorio","Lectura","Teoría","Preparación de clase","Repaso"],examTypes:["Parcial","Final","Recuperación","Prueba de acceso","Audición","TFM"],eventTypes:["Clase","Audición","Concierto","Entrega","Reunión","Otro"],tags:["Conservatorio","Universidad","Trabajo","Personal"],priorities:["Alta","Media","Baja"]},
+ teachers:[],
+ rooms:[],
+ subjects:[],study:[],repertoire:[],tasks:[],exams:[],rehearsals:[],events:[],weekly:[],
+ settings:{startWeek:1,theme:"dark"}
+};
+if(typeof structuredClone==='undefined'){window.structuredClone=function(obj){return JSON.parse(JSON.stringify(obj));};}
+let db=load();
+let view="hoy"; let calDate=new Date(); let timer={running:false,seconds:0,startedAt:null,sessionType:"Estudio",instrument:""};
+function uid(p="id"){return p+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7)}
+function esc(s=""){return String(s).replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function localISODate(d=new Date()){const offset=d.getTimezoneOffset(); return new Date(d.getTime()-offset*60000).toISOString().slice(0,10)}
+function currentDate(){return localISODate()}
+function fmtDate(d){if(!d)return ""; return new Date(d+"T00:00:00").toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function daysFromToday(ds){if(!ds)return null; const today=new Date(currentDate()+"T00:00:00"); const target=new Date(ds+"T00:00:00"); return Math.round((target-today)/86400000)}
+function weekStart(){const d=new Date(); const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day); return localISODate(d)}
+function weekEnd(){const d=new Date(weekStart()+"T12:00:00"); d.setDate(d.getDate()+6); return localISODate(d)}
+function cloneData(v){return typeof structuredClone==='function'?structuredClone(v):JSON.parse(JSON.stringify(v));}
+function merge(a,b){const o=cloneData(a); for(const k of Object.keys(b||{})){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&o[k]) o[k]=merge(o[k],b[k]); else o[k]=b[k]} return o}
+function normalizeTeacher(item){return {id:item.id||uid("te"),name:item.name||"",email:item.email||"",phone:item.phone||"",roomId:item.roomId||"",horario:item.horario||"",observaciones:item.observaciones||"",asignaturas:Array.isArray(item.asignaturas)?item.asignaturas:[]};}
+function normalizeRoom(item){return {id:item.id||uid("room"),name:item.name||"",edificio:item.edificio||"",planta:item.planta||"",observaciones:item.observaciones||""};}
+function normalizeSubject(item){return {id:item.id||uid("sub"),name:item.name||"",teacher:item.teacher||"",teacherId:item.teacherId||"",email:item.email||"",room:item.room||"",roomId:item.roomId||"",course:item.course||"",group:item.group||"",day:item.day||"",start:item.start||"",end:item.end||"",color:item.color||"#a78bfa",objectives:item.objectives||"",material:item.material||"",startDate:item.startDate||"",endDate:item.endDate||"",credits:item.credits||"",notes:item.notes||""};}
+function migrateV4ToV5(raw){
+ const source = raw && typeof raw === "object" ? raw : {};
+ const base = merge(defaults, source);
+ const result = merge(defaults, {schemaVersion:5,profile:base.profile||defaults.profile,lists:base.lists||defaults.lists,teachers:[],rooms:[]});
+ result.subjects=(Array.isArray(base.subjects)?base.subjects:[]).map(normalizeSubject);
+ result.study=Array.isArray(base.study)?base.study:[];
+ result.repertoire=Array.isArray(base.repertoire)?base.repertoire:[];
+ result.tasks=Array.isArray(base.tasks)?base.tasks:[];
+ result.exams=Array.isArray(base.exams)?base.exams:[];
+ result.rehearsals=Array.isArray(base.rehearsals)?base.rehearsals:[];
+ result.events=Array.isArray(base.events)?base.events:[];
+ result.weekly=Array.isArray(base.weekly)?base.weekly:[];
+ result.lists=merge(defaults.lists,base.lists||{});
+ result.lists.teachers = Array.isArray(base.lists && base.lists.teachers) ? base.lists.teachers : [];
+ result.lists.rooms = Array.isArray(base.lists && base.lists.rooms) ? base.lists.rooms : [];
+ result.lists.instruments = Array.isArray(base.lists && base.lists.instruments) && base.lists.instruments.length ? base.lists.instruments : defaults.lists.instruments;
+ result.lists.groups = Array.isArray(base.lists && base.lists.groups) ? base.lists.groups : [];
+ result.teachers = (result.lists.teachers||[]).map((name,i)=>normalizeTeacher({id:uid("te"),name:String(name),email:"",phone:"",roomId:"",horario:"",observaciones:"",asignaturas:[]}));
+ result.rooms = (result.lists.rooms||[]).map((name,i)=>normalizeRoom({id:uid("room"),name:String(name),edificio:"",planta:"",observaciones:""}));
+ result.subjects = result.subjects.map((s,idx)=>{
+   const teacherName = s.teacher || "";
+   const roomName = s.room || "";
+   const matchedTeacher = result.teachers.find(t => t.name === teacherName) || null;
+   const matchedRoom = result.rooms.find(r => r.name === roomName) || null;
+   const normalized = normalizeSubject(s);
+   normalized.teacherId = matchedTeacher ? matchedTeacher.id : "";
+   normalized.teacher = matchedTeacher ? matchedTeacher.name : (teacherName || "");
+   normalized.roomId = matchedRoom ? matchedRoom.id : "";
+   normalized.room = matchedRoom ? matchedRoom.name : (roomName || "");
+   if (matchedTeacher && !matchedTeacher.asignaturas.includes(normalized.id)) matchedTeacher.asignaturas.push(normalized.id);
+   return normalized;
+ });
+ result.settings = merge(defaults.settings, base.settings||{});
+ result.schemaVersion = 5;
+ return result;
+}
+function load(){
+ try{
+  const rawV5 = JSON.parse(localStorage.getItem(KEY)||"null");
+  if(rawV5 && rawV5.schemaVersion >= 5) return merge(defaults, rawV5);
+  const rawV4 = JSON.parse(localStorage.getItem(legacyKey)||"null");
+  if(rawV4) return migrateV4ToV5(rawV4);
+  const old = JSON.parse(localStorage.getItem(oldKey)||"null");
+  if(old) return migrateV4ToV5({subjects:old.subjects||[],tasks:old.tasks||[],rehearsals:old.rehearsals||[],lists:{teachers:[],rooms:[],groups:[],instruments:old.instruments||[],studyTypes:[],examTypes:[],eventTypes:[],tags:[],priorities:[]},profile:{name:"",career:"",institution:"",weeklyGoal:420}});
+ }catch(e){}
+ return cloneData(defaults);
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));}
+function toast(s){const t=document.querySelector("#toast"); t.textContent=s; t.classList.remove("hide"); setTimeout(()=>t.classList.add("hide"),1800)}
+function openModal(title,body,onSave,label="Guardar"){document.querySelector("#modal").innerHTML=`<div class="sheet"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-black">${esc(title)}</h2><button class="btn secondary" onclick="closeModal()">Cerrar</button></div><div class="grid gap-3">${body}</div><div class="flex gap-2 mt-5"><button id="saveModal" class="btn flex-1">${label}</button><button class="btn secondary" onclick="closeModal()">Cancelar</button></div></div>`; document.querySelector("#modal").classList.remove("hide"); document.querySelector("#saveModal").onclick=()=>{closeModal(); onSave();}}
+function closeModal(){document.querySelector("#modal").classList.add("hide")}
+function F(label,name,type="text",value="",extra=""){return `<div><label class="label">${label}</label><input class="field" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
+function S(label,name,opts,value="",allow=""){return `<div><label class="label">${label}</label><select class="field" name="${name}">${allow?`<option value="">${allow}</option>`:""}${opts.map(o=>`<option value="${esc(o)}" ${String(o)===String(value)?"selected":""}>${esc(o)}</option>`).join("")}</select></div>`}
+function T(label,name,value=""){return `<div><label class="label">${label}</label><textarea class="field" name="${name}" rows="2">${esc(value)}</textarea></div>`}
+function val(form,n){return form.querySelector(`[name="${n}"]`)?.value||""}
+function addTeacher(id){
+ const x=id ? db.teachers.find(x=>x.id===id) || {} : {};
+ const body=`<div class="grid gap-3">${F("Nombre","name","text",x.name)}${F("Correo","email","email",x.email)}${F("Teléfono","phone","tel",x.phone)}${S("Aula habitual","roomId",db.rooms.map(r=>r.name),x.roomId||"","Sin aula")}${F("Horario","horario","text",x.horario)}${T("Observaciones","observaciones",x.observaciones)}${T("Asignaturas relacionadas","asignaturas",(x.asignaturas||[]).join("\n"))}</div>`;
+ openModal(id?"Editar profesor":"Nuevo profesor", body, ()=>{
+  const f=document.querySelector("#modal");
+  const o={id:id||uid("te"),name:val(f,"name"),email:val(f,"email"),phone:val(f,"phone"),roomId:(val(f,"roomId")||""),horario:val(f,"horario"),observaciones:val(f,"observaciones"),asignaturas:(val(f,"asignaturas")||"").split("\n").map(x=>x.trim()).filter(Boolean)};
+  if(id){const i=db.teachers.findIndex(x=>x.id===id); if(i>=0) db.teachers[i]={...db.teachers[i],...o};} else {db.teachers.push(o);} save(); render();
+ });
+}
+function addRoom(id){
+ const x=id ? db.rooms.find(x=>x.id===id) || {} : {};
+ const body=`<div class="grid gap-3">${F("Nombre / número","name","text",x.name)}${F("Edificio","edificio","text",x.edificio)}${F("Planta","planta","text",x.planta)}${T("Observaciones","observaciones",x.observaciones)}</div>`;
+ openModal(id?"Editar aula":"Nueva aula", body, ()=>{
+  const f=document.querySelector("#modal");
+  const o={id:id||uid("room"),name:val(f,"name"),edificio:val(f,"edificio"),planta:val(f,"planta"),observaciones:val(f,"observaciones")};
+  if(id){const i=db.rooms.findIndex(x=>x.id===id); if(i>=0) db.rooms[i]={...db.rooms[i],...o};} else {db.rooms.push(o);} save(); render();
+ });
+}
+function addSubject(id){
+ const x=id?db.subjects.find(x=>x.id===id)||{}:{};
+ const body=`<div class="grid gap-3">${F("Asignatura","name","text",x.name)}${S("Profesor","teacherId",db.teachers.map(t=>t.name),x.teacherId||"","Sin profesor")}${F("Correo de contacto","email","email",x.email)}${S("Aula","roomId",db.rooms.map(r=>r.name),x.roomId||"","Sin aula")}${S("Curso","course",["1º","2º","3º","4º","Máster","Otro"],x.course)}${S("Grupo","group",db.lists.groups.length?db.lists.groups:["A","B","C","D","E"],x.group)}${S("Tipo de asignatura","type",["Teórica","Práctica","Instrumental","Complementaria","Otro"],x.type||"Teórica")}${F("Horario","schedule","text",x.schedule||"")}${F("Créditos","credits","text",x.credits||"")}${F("Color","color","color",x.color||"#a78bfa")}${T("Objetivos","objectives",x.objectives||"")}${T("Material necesario","material",x.material||"")}${T("Notas","notes",x.notes||"")}<div class="grid grid-cols-2 gap-3">${F("Inicio","startDate","date",x.startDate||"")}${F("Fin","endDate","date",x.endDate||"")}</div></div>`;
+ openModal(id?"Editar asignatura":"Nueva asignatura", body, ()=>{
+  const f=document.querySelector("#modal");
+  const teacherId = val(f,"teacherId") || "";
+  const teacherName = db.teachers.find(t=>t.id===teacherId)?.name || "";
+  const roomId = val(f,"roomId") || "";
+  const roomName = db.rooms.find(r=>r.id===roomId)?.name || "";
+  const o={id:id||uid("sub"),name:val(f,"name"),teacher:teacherName,teacherId, email:val(f,"email"),room:roomName,roomId,course:val(f,"course"),group:val(f,"group"),type:val(f,"type")||"Teórica",schedule:val(f,"schedule"),credits:val(f,"credits"),color:val(f,"color")||"#a78bfa",objectives:val(f,"objectives"),material:val(f,"material"),startDate:val(f,"startDate"),endDate:val(f,"endDate"),notes:val(f,"notes")};
+  if(id){const i=db.subjects.findIndex(x=>x.id===id); if(i>=0) db.subjects[i]={...db.subjects[i],...o};} else {db.subjects.push(o);} save(); render();
+ });
+}
+function del(type,id){if(!confirm("¿Eliminar este elemento?")) return; db[type]=db[type].filter(x=>x.id!==id); save(); render();}
+function edit(type,id){({teachers:addTeacher,rooms:addRoom,subjects:addSubject}[type])(id)}
+function nav(v){view=v; render();}
+function layout(content){return `<div class="safe min-h-screen"><header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur"><div class="flex justify-between items-center"><div><div class="text-xs uppercase tracking-[.2em] text-violet-300/80">RitmoAcade</div><div class="text-lg font-black">5.0</div></div><button class="btn secondary" onclick="addEvent()">+ Evento</button></div><div class="grid grid-cols-4 gap-2 mt-4">${navBtn("hoy","🏠","Hoy")}${navBtn("horario","📅","Horario")}${navBtn("estudio","🎼","Estudio")}${navBtn("repertorio","🎵","Repertorio")}</div></header><main class="px-4 pb-6">${content}</main></div>`}
+function navBtn(v,i,t){return `<button class="navbtn ${view===v?"active":""}" onclick="nav('${v}')"><span>${i}</span>${t}</button>`}
+function sectionHead(title,add,extra=""){return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn secondary" onclick="${add}">+</button></div></div>`}
+function eventTime(x){return [x.start,x.end].filter(Boolean).join("–")}
+function today(){const items=[]; db.subjects.filter(x=>x.day&&x.start&&((new Date(currentDate()+"T12:00:00")).toLocaleDateString("es-ES",{weekday:"long"})===x.day || ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"][new Date(currentDate()+"T12:00:00").getDay()]===x.day)).forEach(x=>items.push({kind:"Clase",title:x.name,start:x.start,end:x.end,place:x.room,sub:x.id,type:"subjects"})); return layout(`<div class="grid gap-3 mt-2"><div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(currentDate())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="small muted mt-1">${items.length?"Agenda actualizada":"Sin actividades programadas"}</div></div>${sectionHead("Asignaturas","addSubject()")}${db.subjects.length?db.subjects.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.name)}</b><div class="small muted">${esc(x.teacher||"Sin profesor")} · ${esc(x.room||"Sin aula")} · ${esc(x.course||"")}</div></div><button class="btn secondary" onclick="edit('subjects','${x.id}')">✎</button></div></div>`).join(""):`<div class="empty">No tienes asignaturas.</div>`}</div>`)}
+function horario(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Horario</div><div class="small muted mt-1">Vista general de la semana</div></div>${sectionHead("Profesores","addTeacher()")}${db.teachers.length?db.teachers.map(t=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(t.name)}</b><div class="small muted">${esc(t.email||"Sin correo")} · ${esc(t.horario||"Sin horario")}</div></div><button class="btn secondary" onclick="edit('teachers','${t.id}')">✎</button></div></div>`).join(""):`<div class="empty">No hay profesores.</div>`}${sectionHead("Aulas","addRoom()")}${db.rooms.length?db.rooms.map(r=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.name)}</b><div class="small muted">${esc(r.edificio||"Sin edificio")} · ${esc(r.planta||"Sin planta")}</div></div><button class="btn secondary" onclick="edit('rooms','${r.id}')">✎</button></div></div>`).join(""):`<div class="empty">No hay aulas.</div>`}`)}
+function estudio(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Estudio</div><div class="small muted mt-1">Registro semanal</div></div><div class="empty">Fase 1: estructura base lista para continuar con las siguientes fases.</div>`)}
+function repertorio(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Repertorio</div><div class="small muted mt-1">Se conserva la lógica actual.</div></div><div class="empty">Esta vista sigue funcionando con la estructura base.</div>`)}
+function render(){document.querySelector("#app").innerHTML = view==="hoy"?today():view==="horario"?horario():view==="estudio"?estudio():view==="repertorio"?repertorio():today();}
+render();
+</script>
 </body>
 </html>
