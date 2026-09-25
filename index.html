@@ -14,186 +14,238 @@
         <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
             
-            <!-- SECCIÓN: INICIO / HOY -->
-            <section id="inicio" class="tab-section active">
+            <!-- VISTA: HOY -->
+            <section id="hoy" class="tab-section active">
                 <header class="header-top-bar">
-                    <div>
-                        <h1 class="app-brand">RitmoAcade</h1>
-                        <p id="welcome-date">Cargando fecha...</p>
-                    </div>
-                    <button class="icon-btn-menu" onclick="toggleSidebarDrawer()">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                    </button>
+                    <h1 class="app-brand">RitmoAcade</h1>
+                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
                 </header>
+                <div class="sub-header-date" id="welcome-date">Viernes, 25 de septiembre</div>
+                <h2 class="hero-title">Tu día, de un vistazo.</h2>
 
-                <div class="ios-asymmetric-grid">
-                    <div class="ios-widget widget-long card" onclick="switchTab('hoy')">
-                        <span class="widget-label">Agenda Diaria</span>
-                        <div id="widget-today-content" class="widget-content-text">Cargando actividad...</div>
-                    </div>
+                <!-- Widget Principal Próximo -->
+                <div class="card-hero" onclick="switchTab('horario')">
+                    <span class="widget-label">PRÓXIMO</span>
+                    <div id="widget-next-event" class="widget-hero-title">Sin eventos próximos</div>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">Añade clases, ensayos o conciertos.</p>
+                </div>
 
-                    <div class="ios-widget widget-small card" onclick="switchTab('horario')">
-                        <span class="widget-label">Próxima Clase</span>
-                        <div class="widget-highlight" id="widget-next-class">Sin clases próximas</div>
+                <!-- Cuadrícula 2x2 de Estadísticas / Widgets -->
+                <div class="ios-2x2-grid">
+                    <div class="card stat-card" onclick="switchTab('tareas')">
+                        <div class="stat-number" id="widget-tasks-count">0</div>
+                        <div class="stat-desc">tareas pendientes</div>
                     </div>
+                    <div class="card stat-card" onclick="switchTab('estudio')">
+                        <div class="stat-number" id="widget-study-mins">0</div>
+                        <div class="stat-desc">min estudiados</div>
+                    </div>
+                    <div class="card stat-card" onclick="switchTab('repertorio')">
+                        <div class="stat-number" id="widget-repertoire-avg">0%</div>
+                        <div class="stat-desc">repertorio medio</div>
+                    </div>
+                    <div class="card stat-card" onclick="switchTab('horario')">
+                        <div class="stat-number" id="widget-week-events">0</div>
+                        <div class="stat-desc">eventos esta semana</div>
+                    </div>
+                </div>
 
-                    <div class="ios-widget widget-small card" onclick="switchTab('tareas')">
-                        <span class="widget-label">Tareas</span>
-                        <div class="widget-big-number" id="widget-tasks-count">0</div>
-                    </div>
+                <!-- Plan de hoy -->
+                <div class="section-block-header">
+                    <h3>Plan de hoy</h3>
+                    <button class="text-btn" onclick="openModal('task-modal')">+ tarea</button>
+                </div>
+                <div class="card" id="today-plan-container">
+                    <p style="color: var(--text-muted); text-align:center;">No tienes tareas pendientes.</p>
                 </div>
             </section>
 
-            <!-- SECCIÓN: HOY -->
-            <section id="hoy" class="tab-section">
-                <header class="section-header">
-                    <h1>Hoy</h1>
-                    <p id="today-full-date">Fecha actual</p>
-                </header>
-                <div class="card">
-                    <h3>Actividades y Clases del Día</h3>
-                    <div id="today-agenda-list" class="agenda-list"></div>
-                </div>
-            </section>
-
-            <!-- SECCIÓN: HORARIO -->
+            <!-- VISTA: HORARIO (CALENDARIO) -->
             <section id="horario" class="tab-section">
-                <header class="section-header">
-                    <h1>Horario</h1>
-                    <button class="btn primary" onclick="openModal('schedule-modal')">+ Añadir Clase</button>
+                <header class="header-top-bar">
+                    <h1 class="app-brand">RitmoAcade</h1>
+                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
                 </header>
-                <div class="card">
-                    <div id="schedule-container"></div>
+                <div class="section-header-flex">
+                    <h2>Horario</h2>
+                    <button class="text-btn" onclick="openModal('schedule-modal')">+ evento</button>
+                </div>
+                
+                <!-- Mini Calendario Visual -->
+                <div class="card calendar-card">
+                    <div class="calendar-grid-header">
+                        <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                    </div>
+                    <div class="calendar-grid-days" id="calendar-days"></div>
+                </div>
+
+                <div class="card" style="margin-top:16px;">
+                    <h3>Eventos del día</h3>
+                    <div id="schedule-day-events" style="margin-top:10px;">
+                        <p style="color:var(--text-muted);">No hay eventos para esta fecha.</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- SECCIÓN: REPERTORIO -->
-            <section id="repertorio" class="tab-section">
-                <header class="section-header">
-                    <h1>Repertorio</h1>
-                    <button class="btn primary" onclick="openModal('repertoire-modal')">+ Añadir Obra</button>
+            <!-- VISTA: ESTUDIO -->
+            <section id="estudio" class="tab-section">
+                <header class="header-top-bar">
+                    <h1 class="app-brand">RitmoAcade</h1>
+                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
                 </header>
-                <div class="repertoire-tabs">
+                <div class="section-header-flex">
+                    <h2>Estudio</h2>
+                    <button class="text-btn" onclick="openModal('study-record-modal')">+ sesión</button>
+                </div>
+
+                <div class="card">
+                    <span class="widget-label">OBJETIVO SEMANAL</span>
+                    <div class="widget-hero-title" id="weekly-goal-display" style="font-size:1.6rem; margin:8px 0;">0 / 300 min</div>
+                    <div style="width:100%; background:rgba(255,255,255,0.05); height:8px; border-radius:4px; overflow:hidden;">
+                        <div id="weekly-progress-bar" style="width:0%; background:var(--primary); height:100%;"></div>
+                    </div>
+                </div>
+
+                <div class="card timer-card-v2">
+                    <span class="widget-label">TEMPORIZADOR</span>
+                    <div id="timer-display" class="timer-digits-v2">25:00</div>
+                    <div class="timer-controls-v2">
+                        <button class="btn-round" onclick="toggleTimer()">▶ / ❚❚</button>
+                        <button class="btn-round" onclick="resetTimer()">↺</button>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <select id="timer-subject" class="modal-input"></select>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:16px;">
+                    <h3>Últimas sesiones</h3>
+                    <div id="sessions-history-list" style="margin-top:10px;">
+                        <p style="color:var(--text-muted);">Registra tu primera sesión.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VISTA: REPERTORIO -->
+            <section id="repertorio" class="tab-section">
+                <header class="header-top-bar">
+                    <h1 class="app-brand">RitmoAcade</h1>
+                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
+                </header>
+                <div class="section-header-flex">
+                    <h2>Repertorio</h2>
+                    <button class="text-btn" onclick="openModal('repertoire-modal')">+ obra</button>
+                </div>
+                
+                <div class="repertoire-tabs" style="margin-bottom:16px;">
                     <button class="btn primary rep-tab-btn active" onclick="switchRepertoireTab('piano')">Piano</button>
                     <button class="btn secondary rep-tab-btn" onclick="switchRepertoireTab('saxo')">Saxofón</button>
                 </div>
-                <div id="repertorio-container" class="grid-cards" style="margin-top: 20px;"></div>
+                
+                <div id="repertoire-container"></div>
             </section>
 
-            <!-- SECCIÓN: TAREAS -->
-            <section id="tareas" class="tab-section">
-                <header class="section-header">
-                    <h1>Tareas y Acciones</h1>
-                    <button class="btn primary" onclick="openModal('task-modal')">+ Nueva Tarea</button>
+            <!-- VISTA: MÁS -->
+            <section id="mas" class="tab-section">
+                <header class="header-top-bar">
+                    <h1 class="app-brand">RitmoAcade</h1>
                 </header>
-                <!-- Filtros Rápidos de Tareas -->
-                <div class="task-filters" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-                    <button class="btn secondary active" onclick="filterTasks('todos', this)" style="font-size:0.75rem; padding:6px 10px;">Todas</button>
-                    <button class="btn secondary" onclick="filterTasks('Llevar/Preparar', this)" style="font-size:0.75rem; padding:6px 10px;">Llevar/Preparar</button>
-                    <button class="btn secondary" onclick="filterTasks('Estudiar', this)" style="font-size:0.75rem; padding:6px 10px;">Estudiar</button>
-                    <button class="btn secondary" onclick="filterTasks('Enviar', this)" style="font-size:0.75rem; padding:6px 10px;">Enviar</button>
-                    <button class="btn secondary" onclick="filterTasks('Administrativo', this)" style="font-size:0.75rem; padding:6px 10px;">Administrativo</button>
+                <h2 style="margin-bottom:16px;">Más</h2>
+                
+                <div class="ios-2x2-grid" style="margin-bottom:24px;">
+                    <div class="card stat-card" onclick="switchTab('tareas')" style="cursor:pointer; text-align:center; justify-content:center;">
+                        <div style="font-size:1.2rem; margin-bottom:4px;">✓</div>
+                        <div style="font-weight:600;">Tareas</div>
+                    </div>
+                    <div class="card stat-card" onclick="openModal('exam-modal')" style="cursor:pointer; text-align:center; justify-content:center;">
+                        <div style="font-size:1.2rem; margin-bottom:4px;">⏰</div>
+                        <div style="font-weight:600;">Exámenes</div>
+                    </div>
+                    <div class="card stat-card" onclick="switchTab('repertorio')" style="cursor:pointer; text-align:center; justify-content:center;">
+                        <div style="font-size:1.2rem; margin-bottom:4px;">🎵</div>
+                        <div style="font-weight:600;">Ensayos / Obras</div>
+                    </div>
+                    <div class="card stat-card" onclick="openSettingsModal()" style="cursor:pointer; text-align:center; justify-content:center;">
+                        <div style="font-size:1.2rem; margin-bottom:4px;">⚙️</div>
+                        <div style="font-weight:600;">Ajustes & Centros</div>
+                    </div>
+                </div>
+
+                <div class="section-block-header">
+                    <h3>Estadísticas</h3>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:8px;">Estudio total</h3>
+                    <p id="stats-total-study" style="color:var(--text-muted); margin-bottom:14px;">0 minutos registrados.</p>
+                    
+                    <h3 style="margin-bottom:8px;">Obras</h3>
+                    <p id="stats-total-repertoire" style="color:var(--text-muted); margin-bottom:14px;">0 obras · progreso medio 0%.</p>
+                    
+                    <h3 style="margin-bottom:8px;">Tareas</h3>
+                    <p id="stats-total-tasks" style="color:var(--text-muted);">0 completadas de 0.</p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN: GESTIÓN DE TAREAS CON FILTROS -->
+            <section id="tareas" class="tab-section">
+                <header class="header-top-bar">
+                    <h1 class="app-brand">RitmoAcade</h1>
+                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
+                </header>
+                <div class="section-header-flex">
+                    <h2>Tareas</h2>
+                    <button class="text-btn" onclick="openModal('task-modal')">+ tarea</button>
+                </div>
+                <div class="task-filters" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <button class="btn secondary active" onclick="filterTasks('todos', this)" style="font-size:0.75rem; padding:4px 8px;">Todas</button>
+                    <button class="btn secondary" onclick="filterTasks('Llevar/Preparar', this)" style="font-size:0.75rem; padding:4px 8px;">Llevar/Preparar</button>
+                    <button class="btn secondary" onclick="filterTasks('Estudiar', this)" style="font-size:0.75rem; padding:4px 8px;">Estudiar</button>
+                    <button class="btn secondary" onclick="filterTasks('Enviar', this)" style="font-size:0.75rem; padding:4px 8px;">Enviar</button>
+                    <button class="btn secondary" onclick="filterTasks('Administrativo', this)" style="font-size:0.75rem; padding:4px 8px;">Administrativo</button>
                 </div>
                 <div class="card">
                     <ul id="tasks-full-list" class="task-list"></ul>
                 </div>
             </section>
 
-            <!-- SECCIÓN: ASIGNATURAS -->
-            <section id="asignaturas" class="tab-section">
-                <header class="section-header">
-                    <h1>Asignaturas y Centros</h1>
-                    <button class="btn primary" onclick="openModal('subject-modal')">+ Añadir</button>
-                </header>
-                <div id="subjects-container"></div>
-            </section>
-
-            <!-- SECCIÓN: ESTUDIO -->
-            <section id="estudio" class="tab-section">
-                <header class="section-header">
-                    <h1>Sesión de Estudio</h1>
-                </header>
-                <div class="timer-card card">
-                    <div id="timer-display" class="timer-digits">25:00</div>
-                    <div class="timer-controls">
-                        <button class="btn primary" onclick="startTimer()">Iniciar</button>
-                        <button class="btn secondary" onclick="pauseTimer()">Pausar</button>
-                        <button class="btn danger" onclick="resetTimer()">Reiniciar</button>
-                    </div>
-                    <div class="timer-options" style="margin-top: 15px; display:flex; flex-direction:column; gap:10px;">
-                        <div>
-                            <label>Duración (minutos):</label>
-                            <input type="number" id="custom-timer-mins" value="25" min="1" max="180" onchange="setCustomTimer(this.value)" class="modal-input" style="margin-top:4px;">
-                        </div>
-                        <div>
-                            <label>Asignatura de enfoque:</label>
-                            <select id="timer-subject" class="modal-input" style="margin-top:4px;"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="margin-top: 20px;">
-                    <h3>Estadísticas de Práctica</h3>
-                    <p id="stats-summary" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Tiempo total estudiado: 0 min</p>
-                </div>
-            </section>
-
-            <!-- SECCIÓN: CONFIGURACIÓN -->
-            <section id="config" class="tab-section">
-                <header class="section-header">
-                    <h1>Ajustes</h1>
-                </header>
-                <div class="card" style="margin-bottom: 20px;">
-                    <h3>Personalización</h3>
-                    <div style="margin-top: 15px;">
-                        <label>Color principal:</label><br>
-                        <input type="color" id="primary-color-picker" value="#818cf8" onchange="changeThemeColor(this.value)" style="width: 100px; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: transparent; margin-top: 8px;">
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Datos Locales</h3>
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button class="btn primary" onclick="exportData()">Exportar</button>
-                        <label class="btn secondary" style="cursor: pointer; display: inline-flex; align-items: center;">
-                            Importar <input type="file" onchange="importData(event)" hidden>
-                        </label>
-                    </div>
-                </div>
-            </section>
-
         </main>
 
-        <!-- MENÚ LATERAL DESPLEGABLE (Drawer) -->
-        <div id="sidebar-drawer" class="drawer-overlay" onclick="toggleSidebarDrawer()">
-            <div class="drawer-content" onclick="event.stopPropagation()">
-                <div class="drawer-header">
-                    <h3>Menú Avanzado</h3>
-                    <button class="icon-btn-close" onclick="toggleSidebarDrawer()">✕</button>
-                </div>
-                <nav class="drawer-menu">
-                    <button class="drawer-btn" onclick="switchTabFromDrawer('asignaturas')">Asignaturas y Centros</button>
-                    <button class="drawer-btn" onclick="switchTabFromDrawer('estudio')">Sesión de Estudio</button>
-                    <button class="drawer-btn" onclick="switchTabFromDrawer('config')">Ajustes Generales</button>
-                </nav>
-            </div>
-        </div>
+        <!-- BOTÓN FLOTANTE CENTRAL + -->
+        <button class="floating-plus-btn" onclick="openGlobalAddModal()">+</button>
 
-        <!-- MODALES EMERGENTES -->
+        <!-- MODAL GENERAL DE CREACIÓN / EDICIÓN -->
         <div id="app-modal" class="drawer-overlay" style="justify-content: center; align-items: center;">
-            <div class="card" style="width: 90%; max-width: 400px; background: var(--sidebar-bg);" onclick="event.stopPropagation()">
+            <div class="card" style="width: 90%; max-width: 400px; background: var(--card-bg);" onclick="event.stopPropagation()">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 id="modal-title" style="margin:0;">Añadir Elemento</h3>
+                    <h3 id="modal-title" style="margin:0;">Añadir</h3>
                     <button class="icon-btn-close" onclick="closeModal()">✕</button>
                 </div>
                 <div id="modal-body"></div>
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+        <!-- BARRA DE NAVEGACIÓN INFERIOR (Estilo v2.0 exacto) -->
         <nav class="bottom-quick-nav">
-            <button class="nav-btn active" data-tab="inicio" onclick="switchTab('inicio')">Inicio</button>
-            <button class="nav-btn" data-tab="horario" onclick="switchTab('horario')">Horario</button>
-            <button class="nav-btn" data-tab="repertorio" onclick="switchTab('repertorio')">Repertorio</button>
-            <button class="nav-btn" data-tab="tareas" onclick="switchTab('tareas')">Tareas</button>
+            <button class="nav-btn active" data-tab="hoy" onclick="switchTab('hoy')">
+                <span class="nav-icon">⌂</span>
+                <span>Hoy</span>
+            </button>
+            <button class="nav-btn" data-tab="horario" onclick="switchTab('horario')">
+                <span class="nav-icon">📅</span>
+                <span>Horario</span>
+            </button>
+            <button class="nav-btn" data-tab="estudio" onclick="switchTab('estudio')">
+                <span class="nav-icon">⏱</span>
+                <span>Estudio</span>
+            </button>
+            <button class="nav-btn" data-tab="repertorio" onclick="switchTab('repertorio')">
+                <span class="nav-icon">🎵</span>
+                <span>Repertorio</span>
+            </button>
+            <button class="nav-btn" data-tab="mas" onclick="switchTab('mas')">
+                <span class="nav-icon">⋯</span>
+                <span>Más</span>
+            </button>
         </nav>
 
     </div>
