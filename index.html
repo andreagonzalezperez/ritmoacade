@@ -6,6 +6,7 @@
     <title>RitmoAcade</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="app-container">
@@ -13,30 +14,27 @@
         <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
             
-            <!-- SECCIÓN: INICIO / HOY (Widgets Asimétricos Estilo iOS) -->
+            <!-- SECCIÓN: INICIO / HOY -->
             <section id="inicio" class="tab-section active">
                 <header class="header-top-bar">
                     <div>
                         <h1 class="app-brand">RitmoAcade</h1>
                         <p id="welcome-date">Cargando fecha...</p>
                     </div>
-                    <!-- Botón para abrir el menú lateral desplegable -->
                     <button class="icon-btn-menu" onclick="toggleSidebarDrawer()">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                 </header>
 
                 <div class="ios-asymmetric-grid">
-                    <!-- Fila 1: Widget Alargado Principal (Resumen del Día) -->
                     <div class="ios-widget widget-long card" onclick="switchTab('hoy')">
                         <span class="widget-label">Agenda Diaria</span>
                         <div id="widget-today-content" class="widget-content-text">Cargando actividad...</div>
                     </div>
 
-                    <!-- Fila 2: Dos Widgets Pequeños -->
                     <div class="ios-widget widget-small card" onclick="switchTab('horario')">
                         <span class="widget-label">Próxima Clase</span>
-                        <div class="widget-highlight" id="widget-next-class">Piano — 10:00</div>
+                        <div class="widget-highlight" id="widget-next-class">Sin clases próximas</div>
                     </div>
 
                     <div class="ios-widget widget-small card" onclick="switchTab('tareas')">
@@ -46,7 +44,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN: HOY (Duplicado exacto o vista ampliada) -->
+            <!-- SECCIÓN: HOY -->
             <section id="hoy" class="tab-section">
                 <header class="section-header">
                     <h1>Hoy</h1>
@@ -62,44 +60,50 @@
             <section id="horario" class="tab-section">
                 <header class="section-header">
                     <h1>Horario</h1>
-                    <div class="button-group">
-                        <button class="btn secondary active" id="btn-view-week" onclick="setScheduleView('week')">Semanal</button>
-                        <button class="btn secondary" id="btn-view-day" onclick="setScheduleView('day')">Diario</button>
-                    </div>
+                    <button class="btn primary" onclick="openModal('schedule-modal')">+ Añadir Clase</button>
                 </header>
                 <div class="card">
                     <div id="schedule-container"></div>
                 </div>
             </section>
 
-            <!-- SECCIÓN: REPERTORIO (Dividido en Piano y Saxofón) -->
+            <!-- SECCIÓN: REPERTORIO -->
             <section id="repertorio" class="tab-section">
                 <header class="section-header">
                     <h1>Repertorio</h1>
+                    <button class="btn primary" onclick="openModal('repertoire-modal')">+ Añadir Obra</button>
                 </header>
                 <div class="repertoire-tabs">
                     <button class="btn primary rep-tab-btn active" onclick="switchRepertoireTab('piano')">Piano</button>
                     <button class="btn secondary rep-tab-btn" onclick="switchRepertoireTab('saxo')">Saxofón</button>
                 </div>
-                <div id="repertoire-container" class="grid-cards" style="margin-top: 20px;"></div>
+                <div id="repertorio-container" class="grid-cards" style="margin-top: 20px;"></div>
             </section>
 
             <!-- SECCIÓN: TAREAS -->
             <section id="tareas" class="tab-section">
                 <header class="section-header">
-                    <h1>Tareas</h1>
-                    <button class="btn primary" onclick="openTaskModal()">+ Añadir</button>
+                    <h1>Tareas y Acciones</h1>
+                    <button class="btn primary" onclick="openModal('task-modal')">+ Nueva Tarea</button>
                 </header>
+                <!-- Filtros Rápidos de Tareas -->
+                <div class="task-filters" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <button class="btn secondary active" onclick="filterTasks('todos', this)" style="font-size:0.75rem; padding:6px 10px;">Todas</button>
+                    <button class="btn secondary" onclick="filterTasks('Llevar/Preparar', this)" style="font-size:0.75rem; padding:6px 10px;">Llevar/Preparar</button>
+                    <button class="btn secondary" onclick="filterTasks('Estudiar', this)" style="font-size:0.75rem; padding:6px 10px;">Estudiar</button>
+                    <button class="btn secondary" onclick="filterTasks('Enviar', this)" style="font-size:0.75rem; padding:6px 10px;">Enviar</button>
+                    <button class="btn secondary" onclick="filterTasks('Administrativo', this)" style="font-size:0.75rem; padding:6px 10px;">Administrativo</button>
+                </div>
                 <div class="card">
                     <ul id="tasks-full-list" class="task-list"></ul>
                 </div>
             </section>
 
-            <!-- SECCIÓN: ASIGNATURAS (Organizadas por Centros de Estudio) -->
+            <!-- SECCIÓN: ASIGNATURAS -->
             <section id="asignaturas" class="tab-section">
                 <header class="section-header">
                     <h1>Asignaturas y Centros</h1>
-                    <button class="btn primary" onclick="openSubjectModal()">+ Añadir</button>
+                    <button class="btn primary" onclick="openModal('subject-modal')">+ Añadir</button>
                 </header>
                 <div id="subjects-container"></div>
             </section>
@@ -107,7 +111,7 @@
             <!-- SECCIÓN: ESTUDIO -->
             <section id="estudio" class="tab-section">
                 <header class="section-header">
-                    <h1>Estudio</h1>
+                    <h1>Sesión de Estudio</h1>
                 </header>
                 <div class="timer-card card">
                     <div id="timer-display" class="timer-digits">25:00</div>
@@ -116,6 +120,20 @@
                         <button class="btn secondary" onclick="pauseTimer()">Pausar</button>
                         <button class="btn danger" onclick="resetTimer()">Reiniciar</button>
                     </div>
+                    <div class="timer-options" style="margin-top: 15px; display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <label>Duración (minutos):</label>
+                            <input type="number" id="custom-timer-mins" value="25" min="1" max="180" onchange="setCustomTimer(this.value)" class="modal-input" style="margin-top:4px;">
+                        </div>
+                        <div>
+                            <label>Asignatura de enfoque:</label>
+                            <select id="timer-subject" class="modal-input" style="margin-top:4px;"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h3>Estadísticas de Práctica</h3>
+                    <p id="stats-summary" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Tiempo total estudiado: 0 min</p>
                 </div>
             </section>
 
@@ -144,7 +162,7 @@
 
         </main>
 
-        <!-- MENÚ LATERAL DESPLEGABLE (Drawer) PARA AJUSTES, ESTUDIO Y ASIGNATURAS -->
+        <!-- MENÚ LATERAL DESPLEGABLE (Drawer) -->
         <div id="sidebar-drawer" class="drawer-overlay" onclick="toggleSidebarDrawer()">
             <div class="drawer-content" onclick="event.stopPropagation()">
                 <div class="drawer-header">
@@ -159,7 +177,18 @@
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR (Accesos Rápidos Esenciales) -->
+        <!-- MODALES EMERGENTES -->
+        <div id="app-modal" class="drawer-overlay" style="justify-content: center; align-items: center;">
+            <div class="card" style="width: 90%; max-width: 400px; background: var(--sidebar-bg);" onclick="event.stopPropagation()">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 id="modal-title" style="margin:0;">Añadir Elemento</h3>
+                    <button class="icon-btn-close" onclick="closeModal()">✕</button>
+                </div>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
         <nav class="bottom-quick-nav">
             <button class="nav-btn active" data-tab="inicio" onclick="switchTab('inicio')">Inicio</button>
             <button class="nav-btn" data-tab="horario" onclick="switchTab('horario')">Horario</button>
