@@ -3,169 +3,221 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#171126">
+<meta name="theme-color" content="#0b1020">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RitmoAcade">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>RitmoAcade</title>
+<title>RitmoAcade 4.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-:root{--bg:#0f0b18;--panel:#191326;--panel2:#211a31;--text:#f7f4ff;--muted:#aaa1bd;--accent:#a879ff;--accent2:#7c4dff;--green:#53d6a0;--red:#ff7184;--yellow:#ffd166;--line:#302740}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,sans-serif}body{min-height:100vh;padding-bottom:92px}
-button,input,select,textarea{font:inherit}button{border:0;color:inherit} .app{max-width:760px;margin:auto;padding:env(safe-area-inset-top) 16px 0}
-header{display:flex;justify-content:space-between;align-items:center;padding:20px 0 12px;position:sticky;top:0;background:linear-gradient(var(--bg) 80%,transparent);z-index:5}
-.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo span{color:var(--accent)}
-.iconbtn,.fab{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:44px;height:44px;font-size:20px}
-.view{display:none}.view.active{display:block}
-.greeting{padding:12px 2px 18px}.date{color:var(--muted);font-size:13px}.greeting h1{font-size:30px;margin:4px 0;letter-spacing:-1px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;margin:10px 0}.hero{background:linear-gradient(135deg,#2a1945,#171126);border-color:#463264}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:14px;background:var(--panel2);border-radius:16px}.stat b{font-size:25px;display:block}.stat small,.muted{color:var(--muted)}
-.sectiontitle{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 8px}.sectiontitle h2{font-size:17px;margin:0}.link{color:var(--accent);background:none}
-.row{display:flex;align-items:center;gap:12px}.grow{flex:1}.item{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}
-.dot{width:11px;height:11px;border-radius:50%;background:var(--accent);flex:none}.pill{padding:5px 9px;border-radius:999px;background:#2c233b;color:#d8cdf0;font-size:11px}.priority-high{color:#ff9aaa}.priority-med{color:#ffd982}.priority-low{color:#79dfb7}
-.progress{height:7px;background:#30273c;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px}
-nav{position:fixed;z-index:20;bottom:0;left:0;right:0;background:rgba(20,15,30,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:8px max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom))}
-.navin{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr)}nav button{background:none;color:var(--muted);font-size:10px;padding:7px 2px}nav button b{display:block;font-size:20px;margin-bottom:2px}nav button.active{color:var(--accent)}
-.fab{position:fixed;right:18px;bottom:92px;background:var(--accent2);border:0;font-size:25px;box-shadow:0 8px 25px #0007;z-index:10}
-.listempty{text-align:center;color:var(--muted);padding:28px 10px}
-.modal{position:fixed;inset:0;background:#0009;display:none;z-index:50;align-items:flex-end}.modal.open{display:flex}.sheet{width:100%;max-width:760px;margin:auto;background:#191326;border:1px solid var(--line);border-radius:26px 26px 0 0;padding:20px;max-height:92vh;overflow:auto}.handle{width:42px;height:4px;background:#544967;border-radius:99px;margin:0 auto 16px}
-label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}input,select,textarea{width:100%;background:#0f0b18;border:1px solid var(--line);color:var(--text);border-radius:13px;padding:12px}textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:10px;margin-top:18px}.primary,.secondary,.danger{padding:13px 16px;border-radius:14px;font-weight:700}.primary{background:var(--accent2)}.secondary{background:var(--panel2)}.danger{background:#44202a;color:#ffb2bd}
-.timer{font-size:48px;font-variant-numeric:tabular-nums;text-align:center;padding:18px}.timer-controls{display:flex;justify-content:center;gap:10px}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calday{padding:9px 3px;text-align:center;border-radius:12px;background:var(--panel2);font-size:12px}.calday.today{background:var(--accent2)}.calday.has{box-shadow:inset 0 -3px var(--accent)}
-@media(min-width:650px){body{padding-bottom:30px}nav{position:sticky;top:0;border:0;background:transparent}.navin{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:5px}.fab{right:calc((100vw - min(760px,100vw))/2 + 18px)}}
+:root{--bg:#070b16;--card:#111827;--card2:#172033;--line:#263247;--text:#eef2ff;--muted:#94a3b8;--accent:#a78bfa;--accent2:#60a5fa}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#070b16,#0b1020 55%,#070b16);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.safe{padding-bottom:calc(90px + env(safe-area-inset-bottom))}.glass{background:rgba(17,24,39,.86);border:1px solid var(--line);backdrop-filter:blur(12px)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px}.pill{border:1px solid var(--line);background:#0f172a;border-radius:999px;padding:6px 10px;font-size:12px}.field{width:100%;background:#0b1220;border:1px solid #2a3952;color:#eef2ff;border-radius:12px;padding:11px 12px;outline:none}.field:focus{border-color:var(--accent)}.label{font-size:12px;color:#aab6ca;margin-bottom:5px;display:block}.btn{border-radius:12px;padding:10px 13px;font-weight:700}.primary{background:#8b5cf6;color:white}.secondary{background:#172033;border:1px solid #2a3952}.danger{background:#3a1620;border:1px solid #6b2635;color:#fecdd3}.navbtn{color:#8290a8;font-size:11px;padding:9px 5px}.navbtn.active{color:#c4b5fd}.navbtn span{display:block;font-size:20px;line-height:22px;margin-bottom:2px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:flex-end}.sheet{width:100%;max-height:92vh;overflow:auto;background:#0b1120;border-top:1px solid #334155;border-radius:24px 24px 0 0;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}.hide{display:none!important}.progress{height:8px;background:#1e293b;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#8b5cf6,#60a5fa);border-radius:99px}.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.daycell{min-height:92px;background:#0d1525;border:1px solid #223049;border-radius:10px;padding:5px}.eventdot{font-size:9px;line-height:12px;background:#172554;border-radius:5px;padding:2px 4px;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:80;background:#e2e8f0;color:#0f172a;padding:10px 14px;border-radius:12px;font-weight:700;box-shadow:0 8px 30px #0008}.drag{touch-action:none}.small{font-size:12px}.muted{color:var(--muted)}.section-title{font-weight:800;font-size:18px}.empty{border:1px dashed #334155;border-radius:16px;padding:20px;text-align:center;color:#94a3b8}.checkrow{display:flex;gap:9px;align-items:center}.checkrow input{width:18px;height:18px;accent-color:#8b5cf6}
 </style>
 </head>
 <body>
-<div class="app">
-<header><div class="logo">Ritmo<span>Acade</span></div><button class="iconbtn" onclick="openSettings()">⚙︎</button></header>
-
-<main>
-<section id="today" class="view active">
-<div class="greeting"><div class="date" id="todayDate"></div><h1>Tu día, de un vistazo.</h1></div>
-<div class="card hero"><div class="muted">PRÓXIMO</div><h2 id="nextTitle">Sin eventos próximos</h2><div id="nextMeta" class="muted"></div></div>
-<div class="grid">
-<div class="stat"><b id="statTasks">0</b><small>tareas pendientes</small></div>
-<div class="stat"><b id="statStudy">0</b><small>min estudiados</small></div>
-<div class="stat"><b id="statRepertoire">0%</b><small>repertorio medio</small></div>
-<div class="stat"><b id="statEvents">0</b><small>eventos esta semana</small></div>
-</div>
-<div class="sectiontitle"><h2>Plan de hoy</h2><button class="link" onclick="openModal('task')">+ tarea</button></div>
-<div class="card" id="todayList"></div>
-<div class="sectiontitle"><h2>Progreso de repertorio</h2><button class="link" onclick="go('repertoire')">Ver todo</button></div>
-<div class="card" id="todayRepertoire"></div>
-</section>
-
-<section id="schedule" class="view">
-<div class="sectiontitle"><h2>Horario</h2><button class="link" onclick="openModal('event')">+ evento</button></div>
-<div class="card"><div class="calendar" id="calendar"></div></div>
-<div class="card" id="eventList"></div>
-</section>
-
-<section id="study" class="view">
-<div class="sectiontitle"><h2>Estudio</h2><button class="link" onclick="openModal('study')">+ sesión</button></div>
-<div class="card">
-<div class="muted">OBJETIVO SEMANAL</div><h2><span id="weekMinutes">0</span> / <span id="goalMinutes">300</span> min</h2>
-<div class="progress"><i id="weekBar" style="width:0%"></i></div>
-</div>
-<div class="card">
-<div class="muted">TEMPORIZADOR</div><div class="timer" id="timer">25:00</div>
-<div class="timer-controls"><button class="secondary" onclick="toggleTimer()">▶︎ / ❚❚</button><button class="secondary" onclick="resetTimer()">↺</button></div>
-</div>
-<div class="sectiontitle"><h2>Últimas sesiones</h2></div><div class="card" id="studyList"></div>
-</section>
-
-<section id="repertoire" class="view">
-<div class="sectiontitle"><h2>Repertorio</h2><button class="link" onclick="openModal('piece')">+ obra</button></div>
-<div class="card" id="pieceList"></div>
-</section>
-
-<section id="more" class="view">
-<div class="sectiontitle"><h2>Más</h2></div>
-<div class="grid">
-<button class="card" onclick="openModal('task')">✓<br><b>Tareas</b></button>
-<button class="card" onclick="openModal('exam')">◷<br><b>Exámenes</b></button>
-<button class="card" onclick="openModal('event')">♫<br><b>Ensayos</b></button>
-<button class="card" onclick="openSettings()">⚙︎<br><b>Ajustes</b></button>
-</div>
-<div class="sectiontitle"><h2>Estadísticas</h2></div><div class="card" id="statsCard"></div>
-</section>
-</main>
-</div>
-
-<button class="fab" onclick="openModal('quick')">+</button>
-<nav><div class="navin">
-<button class="active" data-view="today" onclick="go('today')"><b>⌂</b>Hoy</button>
-<button data-view="schedule" onclick="go('schedule')"><b>▦</b>Horario</button>
-<button data-view="study" onclick="go('study')"><b>◷</b>Estudio</button>
-<button data-view="repertoire" onclick="go('repertoire')"><b>♫</b>Repertorio</button>
-<button data-view="more" onclick="go('more')"><b>•••</b>Más</button>
-</div></nav>
-
-<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet"><div class="handle"></div><div id="modalBody"></div></div></div>
-
+<div id="app"></div>
+<div id="modal" class="modal hide"></div>
+<div id="toast" class="toast hide"></div>
 <script>
-const KEY="ritmoacade_pro_v2";
-const blank={tasks:[],events:[],pieces:[],sessions:[],exams:[],settings:{goal:300}};
-let data=load();
-function load(){try{return {...blank,...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return {...blank}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+const KEY="ritmoacade_pro_v4";
+const oldKey="ritmoacade_pro_v3";
+const defaults={
+ profile:{name:"",career:"",institution:"",weeklyGoal:420},
+ lists:{
+  teachers:[],instruments:["Saxofón","Piano","Lenguaje Musical","Armonía"],rooms:[],groups:[],
+  studyTypes:["Técnica","Repertorio","Lectura","Teoría","Preparación de clase","Repaso"],
+  examTypes:["Parcial","Final","Recuperación","Prueba de acceso","Audición","TFM"],
+  eventTypes:["Clase","Audición","Concierto","Entrega","Reunión","Otro"],
+  tags:["Conservatorio","Universidad","Trabajo","Personal"],
+  priorities:["Alta","Media","Baja"]
+ },
+ subjects:[],study:[],repertoire:[],tasks:[],exams:[],rehearsals:[],events:[],weekly:[],
+ settings:{startWeek:1,theme:"dark"}
+};
+let db=load(); let view="hoy"; let calDate=new Date(); let timer={running:false,seconds:0,startedAt:null,sessionType:"Estudio",instrument:""};
+function uid(p="id"){return p+"_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7)}
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function todayISO(){return new Date().toISOString().slice(0,10)}
-function fmt(d){return d?new Date(d+"T12:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"}):""}
-function go(id){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.view===id));render()}
-function openSettings(){openModal("settings")}
-function openModal(type){
- let b="";
- const common=`<div class="actions"><button class="secondary grow" onclick="closeModal()">Cancelar</button><button class="primary grow" onclick="submitModal('${type}')">Guardar</button></div>`;
- if(type==="task") b=`<h2>Nueva tarea</h2><label>Título</label><input id="f1" placeholder="Ej. Analizar una obra"><label>Fecha límite</label><input id="f2" type="date" value="${todayISO()}"><label>Prioridad</label><select id="f3"><option>Alta</option><option selected>Media</option><option>Baja</option></select><label>Notas</label><textarea id="f4"></textarea>${common}`;
- if(type==="event") b=`<h2>Nuevo evento</h2><label>Nombre</label><input id="f1" placeholder="Clase, ensayo, concierto..."><label>Fecha</label><input id="f2" type="date" value="${todayISO()}"><label>Hora</label><input id="f3" type="time"><label>Lugar</label><input id="f4"><label>Tipo</label><select id="f5"><option>Clase</option><option>Ensayo</option><option>Concierto</option><option>Otro</option></select>${common}`;
- if(type==="piece") b=`<h2>Nueva obra</h2><label>Obra</label><input id="f1" placeholder="Título"><label>Compositor</label><input id="f2"><label>Instrumento</label><input id="f3" placeholder="Piano, saxofón..."><label>Progreso</label><input id="f4" type="number" min="0" max="100" value="0"><label>Objetivo / notas</label><textarea id="f5"></textarea>${common}`;
- if(type==="study") b=`<h2>Registrar estudio</h2><label>Área / obra</label><input id="f1" placeholder="Piano, saxofón, análisis..."><label>Minutos</label><input id="f2" type="number" min="1" value="25"><label>Fecha</label><input id="f3" type="date" value="${todayISO()}"><label>Notas</label><textarea id="f4"></textarea>${common}`;
- if(type==="exam") b=`<h2>Nuevo examen</h2><label>Asignatura</label><input id="f1"><label>Fecha</label><input id="f2" type="date"><label>Hora</label><input id="f3" type="time"><label>Contenido</label><textarea id="f4"></textarea>${common}`;
- if(type==="quick") b=`<h2>Añadir</h2><div class="grid"><button class="card" onclick="openModal('task')">✓<br>Tarea</button><button class="card" onclick="openModal('event')">♫<br>Evento</button><button class="card" onclick="openModal('piece')">♪<br>Obra</button><button class="card" onclick="openModal('study')">◷<br>Estudio</button></div>`;
- if(type==="settings") b=`<h2>Ajustes</h2><label>Objetivo semanal de estudio (minutos)</label><input id="f1" type="number" value="${data.settings.goal||300}"><div class="actions"><button class="primary grow" onclick="data.settings.goal=+document.getElementById('f1').value||300;save();closeModal()">Guardar</button></div><div class="actions"><button class="secondary grow" onclick="exportData()">Exportar datos</button><button class="secondary grow" onclick="document.getElementById('importFile').click()">Importar</button></div><input id="importFile" type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"><div class="actions"><button class="danger grow" onclick="if(confirm('¿Borrar todos los datos?')){data={...blank,settings:{goal:300}};save();closeModal()}">Borrar datos</button></div>`;
- document.getElementById("modalBody").innerHTML=b;document.getElementById("modal").classList.add("open");
+function load(){
+ try{
+  const x=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(x) return merge(defaults,x);
+  const old=JSON.parse(localStorage.getItem(oldKey)||"null");
+  if(old){const n=merge(defaults,{subjects:old.subjects||[],tasks:old.tasks||[],rehearsals:old.rehearsals||[]}); return n}
+ }catch(e){}
+ return structuredClone(defaults);
 }
-function closeModal(){document.getElementById("modal").classList.remove("open")}
-function submitModal(type){
- const v=i=>document.getElementById("f"+i)?.value||"";
- if(type==="task")data.tasks.push({id:uid(),title:v(1),date:v(2),priority:v(3),notes:v(4),done:false});
- if(type==="event")data.events.push({id:uid(),title:v(1),date:v(2),time:v(3),place:v(4),type:v(5)});
- if(type==="piece")data.pieces.push({id:uid(),title:v(1),composer:v(2),instrument:v(3),progress:+v(4)||0,notes:v(5)});
- if(type==="study")data.sessions.push({id:uid(),area:v(1),minutes:+v(2)||0,date:v(3),notes:v(4)});
- if(type==="exam")data.exams.push({id:uid(),title:v(1),date:v(2),time:v(3),notes:v(4)});
- save();closeModal()
+function merge(a,b){const o=structuredClone(a); for(const k of Object.keys(b||{})){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&o[k])o[k]=merge(o[k],b[k]);else o[k]=b[k]} return o}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function fmtDate(d){if(!d)return "";return new Date(d+"T00:00:00").toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function today(){return new Date().toISOString().slice(0,10)}
+function daysFromToday(ds){if(!ds)return null;return Math.round((new Date(ds+"T00:00:00")-new Date(today()+"T00:00:00"))/86400000)}
+function allNamed(){return [...db.subjects.map(x=>x.name),...db.repertoire.map(x=>x.work),...db.tasks.map(x=>x.title)].filter(Boolean)}
+function toast(s){const t=document.querySelector("#toast");t.textContent=s;t.classList.remove("hide");setTimeout(()=>t.classList.add("hide"),1800)}
+function openModal(title,body,onSave,label="Guardar"){document.querySelector("#modal").innerHTML=`<div class="sheet"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-extrabold">${title}</h2><button class="secondary btn" onclick="closeModal()">✕</button></div>${body}<div class="flex gap-2 mt-5"><button class="btn secondary flex-1" onclick="closeModal()">Cancelar</button><button id="saveModal" class="btn primary flex-1">${label}</button></div></div>`;document.querySelector("#modal").classList.remove("hide");document.querySelector("#saveModal").onclick=onSave}
+function closeModal(){document.querySelector("#modal").classList.add("hide")}
+function F(label,name,type="text",value="",extra=""){return `<div><label class="label">${label}</label><input class="field" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
+function S(label,name,opts,value="",allow=""){return `<div><label class="label">${label}</label><select class="field" name="${name}">${allow?`<option value="">${allow}</option>`:""}${opts.map(o=>`<option ${o==value?"selected":""} value="${esc(o)}">${esc(o)}</option>`).join("")}</select></div>`}
+function T(label,name,value=""){return `<div><label class="label">${label}</label><textarea class="field" name="${name}" rows="2">${esc(value)}</textarea></div>`}
+function val(form,n){return form.querySelector(`[name="${n}"]`)?.value||""}
+function multiOptions(list, fallback){return [...new Set([...list,...fallback])].filter(Boolean)}
+function addSubject(id){
+ const x=id?db.subjects.find(x=>x.id===id):{};
+ const body=`<div class="grid gap-3">${F("Asignatura","name","text",x.name)}
+ ${S("Profesor","teacher",db.lists.teachers,x.teacher,"Selecciona profesor")}
+ ${F("Correo de contacto","email","email",x.email)}
+ ${S("Aula","room",db.lists.rooms,x.room,"Selecciona aula")}
+ ${S("Curso","course",["1º","2º","3º","4º","Máster","Otro"],x.course)}
+ ${S("Día","day",["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],x.day)}
+ <div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>
+ ${S("¿Hay tareas para la próxima sesión?","nextTasks",["Sí","No"],x.nextTasks)}
+ ${S("¿Tienes que hacer algo más?","extra","SíNo".split(""),x.extra==="Sí"?"Sí":"No")}
+ ${F("Acción adicional","extraDetail","text",x.extraDetail)}
+ ${T("Notas","notes",x.notes)}</div>`;
+ openModal(id?"Editar asignatura":"Nueva asignatura",body,()=>{const f=document.querySelector("#modal form")||document.querySelector("#modal"); const get=n=>val(f,n); const o={id:id||uid("sub"),name:get("name"),teacher:get("teacher"),email:get("email"),room:get("room"),course:get("course"),day:get("day"),start:get("start"),end:get("end"),nextTasks:get("nextTasks"),extra:get("extra"),extraDetail:get("extraDetail"),notes:get("notes")}; upsert(db.subjects,o); save();closeModal();render()},"Guardar");
+ // wrap fields in form so val works
+ const sheet=document.querySelector(".sheet"); const content=sheet.innerHTML; sheet.innerHTML=content.replace(`<div class="flex gap-2 mt-5">`,`<form id="modalForm"><div class="flex gap-2 mt-5">`);
+ sheet.querySelector("#saveModal").onclick=()=>{const f=document.querySelector("#modalForm"); const get=n=>val(f,n); const o={id:id||uid("sub"),name:get("name"),teacher:get("teacher"),email:get("email"),room:get("room"),course:get("course"),day:get("day"),start:get("start"),end:get("end"),nextTasks:get("nextTasks"),extra:get("extra"),extraDetail:get("extraDetail"),notes:get("notes")};upsert(db.subjects,o);save();closeModal();render()}
 }
-function remove(kind,id){data[kind]=data[kind].filter(x=>x.id!==id);save()}
-function toggleTask(id){const x=data.tasks.find(x=>x.id===id);if(x)x.done=!x.done;save()}
+function addStudy(id){
+ const x=id?db.study.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento / asignatura","instrument",db.lists.instruments,x.instrument,"Selecciona")}${S("Tipo de sesión","type",db.lists.studyTypes,x.type)}${F("Objetivo","objective","text",x.objective)}${F("Duración (min)","duration","number",x.duration||60,"min='1'")}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
+ openModal(id?"Editar sesión":"Nueva sesión",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("stu"),instrument:val(f,"instrument"),type:val(f,"type"),objective:val(f,"objective"),duration:+val(f,"duration")||0,date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.study,o);save();closeModal();render()});
+}
+function addRep(id){
+ const x=id?db.repertoire.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${F("Compositor","composer","text",x.composer)}${F("Obra","work","text",x.work)}${S("Dificultad","difficulty",["Inicial","Media","Alta","Muy alta"],x.difficulty)}${S("Estado de preparación","state",["Por empezar","En estudio","Montada","En perfeccionamiento","Memorizada","Lista"],x.state)}${F("Progreso (%)","progress","number",x.progress||0,"min='0' max='100'")}${F("Fecha objetivo","target","date",x.target)}${S("Profesor","teacher",db.lists.teachers,x.teacher,"Sin asignar")}${S("Asignatura vinculada","subject",db.subjects.map(s=>s.name),x.subject,"Sin asignar")}${S("Memorización","memory",["No","Parcial","Sí"],x.memory)}${F("Tiempo habitual (min)","minutes","number",x.minutes||30)}${T("Problemas técnicos","issues",x.issues)}${T("Notas","notes",x.notes)}</form>`;
+ openModal(id?"Editar repertorio":"Nueva obra",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("rep"),instrument:val(f,"instrument"),composer:val(f,"composer"),work:val(f,"work"),difficulty:val(f,"difficulty"),state:val(f,"state"),progress:+val(f,"progress")||0,target:val(f,"target"),teacher:val(f,"teacher"),subject:val(f,"subject"),memory:val(f,"memory"),minutes:+val(f,"minutes")||0,issues:val(f,"issues"),notes:val(f,"notes")};upsert(db.repertoire,o);save();closeModal();render()});
+}
+function addTask(id){
+ const x=id?db.tasks.find(x=>x.id===id):{};
+ const subs=(x.subtasks||[]).map(s=>`<div class="checkrow"><input type="checkbox" class="subcheck" ${s.done?"checked":""}><input class="field subtext" value="${esc(s.text)}"></div>`).join("");
+ const body=`<form id="modalForm" class="grid gap-3">${F("Tarea","title","text",x.title)}${S("Asignatura relacionada","subject",db.subjects.map(s=>s.name),x.subject,"Sin asignar")}${S("Categoría","category",["Deberes","Estudiar","Llevar / preparar","Preguntar","Enviar","Leer / revisar","Administrativo","Otro"],x.category)}${S("Prioridad","priority",db.lists.priorities,x.priority||"Media")}${S("Estado","status",["Pendiente","En curso","Hecha"],x.status||"Pendiente")}${F("Fecha límite","due","date",x.due)}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}<div><div class="flex justify-between items-center mb-2"><span class="font-bold">Mini tareas</span><button type="button" class="btn secondary" onclick="addSubtaskRow()">+ Añadir</button></div><div id="subtasks" class="grid gap-2">${subs}</div></div></form>`;
+ openModal(id?"Editar tarea":"Nueva tarea",body,()=>{const f=document.querySelector("#modalForm");const subtasks=[...f.querySelectorAll(".checkrow")].map(r=>({id:uid("st"),done:r.querySelector(".subcheck").checked,text:r.querySelector(".subtext").value})).filter(s=>s.text.trim());const o={id:id||uid("task"),title:val(f,"title"),subject:val(f,"subject"),category:val(f,"category"),priority:val(f,"priority"),status:val(f,"status"),due:val(f,"due"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes"),subtasks};upsert(db.tasks,o);save();closeModal();render()});
+}
+function addSubtaskRow(){document.querySelector("#subtasks").insertAdjacentHTML("beforeend",`<div class="checkrow"><input type="checkbox" class="subcheck"><input class="field subtext" placeholder="Mini tarea"></div>`)}
+function addExam(id){
+ const x=id?db.exams.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Asignatura","subject",db.subjects.map(s=>s.name),x.subject)}${S("Tipo de examen","type",db.lists.examTypes,x.type)}${F("Convocatoria","call","text",x.call)}${S("Estado","status",["No empezado","Preparando","Listo","Realizado"],x.status||"No empezado")}${F("Fecha","date","date",x.date)}${F("Nota","grade","number",x.grade,"min='0' max='10' step='0.01'")}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
+ openModal(id?"Editar examen":"Nuevo examen",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("exam"),subject:val(f,"subject"),type:val(f,"type"),call:val(f,"call"),status:val(f,"status"),date:val(f,"date"),grade:val(f,"grade"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.exams,o);save();closeModal();render()});
+}
+function addRehearsal(id){
+ const x=id?db.rehearsals.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Agrupación","group",db.lists.groups,x.group)}${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${S("Director","director",db.lists.teachers,x.director,"Sin asignar")}${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}${S("Prioridad","priority",db.lists.priorities,x.priority||"Media")}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${F("Repertorio","repertoire","text",x.repertoire)}${T("Notas","notes",x.notes)}</form>`;
+ openModal(id?"Editar ensayo":"Nuevo ensayo",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("reh"),group:val(f,"group"),instrument:val(f,"instrument"),director:val(f,"director"),place:val(f,"place"),priority:val(f,"priority"),date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),repertoire:val(f,"repertoire"),notes:val(f,"notes")};upsert(db.rehearsals,o);save();closeModal();render()});
+}
+function addEvent(id){
+ const x=id?db.events.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Tipo de evento","type",db.lists.eventTypes,x.type)}${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}${F("Asignatura / agrupación relacionada","related","text",x.related)}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
+ openModal(id?"Editar evento":"Nuevo evento",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("evt"),type:val(f,"type"),place:val(f,"place"),related:val(f,"related"),date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.events,o);save();closeModal();render()});
+}
+function addWeekly(id){
+ const x=id?db.weekly.find(x=>x.id===id):{};
+ const body=`<form id="modalForm" class="grid gap-3">${S("Tipo","type",["Clase","Ensayo","Estudio","Evento"],x.type)}${F("Título","title","text",x.title)}${S("Día","day",["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],x.day)}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${F("Lugar","place","text",x.place)}${F("Relacionado","related","text",x.related)}${S("Activo","active",["Sí","No"],x.active||"Sí")}</form>`;
+ openModal(id?"Editar actividad semanal":"Nueva actividad semanal",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("wek"),type:val(f,"type"),title:val(f,"title"),day:val(f,"day"),start:val(f,"start"),end:val(f,"end"),place:val(f,"place"),related:val(f,"related"),active:val(f,"active")};upsert(db.weekly,o);save();closeModal();render()});
+}
+function upsert(arr,o){const i=arr.findIndex(x=>x.id===o.id);if(i<0)arr.push(o);else arr[i]=o}
+function del(type,id){if(!confirm("¿Eliminar este elemento?"))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
+function edit(type,id){({subjects:addSubject,study:addStudy,repertoire:addRep,tasks:addTask,exams:addExam,rehearsals:addRehearsal,events:addEvent,weekly:addWeekly}[type])(id)}
+function nav(v){view=v;render()}
+function layout(content){
+ return `<div class="safe min-h-screen"><header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur"><div class="flex justify-between items-center"><div><div class="text-xs uppercase tracking-[.2em] text-violet-300">RitmoAcade</div><h1 class="text-2xl font-black">Centro de control</h1></div><button class="btn secondary" onclick="settings()">⚙️</button></div></header><main class="px-4 max-w-3xl mx-auto">${content}</main><nav class="fixed bottom-0 left-0 right-0 z-30 glass px-2 pb-[env(safe-area-inset-bottom)]"><div class="max-w-3xl mx-auto grid grid-cols-5">${navBtn("hoy","⌂","Hoy")}${navBtn("horario","▦","Horario")}${navBtn("estudio","◉","Estudio")}${navBtn("repertorio","♫","Repertorio")}${navBtn("mas","☰","Más")}</div></nav></div>`;
+}
+function navBtn(v,i,t){return `<button class="navbtn ${view===v?"active":""}" onclick="nav('${v}')"><span>${i}</span>${t}</button>`}
+function sectionHead(title,add,extra=""){return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn primary" onclick="${add}">+ Añadir</button></div></div>`}
+function eventTime(x){return [x.start,x.end].filter(Boolean).join("–")}
+function todayItems(){
+ const d=today(), a=[];
+ db.subjects.filter(x=>x.day&&x.start&&dayName(new Date(d+"T12:00:00"))===x.day).forEach(x=>a.push({kind:"Clase",title:x.name,start:x.start,end:x.end,place:x.room,sub:x.id,type:"subjects"}));
+ [...db.events.filter(x=>x.date===d),...db.study.filter(x=>x.date===d),...db.rehearsals.filter(x=>x.date===d)].forEach(x=>a.push({kind:x.type||"Actividad",title:x.title||x.objective||x.group||x.related||x.repertoire||"Actividad",start:x.start,end:x.end,place:x.place,sub:x.id,type:x.type==="Estudio"?"study":x.group?"rehearsals":"events"}));
+ db.weekly.filter(x=>x.active!=="No"&&x.day===dayName(new Date(d+"T12:00:00"))).forEach(x=>a.push({kind:x.type,title:x.title,start:x.start,end:x.end,place:x.place,sub:x.id,type:"weekly"}));
+ return a.sort((a,b)=>(a.start||"99").localeCompare(b.start||"99"));
+}
+function dayName(d){return ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][d.getDay()]}
+function taskProgress(t){const s=t.subtasks||[];if(!s.length)return t.status==="Hecha"?100:0;return Math.round(s.filter(x=>x.done).length/s.length*100)}
+function today(){
+ const items=todayItems(), pending=db.tasks.filter(x=>x.status!=="Hecha").sort((a,b)=>(a.due||"99").localeCompare(b.due||"99")).slice(0,5);
+ const exams=db.exams.filter(x=>x.date&&daysFromToday(x.date)>=0).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
+ const due=db.tasks.filter(x=>x.due===today()&&x.status!=="Hecha").length;
+ const mins=db.study.filter(x=>x.date>=weekStart()&&x.date<=weekEnd()).reduce((n,x)=>n+(+x.duration||0),0);
+ return layout(`<div class="grid gap-3 mt-2">
+ <div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(today())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="muted mt-1">${items.length?`${items[0].kind} · ${eventTime(items[0])} ${items[0].place?"· "+items[0].place:""}`:"Añade una actividad para empezar"}</div><div class="flex gap-2 mt-4"><button class="btn primary" onclick="quickStudy()">▶ Empezar estudio</button><button class="btn secondary" onclick="searchView()">⌕ Buscar</button></div></div>
+ <div class="grid grid-cols-3 gap-2"><div class="card p-3"><div class="text-2xl font-black">${due}</div><div class="small muted">Vencen hoy</div></div><div class="card p-3"><div class="text-2xl font-black">${mins}</div><div class="small muted">min esta semana</div></div><div class="card p-3"><div class="text-2xl font-black">${exams.length}</div><div class="small muted">exámenes próximos</div></div></div>
+ ${sectionHead("Agenda de hoy","quickEvent()")}
+ ${items.length?items.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><div class="font-bold">${esc(x.title)}</div><div class="small muted">${esc(x.kind)} · ${eventTime(x)} ${x.place?"· "+esc(x.place):""}</div></div><span class="pill">${esc(x.start||"")}</span></div>`).join(""):`<div class="empty">No hay actividades registradas para hoy.</div>`}
+ ${sectionHead("Tareas pendientes","addTask()")}
+ ${pending.length?pending.map(t=>taskCard(t)).join(""):`<div class="empty">No tienes tareas pendientes.</div>`}
+ ${sectionHead("Próximos exámenes","addExam")}
+ ${exams.length?exams.map(e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><b>${esc(e.subject)}</b><span class="pill">${daysFromToday(e.date)} días</span></div><div class="small muted">${esc(e.type)} · ${fmtDate(e.date)} · ${esc(e.status)}</div></div>`).join(""):`<div class="empty">Sin exámenes próximos.</div>`}
+ </div>`);
+}
+function taskCard(t){return `<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(t.title)}</b><div class="small muted">${esc(t.subject||"Sin asignatura")} · ${esc(t.category||"")} · ${esc(t.priority||"")}</div></div><div class="flex gap-1"><button class="pill" onclick="edit('tasks','${t.id}')">Editar</button><button class="pill" onclick="finishTask('${t.id}')">${t.status==="Hecha"?"✓":"Hecha"}</button></div></div>${(t.subtasks||[]).length?`<div class="progress mt-3"><i style="width:${taskProgress(t)}%"></i></div><div class="small muted mt-1">${taskProgress(t)}% · ${t.subtasks.filter(x=>x.done).length}/${t.subtasks.length} mini tareas</div>`:""}</div>`}
+function finishTask(id){const t=db.tasks.find(x=>x.id===id);if(!t)return;t.status=t.status==="Hecha"?"Pendiente":"Hecha";save();render()}
+function horario(){
+ const d=new Date(calDate), y=d.getFullYear(),m=d.getMonth(), first=new Date(y,m,1), days=new Date(y,m+1,0).getDate(), offset=(first.getDay()+6)%7;
+ let cells="";for(let i=0;i<offset;i++)cells+=`<div></div>`;
+ for(let n=1;n<=days;n++){const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(n).padStart(2,"0")}`;const its=calendarItems(ds);cells+=`<div class="daycell"><div class="text-xs font-bold">${n}</div>${its.slice(0,4).map(x=>`<div class="eventdot">${esc((x.start?x.start+" ":"")+x.title)}</div>`).join("")}</div>`}
+ const month=d.toLocaleDateString("es-ES",{month:"long",year:"numeric"});
+ return layout(`<div class="flex items-center justify-between mt-2"><button class="btn secondary" onclick="calMove(-1)">‹</button><h2 class="text-xl font-black capitalize">${month}</h2><button class="btn secondary" onclick="calMove(1)">›</button></div>
+ <div class="calgrid mt-4 text-center text-xs muted">${["L","M","X","J","V","S","D"].map(x=>`<div>${x}</div>`).join("")}</div><div class="calgrid mt-1">${cells}</div>
+ ${sectionHead("Actividades semanales","addWeekly")}
+ ${db.weekly.length?db.weekly.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><b>${esc(x.title)}</b><div class="small muted">${esc(x.day)} · ${eventTime(x)} · ${esc(x.place||"")}</div></div><div><button class="pill" onclick="edit('weekly','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('weekly','${x.id}')">×</button></div></div>`).join(""):`<div class="empty">Añade clases, ensayos o estudio recurrente.</div>`}
+ ${sectionHead("Asignaturas","addSubject")}
+ ${db.subjects.length?db.subjects.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.name)}</b><div class="small muted">${esc(x.day||"")} · ${eventTime(x)} · ${esc(x.room||"")}</div><div class="small muted">${esc(x.teacher||"")}${x.email?" · "+esc(x.email):""}</div></div><div><button class="pill" onclick="edit('subjects','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('subjects','${x.id}')">×</button></div></div></div>`).join(""):`<div class="empty">Crea tu primera asignatura.</div>`}`);
+}
+function calMove(n){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+n,1);render()}
+function calendarItems(ds){
+ return [...db.events.filter(x=>x.date===ds),...db.study.filter(x=>x.date===ds),...db.rehearsals.filter(x=>x.date===ds),...db.tasks.filter(x=>x.due===ds),...db.exams.filter(x=>x.date===ds),...db.weekly.filter(x=>x.active!=="No"&&x.day===dayName(new Date(ds+"T12:00:00")))].map(x=>({title:x.title||x.objective||x.subject||x.group||x.type||"Actividad",start:x.start}));
+}
+function estudio(){
+ const ws=weekStart(),we=weekEnd(),logs=db.study.filter(x=>x.date>=ws&&x.date<=we),mins=logs.reduce((n,x)=>n+(+x.duration||0),0);
+ return layout(`${sectionHead("Estudio","addStudy",`<button class="btn secondary" onclick="quickStudy()">▶ Temporizador</button>`)}
+ <div class="card p-4 mb-3"><div class="text-sm muted">Objetivo semanal</div><div class="text-3xl font-black">${mins} / ${db.profile.weeklyGoal||420} min</div><div class="progress mt-3"><i style="width:${Math.min(100,mins/(db.profile.weeklyGoal||420)*100)}%"></i></div><div class="small muted mt-2">${logs.length} sesiones registradas</div></div>
+ ${logs.length?logs.sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start)).map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.instrument)} · ${esc(x.type)}</b><div class="small muted">${fmtDate(x.date)} · ${x.duration} min · ${esc(x.objective||"")}</div></div><button class="pill" onclick="edit('study','${x.id}')">Editar</button></div></div>`).join(""):`<div class="empty">Registra tus sesiones para ver estadísticas y cumplir objetivos.</div>`}`);
+}
+function weekStart(){const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.toISOString().slice(0,10)}
+function weekEnd(){const d=new Date(weekStart()+"T12:00:00");d.setDate(d.getDate()+6);return d.toISOString().slice(0,10)}
+function quickStudy(){let secs=25*60;timer={running:true,seconds:secs,startedAt:Date.now(),sessionType:"Estudio",instrument:db.lists.instruments[0]||""};timerModal()}
+function timerModal(){
+ const body=`<div class="text-center"><div id="timerClock" class="text-6xl font-black tracking-tight">25:00</div><div class="muted mt-2">Temporizador de estudio</div><div class="grid gap-3 mt-5">${S("Instrumento","instrument",db.lists.instruments,timer.instrument)}${S("Tipo","type",db.lists.studyTypes,timer.sessionType)}${F("Objetivo","objective","text","")}</div></div>`;
+ openModal("Sesión de estudio",body,()=>{const f=document.querySelector("#modalForm");if(!f){saveTimer();return}saveTimer()});
+ const sheet=document.querySelector(".sheet"); const saveBtn=document.querySelector("#saveModal"); saveBtn.textContent="Terminar y guardar";
+ const clock=setInterval(()=>{if(!document.querySelector("#timerClock")){clearInterval(clock);return} if(timer.seconds>0){timer.seconds--;document.querySelector("#timerClock").textContent=`${String(Math.floor(timer.seconds/60)).padStart(2,"0")}:${String(timer.seconds%60).padStart(2,"0")}`}},1000);
+}
+function saveTimer(){const f=document.querySelector("#modal");const instrument=f.querySelector('[name="instrument"]')?.value||timer.instrument;const type=f.querySelector('[name="type"]')?.value||timer.sessionType;const objective=f.querySelector('[name="objective"]')?.value||"Sesión cronometrada";const elapsed=Math.max(1,Math.round((25*60-timer.seconds)/60));db.study.push({id:uid("stu"),instrument,type,objective,duration:elapsed,date:today(),start:new Date().toTimeString().slice(0,5),end:new Date().toTimeString().slice(0,5),notes:"Temporizador"});save();closeModal();render();toast(`Sesión guardada: ${elapsed} min`)}
+function repertorio(){
+ return layout(`${sectionHead("Repertorio","addRep")}
+ ${db.repertoire.length?db.repertoire.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(x.composer)} — ${esc(x.work)}</b><div class="small muted">${esc(x.instrument)} · ${esc(x.state)} · dificultad ${esc(x.difficulty)}</div><div class="progress mt-3"><i style="width:${x.progress||0}%"></i></div><div class="small muted mt-1">${x.progress||0}%${x.target?" · objetivo "+fmtDate(x.target):""}</div></div><div><button class="pill" onclick="edit('repertoire','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('repertoire','${x.id}')">×</button></div></div></div>`).join(""):`<div class="empty">Añade obras y controla su preparación por porcentaje, estado y fecha objetivo.</div>`}`);
+}
+function mas(){
+ return layout(`<div class="grid gap-3 mt-3">
+ ${["Tareas","Exámenes","Ensayos","Eventos","Buscar","Estadísticas","Configuración"].map((x,i)=>`<button class="card p-4 text-left flex justify-between items-center" onclick="${["tasksView","examsView","rehearsalsView","eventsView","searchView","statsView","settings"][i]}()"><span><b>${x}</b><div class="small muted">${["Deberes, mini tareas y prioridades","Convocatorias, notas y cuenta atrás","Agrupaciones y repertorio","Agenda extraordinaria","Busca en toda la aplicación","Tiempo de estudio y carga","Listas, perfil y copias de seguridad"][i]}</div></span><span>›</span></button>`).join("")}
+ </div>`);
+}
+function genericView(title,type,add,items,renderItem){return layout(`${sectionHead(title,add)}${items.length?items.map(renderItem).join(""):`<div class="empty">No hay elementos todavía.</div>`}`)}
+function tasksView(){return genericView("Tareas","tasks","addTask",db.tasks,t=>taskCard(t)+`<div class="text-right -mt-1 mb-2"><button class="pill" onclick="del('tasks','${t.id}')">Eliminar</button></div>`)}
+function examsView(){return genericView("Exámenes","exams","addExam",db.exams,(e)=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.subject)}</b><div class="small muted">${esc(e.type)} · ${esc(e.call)} · ${fmtDate(e.date)} · ${esc(e.status)}${e.grade?" · nota "+esc(e.grade):""}</div></div><div><button class="pill" onclick="edit('exams','${e.id}')">Editar</button><button class="pill ml-1" onclick="del('exams','${e.id}')">×</button></div></div></div>`)}
+function rehearsalsView(){return genericView("Ensayos","rehearsals","addRehearsal",db.rehearsals,r=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.group)}</b><div class="small muted">${fmtDate(r.date)} · ${eventTime(r)} · ${esc(r.place)} · ${esc(r.director||"")}</div><div class="small muted">Repertorio: ${esc(r.repertoire||"")}</div></div><div><button class="pill" onclick="edit('rehearsals','${r.id}')">Editar</button><button class="pill ml-1" onclick="del('rehearsals','${r.id}')">×</button></div></div></div>`)}
+function eventsView(){return genericView("Eventos","events","addEvent",db.events,e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.type)}</b><div class="small muted">${fmtDate(e.date)} · ${eventTime(e)} · ${esc(e.place||"")}</div><div class="small muted">${esc(e.related||"")}</div></div><div><button class="pill" onclick="edit('events','${e.id}')">Editar</button><button class="pill ml-1" onclick="del('events','${e.id}')">×</button></div></div></div>`)}
+function statsView(){const logs=db.study.filter(x=>x.date>=weekStart()&&x.date<=weekEnd());const by={};logs.forEach(x=>by[x.instrument]=(by[x.instrument]||0)+(+x.duration||0));return layout(`<h2 class="text-xl font-black mt-3">Estadísticas</h2><div class="card p-4 mt-3"><div class="text-sm muted">Esta semana</div><div class="text-4xl font-black">${logs.reduce((n,x)=>n+(+x.duration||0),0)} min</div><div class="mt-4 grid gap-2">${Object.entries(by).map(([k,v])=>`<div><div class="flex justify-between"><span>${esc(k)}</span><b>${v} min</b></div><div class="progress mt-1"><i style="width:${Math.min(100,v/(db.profile.weeklyGoal||420)*100)}%"></i></div></div>`).join("")||"<div class='muted'>Sin sesiones esta semana.</div>"}</div></div>`) }
+function settings(){
+ const lists=Object.keys(db.lists);
+ const body=`<form id="modalForm" class="grid gap-3"><div class="font-bold">Perfil</div>${F("Nombre","name","text",db.profile.name)}${F("Estudios / itinerario","career","text",db.profile.career)}${F("Centro","institution","text",db.profile.institution)}${F("Objetivo semanal de estudio (min)","weeklyGoal","number",db.profile.weeklyGoal)}<div class="border-t border-slate-700 pt-3 font-bold">Listas configurables</div>${lists.map(k=>T(k,"list_"+k,(db.lists[k]||[]).join("\\n"))).join("")}</form>
+ <div class="grid grid-cols-2 gap-2 mt-4"><button class="btn secondary" onclick="exportData()">⬇ Exportar copia</button><button class="btn secondary" onclick="document.querySelector('#importFile').click()">⬆ Importar copia</button></div><input id="importFile" type="file" accept=".json" class="hide" onchange="importData(event)"><button class="btn danger w-full mt-2" onclick="resetData()">Borrar todos los datos</button>`;
+ openModal("Configuración",body,()=>{const f=document.querySelector("#modalForm");db.profile.name=val(f,"name");db.profile.career=val(f,"career");db.profile.institution=val(f,"institution");db.profile.weeklyGoal=+val(f,"weeklyGoal")||420;for(const k of lists)db.lists[k]=val(f,"list_"+k).split("\n").map(x=>x.trim()).filter(Boolean);save();closeModal();render();toast("Configuración guardada")});
+}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ritmoacade-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function importData(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{db=merge(defaults,JSON.parse(r.result));save();closeModal();render();toast("Copia importada")}catch(e){toast("Archivo no válido")}};r.readAsText(file)}
+function resetData(){if(confirm("Esto borrará todos los datos locales de RitmoAcade. ¿Continuar?")){db=structuredClone(defaults);save();closeModal();render()}}
+function searchView(){
+ const q=prompt("¿Qué quieres buscar?");if(q===null)return;const z=q.toLowerCase();const out=[];for(const [type,arr] of Object.entries(db)){if(!Array.isArray(arr))continue;arr.forEach(x=>{const s=JSON.stringify(x).toLowerCase();if(s.includes(z))out.push({type,id:x.id,title:x.name||x.title||x.work||x.subject||x.group||x.type||type,detail:s.replace(/[{}"]/g," ").slice(0,180)})})}
+ return openModal("Resultados de búsqueda",out.length?out.map(x=>`<div class="card p-3 mb-2"><b>${esc(x.title)}</b><div class="small muted">${esc(x.type)} · ${esc(x.detail)}</div></div>`).join(""):`<div class="empty">No se encontraron resultados.</div>`,()=>closeModal(),"Cerrar");
+}
+function quickEvent(){addEvent()}
 function render(){
- const now=new Date();document.getElementById("todayDate").textContent=now.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
- const pending=data.tasks.filter(x=>!x.done);document.getElementById("statTasks").textContent=pending.length;
- const weekStart=new Date(now);weekStart.setDate(now.getDate()-((now.getDay()+6)%7));weekStart.setHours(0,0,0,0);
- const mins=data.sessions.reduce((a,x)=>a+(+x.minutes||0),0);document.getElementById("statStudy").textContent=mins;
- const week=data.sessions.filter(x=>new Date(x.date+"T12:00")>=weekStart).reduce((a,x)=>a+(+x.minutes||0),0);
- document.getElementById("weekMinutes").textContent=week;document.getElementById("goalMinutes").textContent=data.settings.goal||300;document.getElementById("weekBar").style.width=Math.min(100,week/(data.settings.goal||300)*100)+"%";
- const avg=data.pieces.length?Math.round(data.pieces.reduce((a,x)=>a+(+x.progress||0),0)/data.pieces.length):0;document.getElementById("statRepertoire").textContent=avg+"%";
- const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+7);document.getElementById("statEvents").textContent=data.events.filter(x=>{let d=new Date(x.date+"T12:00");return d>=weekStart&&d<weekEnd}).length;
- const ev=[...data.events,...data.exams.map(x=>({...x,title:"Examen: "+x.title}))].filter(x=>x.date>=todayISO()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
- document.getElementById("nextTitle").textContent=ev?.title||"Sin eventos próximos";document.getElementById("nextMeta").textContent=ev?`${fmt(ev.date)}${ev.time?" · "+ev.time:""}${ev.place?" · "+ev.place:""}`:"Añade clases, ensayos, conciertos o exámenes.";
- document.getElementById("todayList").innerHTML=pending.slice(0,5).map(x=>`<div class="item"><button onclick="toggleTask('${x.id}')">○</button><div class="grow"><b>${esc(x.title)}</b><div class="muted">${fmt(x.date)}</div></div><span class="pill">${esc(x.priority)}</span></div>`).join("")||`<div class="listempty">No tienes tareas pendientes.</div>`;
- document.getElementById("todayRepertoire").innerHTML=data.pieces.slice(0,4).map(x=>`<div class="item"><div class="dot"></div><div class="grow"><b>${esc(x.title)}</b><div class="muted">${esc(x.composer||"")} · ${x.progress}%</div><div class="progress"><i style="width:${x.progress}%"></i></div></div></div>`).join("")||`<div class="listempty">Añade tu primera obra.</div>`;
- document.getElementById("eventList").innerHTML=[...data.events,...data.exams.map(x=>({...x,title:"Examen: "+x.title}))].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,12).map(x=>`<div class="item"><div class="dot"></div><div class="grow"><b>${esc(x.title)}</b><div class="muted">${fmt(x.date)}${x.time?" · "+x.time:""}${x.place?" · "+esc(x.place):""}</div></div></div>`).join("")||`<div class="listempty">No hay eventos.</div>`;
- document.getElementById("studyList").innerHTML=data.sessions.slice(-10).reverse().map(x=>`<div class="item"><div class="grow"><b>${esc(x.area)}</b><div class="muted">${fmt(x.date)} · ${x.minutes} min</div></div><span class="pill">${x.minutes}′</span></div>`).join("")||`<div class="listempty">Registra tu primera sesión.</div>`;
- document.getElementById("pieceList").innerHTML=data.pieces.map(x=>`<div class="item"><div class="grow"><b>${esc(x.title)}</b><div class="muted">${esc(x.composer||"")} · ${esc(x.instrument||"")}</div><div class="progress"><i style="width:${x.progress}%"></i></div></div><span>${x.progress}%</span><button onclick="remove('pieces','${x.id}')">×</button></div>`).join("")||`<div class="listempty">Tu repertorio aparecerá aquí.</div>`;
- document.getElementById("statsCard").innerHTML=`<b>Estudio total</b><p>${mins} minutos registrados.</p><b>Obras</b><p>${data.pieces.length} obras · progreso medio ${avg}%.</p><b>Tareas</b><p>${data.tasks.length-pending.length} completadas de ${data.tasks.length}.</p>`;
- const days=["L","M","X","J","V","S","D"];document.getElementById("calendar").innerHTML=days.map(x=>`<div class="muted" style="text-align:center">${x}</div>`).join("")+Array.from({length:35},(_,i)=>{const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);const iso=d.toISOString().slice(0,10);const has=data.events.some(x=>x.date===iso)||data.exams.some(x=>x.date===iso);return `<div class="calday ${iso===todayISO()?"today":""} ${has?"has":""}">${d.getDate()}</div>`}).join("");
+ let c=view==="hoy"?today():view==="horario"?horario():view==="estudio"?estudio():view==="repertorio"?repertorio():mas();
+ document.querySelector("#app").innerHTML=c;
 }
-let seconds=1500,running=false,timerInt;
-function paintTimer(){let m=Math.floor(seconds/60),s=seconds%60;document.getElementById("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
-function toggleTimer(){running=!running;if(running)timerInt=setInterval(()=>{if(--seconds<=0){clearInterval(timerInt);running=false;seconds=1500;alert("Sesión terminada. ¡Regístrala en Estudio!")}paintTimer()},1000);else clearInterval(timerInt)}
-function resetTimer(){clearInterval(timerInt);running=false;seconds=1500;paintTimer()}
-function exportData(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));a.download="ritmoacade-backup.json";a.click()}
-function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{data={...blank,...JSON.parse(r.result)};save();closeModal()}catch{alert("Archivo no válido")}};r.readAsText(file)}
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-paintTimer();render();
+render();
 </script>
 </body></html>
