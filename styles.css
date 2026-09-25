@@ -1,15 +1,16 @@
 :root {
-    --bg-color: #f8fafc;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --accent: #10b981;
-    --danger: #ef4444;
-    --border: #e2e8f0;
-    --radius: 12px;
+    --bg-color: #0f1117;
+    --sidebar-bg: #161b22;
+    --card-bg: #1f242d;
+    --card-hover: #262c38;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --primary: #818cf8;
+    --primary-glow: rgba(129, 140, 248, 0.3);
+    --accent: #34d399;
+    --danger: #f87171;
+    --border: rgba(255, 255, 255, 0.08);
+    --radius: 20px;
 }
 
 * {
@@ -17,6 +18,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -33,151 +35,231 @@ body {
     height: 100%;
 }
 
+/* Sidebar estilo burbuja moderna */
 .sidebar {
-    width: 260px;
+    width: 280px;
     background-color: var(--sidebar-bg);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     padding: 24px;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
 
 .logo h2 {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     color: var(--primary);
     margin-bottom: 32px;
+    letter-spacing: -0.5px;
 }
 
 .nav-menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .nav-btn {
     background: transparent;
     border: none;
     text-align: left;
-    padding: 12px 16px;
-    border-radius: 8px;
+    padding: 14px 18px;
+    border-radius: var(--radius);
     font-size: 0.95rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-btn:hover, .nav-btn.active {
-    background-color: #f1f5f9;
-    color: var(--primary);
+.nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-main);
+    transform: translateX(4px);
 }
 
+.nav-btn.active {
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    color: white;
+    box-shadow: 0 8px 20px var(--primary-glow);
+}
+
+/* Contenido Principal gomoso */
 .main-content {
     flex: 1;
-    padding: 32px;
+    padding: 36px;
     overflow-y: auto;
 }
 
 .tab-section {
     display: none;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 .tab-section.active {
     display: block;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .section-header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.8px;
 }
 
+.section-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 4px;
+}
+
+/* Cuadrícula moderna */
 .dashboard-grid, .grid-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
 }
 
+/* Tarjetas efecto "Gomoso / Soft UI" */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.3);
+    border-color: rgba(129, 140, 248, 0.2);
 }
 
 .card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: -0.3px;
+}
+
+.card p, .card li {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .task-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .task-list li label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
-}
-
-.btn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: none;
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
     transition: background 0.2s;
 }
 
+.task-list li label:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.task-list input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* Botones con aspecto fluido / gomoso */
+.btn {
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 .btn.primary {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
     color: white;
+    box-shadow: 0 6px 20px var(--primary-glow);
 }
 
 .btn.primary:hover {
-    background-color: var(--primary-hover);
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px var(--primary-glow);
+}
+
+.btn.primary:active {
+    transform: scale(0.98);
 }
 
 .btn.secondary {
-    background-color: #e2e8f0;
+    background-color: rgba(255, 255, 255, 0.06);
     color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.btn.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn.danger {
-    background-color: var(--danger);
-    color: white;
+    background-color: rgba(248, 113, 113, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
+/* Temporizador futurista */
 .timer-card {
-    max-width: 400px;
+    max-width: 440px;
     margin: 0 auto;
     text-align: center;
+    background: linear-gradient(145deg, #1f242d 0%, #161b22 100%);
 }
 
 .timer-digits {
-    font-size: 4rem;
-    font-weight: 700;
+    font-size: 5rem;
+    font-weight: 800;
     color: var(--primary);
     margin: 20px 0;
+    letter-spacing: -2px;
+    text-shadow: 0 0 30px var(--primary-glow);
 }
 
 .timer-controls {
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .timer-options {
@@ -188,34 +270,61 @@ body {
 }
 
 .timer-options select {
-    padding: 8px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 12px;
     border: 1px solid var(--border);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    outline: none;
 }
 
+/* Estilo Móvil Táctil Fluido (App nativa feel) */
 @media (max-width: 768px) {
     body {
         flex-direction: column;
-        height: auto;
-        overflow: auto;
+        height: 100vh;
+        overflow: hidden;
     }
     .app-container {
         flex-direction: column;
+        height: 100%;
     }
     .sidebar {
         width: 100%;
-        padding: 16px;
+        padding: 12px 16px;
+        order: 2; /* Pasa la barra de navegación abajo estilo app móvil */
+        border-right: none;
+        border-top: 1px solid var(--border);
+        background-color: rgba(22, 27, 34, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    .logo {
+        display: none; /* Oculta el título grande en móvil para ahorrar espacio */
     }
     .nav-menu {
         flex-direction: row;
-        overflow-x: auto;
+        justify-content: space-around;
         gap: 4px;
     }
     .nav-btn {
-        white-space: nowrap;
-        padding: 8px 12px;
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        text-align: center;
+        border-radius: 12px;
+        flex: 1;
+    }
+    .nav-btn.active {
+        box-shadow: 0 4px 15px var(--primary-glow);
     }
     .main-content {
-        padding: 16px;
+        flex: 1;
+        padding: 20px;
+        order: 1;
+        overflow-y: auto;
+        padding-bottom: 30px;
+    }
+    .section-header h1 {
+        font-size: 1.5rem;
     }
 }
