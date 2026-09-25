@@ -3,50 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RitmoAcade — Tu Asistente de Estudio</title>
+    <title>RitmoAcade</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- BARRA LATERAL / NAVEGACIÓN -->
+        <!-- BARRA DE NAVEGACIÓN -->
         <aside class="sidebar">
             <div class="logo">
-                <h2>🎵 RitmoAcade</h2>
+                <h2>RitmoAcade</h2>
             </div>
             <nav class="nav-menu">
-                <button class="nav-btn active" data-tab="hoy">🏠 Hoy</button>
-                <button class="nav-btn" data-tab="asignaturas">📚 Asignaturas</button>
-                <button class="nav-btn" data-tab="repertorio">🎼 Repertorio</button>
-                <button class="nav-btn" data-tab="estudio">⏱️ Sesión de Estudio</button>
-                <button class="nav-btn" data-tab="config">⚙️ Configuración</button>
+                <button class="nav-btn active" data-tab="inicio">Inicio</button>
+                <button class="nav-btn" data-tab="hoy">Hoy</button>
+                <button class="nav-btn" data-tab="horario">Horario</button>
+                <button class="nav-btn" data-tab="asignaturas">Asignaturas</button>
+                <button class="nav-btn" data-tab="repertorio">Repertorio</button>
+                <button class="nav-btn" data-tab="tareas">Tareas</button>
+                <button class="nav-btn" data-tab="estudio">Estudio</button>
+                <button class="nav-btn" data-tab="config">Ajustes</button>
             </nav>
         </aside>
 
         <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
-            <!-- SECCIÓN: HOY -->
-            <section id="hoy" class="tab-section active">
+            
+            <!-- SECCIÓN: INICIO (Widgets estilo iOS) -->
+            <section id="inicio" class="tab-section active">
                 <header class="section-header">
-                    <h1>Tu día inteligente</h1>
-                    <p id="current-date">Cargando fecha...</p>
+                    <h1>RitmoAcade</h1>
+                    <p id="welcome-date">Cargando fecha...</p>
                 </header>
 
-                <div class="dashboard-grid">
-                    <div class="card highlight-card">
-                        <h3>🚀 Empezar ahora</h3>
-                        <p>¿Listo para practicar? Abre el temporizador y registra tu sesión.</p>
-                        <button class="btn primary" onclick="switchTab('estudio')">Empezar Sesión de Estudio</button>
+                <div class="ios-widgets-grid">
+                    <!-- Widget Hoy -->
+                    <div class="ios-widget widget-medium card" onclick="switchTab('hoy')">
+                        <span class="widget-title">Resumen de Hoy</span>
+                        <div id="widget-today-content">Cargando actividad diaria...</div>
                     </div>
-                    <div class="card">
-                        <h3>📅 Próxima Clase / Evento</h3>
-                        <div id="next-class-widget">Piano Aplicado — Lunes 10:00 (Aula 3)</div>
+
+                    <!-- Widget Estudio / Temporizador -->
+                    <div class="ios-widget widget-small card" onclick="switchTab('estudio')">
+                        <span class="widget-title">Estudio</span>
+                        <div class="widget-big-number" id="widget-timer-shortcut">25m</div>
+                        <span class="widget-sub">Iniciar sesión</span>
                     </div>
-                    <div class="card">
-                        <h3>⚡ Tareas & Acciones para Hoy</h3>
-                        <ul id="today-tasks-list" class="task-list">
-                            <!-- Se inyecta por JS -->
-                        </ul>
+
+                    <!-- Widget Horario -->
+                    <div class="ios-widget widget-small card" onclick="switchTab('horario')">
+                        <span class="widget-title">Próxima Clase</span>
+                        <div class="widget-highlight" id="widget-next-class">Piano — 10:00</div>
+                    </div>
+
+                    <!-- Widget Tareas -->
+                    <div class="ios-widget widget-medium card" onclick="switchTab('tareas')">
+                        <span class="widget-title">Tareas Pendientes</span>
+                        <div id="widget-tasks-count">Calculando...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN: HOY -->
+            <section id="hoy" class="tab-section">
+                <header class="section-header">
+                    <h1>Hoy</h1>
+                    <p id="today-full-date">Fecha actual</p>
+                </header>
+                <div class="card">
+                    <h3>Agenda y Actividades del Día</h3>
+                    <div id="today-agenda-list" class="agenda-list">
+                        <!-- Sincronizado dinámicamente -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN: HORARIO -->
+            <section id="horario" class="tab-section">
+                <header class="section-header">
+                    <h1>Horario</h1>
+                    <div class="button-group">
+                        <button class="btn secondary active" id="btn-view-week" onclick="setScheduleView('week')">Semanal</button>
+                        <button class="btn secondary" id="btn-view-day" onclick="setScheduleView('day')">Diario</button>
+                    </div>
+                </header>
+                <div class="card">
+                    <div id="schedule-container">
+                        <!-- Vista de horario cargada por JS -->
                     </div>
                 </div>
             </section>
@@ -54,74 +97,86 @@
             <!-- SECCIÓN: ASIGNATURAS -->
             <section id="asignaturas" class="tab-section">
                 <header class="section-header">
-                    <h1>Asignaturas y Preparación</h1>
+                    <h1>Asignaturas</h1>
+                    <button class="btn primary" onclick="openSubjectModal()">+ Añadir</button>
                 </header>
                 <div id="subjects-container" class="grid-cards">
-                    <div class="card">
-                        <h3>Piano Aplicado</h3>
-                        <p><strong>Profesor:</strong> Juan Pérez</p>
-                        <p><strong>Aula:</strong> Aula 3</p>
-                    </div>
-                    <div class="card">
-                        <h3>Saxofón</h3>
-                        <p><strong>Profesor:</strong> María López</p>
-                        <p><strong>Aula:</strong> Auditorio</p>
-                    </div>
+                    <!-- Inyectado por JS -->
                 </div>
             </section>
 
             <!-- SECCIÓN: REPERTORIO -->
             <section id="repertorio" class="tab-section">
                 <header class="section-header">
-                    <h1>Repertorio Completo</h1>
+                    <h1>Repertorio</h1>
+                    <button class="btn primary" onclick="openRepertoireModal()">+ Añadir Obra</button>
                 </header>
                 <div id="repertoire-container" class="grid-cards">
-                    <!-- Se inyecta por JS -->
+                    <!-- Inyectado por JS -->
+                </div>
+            </section>
+
+            <!-- SECCIÓN: TAREAS -->
+            <section id="tareas" class="tab-section">
+                <header class="section-header">
+                    <h1>Tareas</h1>
+                    <button class="btn primary" onclick="openTaskModal()">+ Nueva Tarea</button>
+                </header>
+                <div class="card">
+                    <ul id="tasks-full-list" class="task-list">
+                        <!-- Inyectado por JS -->
+                    </ul>
                 </div>
             </section>
 
             <!-- SECCIÓN: ESTUDIO -->
             <section id="estudio" class="tab-section">
                 <header class="section-header">
-                    <h1>Temporizador y Registro de Práctica</h1>
+                    <h1>Sesión de Estudio</h1>
                 </header>
                 <div class="timer-card card">
                     <div id="timer-display" class="timer-digits">25:00</div>
                     <div class="timer-controls">
-                        <button class="btn primary" id="start-timer" onclick="startTimer()">Iniciar</button>
-                        <button class="btn secondary" id="pause-timer" onclick="pauseTimer()">Pausar</button>
+                        <button class="btn primary" onclick="startTimer()">Iniciar</button>
+                        <button class="btn secondary" onclick="pauseTimer()">Pausar</button>
                         <button class="btn danger" onclick="resetTimer()">Reiniciar</button>
                     </div>
                     <div class="timer-options">
-                        <label>Asignatura:</label>
+                        <label>Asignatura de enfoque:</label>
                         <select id="timer-subject">
                             <option value="Piano">Piano</option>
                             <option value="Saxofón">Saxofón</option>
-                            <option value="Lenguaje Musical">Lenguaje Musical</option>
                         </select>
                     </div>
                 </div>
             </section>
 
-            <!-- SECCIÓN: CONFIGURACIÓN -->
+            <!-- SECCIÓN: CONFIGURACIÓN Y PERSONALIZACIÓN -->
             <section id="config" class="tab-section">
                 <header class="section-header">
-                    <h1>Configuración y Copias de Seguridad</h1>
+                    <h1>Ajustes y Personalización</h1>
                 </header>
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3>Personalización Visual</h3>
+                    <div class="settings-group" style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
+                        <label>Color principal de acento:</label>
+                        <input type="color" id="primary-color-picker" value="#818cf8" onchange="changeThemeColor(this.value)" style="width: 100px; height: 40px; border: none; border-radius: 8px; cursor: pointer; background: transparent;">
+                    </div>
+                </div>
                 <div class="card">
-                    <h3>Gestión de Datos Locales</h3>
-                    <p>Tus datos se guardan de forma segura en tu navegador. Realiza copias periódicas para no perder nada.</p>
-                    <div class="button-group" style="margin-top: 16px; display: flex; gap: 10px;">
-                        <button class="btn primary" onclick="exportData()">📥 Exportar Copia (JSON)</button>
-                        <label class="btn secondary upload-btn" style="padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; background-color: #e2e8f0; cursor: pointer;">
-                            📤 Importar Copia <input type="file" id="import-file" onchange="importData(event)" hidden>
+                    <h3>Gestión de Datos</h3>
+                    <p style="margin-bottom: 15px;">Exporta o importa tus datos locales.</p>
+                    <div class="button-group" style="display: flex; gap: 10px;">
+                        <button class="btn primary" onclick="exportData()">Exportar copia</button>
+                        <label class="btn secondary" style="cursor: pointer; display: inline-flex; align-items: center;">
+                            Importar copia <input type="file" onchange="importData(event)" hidden>
                         </label>
                     </div>
                 </div>
             </section>
+
         </main>
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>
