@@ -1,202 +1,343 @@
-let appData = JSON.parse(localStorage.getItem('ritmoAcadeData')) || {
-    primaryColor: '#818cf8',
-    horario: [
-        { dia: 'Lunes', hora: '10:00', asignatura: 'Piano Aplicado', aula: 'Aula 3' },
-        { dia: 'Martes', hora: '11:30', asignatura: 'Saxofón', aula: 'Auditorio' }
-    ],
-    tareas: [
-        { id: 1, texto: 'Llevar partitura de Bargiel', asignatura: 'Piano Aplicado', completada: false }
-    ],
-    asignaturas: [
-        { nombre: 'Piano Aplicado', profesor: 'Juan Pérez', aula: 'Aula 3' },
-        { nombre: 'Saxofón', profesor: 'María López', aula: 'Auditorio' }
-    ],
-    repertorio: [
-        { obra: 'Adagio Op. 38', compositor: 'Bargiel', instrumento: 'Piano', estado: 'En proceso' }
-    ]
-};
-
-function saveData() {
-    localStorage.setItem('ritmoAcadeData', JSON.stringify(appData));
+:root {
+    --bg-color: #0b0f19;
+    --card-bg: #1f2937;
+    --card-hover: #374151;
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --primary: #818cf8;
+    --primary-glow: rgba(129, 140, 248, 0.25);
+    --border: rgba(255, 255, 255, 0.06);
+    --radius: 20px;
 }
 
-// Navegación de pestañas
-const navButtons = document.querySelectorAll('.nav-btn');
-const tabSections = document.querySelectorAll('.tab-section');
-
-navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        navButtons.forEach(b => b.classList.remove('active'));
-        tabSections.forEach(s => s.classList.remove('active'));
-        
-        btn.classList.add('active');
-        const targetTab = btn.getAttribute('data-tab');
-        document.getElementById(targetTab).classList.add('active');
-    });
-});
-
-function switchTab(tabId) {
-    document.querySelector(`[data-tab="${tabId}"]`).click();
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
-// Inicializar vistas dinámicas
-function initApp() {
-    // Aplicar color personalizado guardado
-    if(appData.primaryColor) {
-        document.documentElement.style.setProperty('--primary', appData.primaryColor);
-        document.getElementById('primary-color-picker').value = appData.primaryColor;
-    }
-
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const dateStr = new Date().toLocaleDateString('es-ES', options);
-    
-    document.getElementById('welcome-date').innerText = dateStr;
-    document.getElementById('today-full-date').innerText = dateStr;
-
-    // Widget Hoy & Pestaña Hoy
-    const todayAgenda = document.getElementById('today-agenda-list');
-    todayAgenda.innerHTML = '';
-    
-    let htmlContent = '';
-    appData.tareas.forEach(t => {
-        htmlContent += `<div><strong>Tarea:</strong> ${t.texto} (${t.asignatura})</div>`;
-    });
-    
-    if(appData.tareas.length === 0) {
-        htmlContent = '<div>No hay actividades ni tareas registradas para hoy.</div>';
-    }
-
-    todayAgenda.innerHTML = htmlContent;
-    document.getElementById('widget-today-content').innerText = `${appData.tareas.length} tareas o avisos activos hoy.`;
-    document.getElementById('widget-tasks-count').innerText = `${appData.tareas.filter(t => !t.completada).length} pendientes`;
-
-    // Horario por defecto (Semanal)
-    renderSchedule('week');
-    renderTasks();
-    renderSubjects();
-    renderRepertoire();
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
-// Renderizado de Horario
-function renderSchedule(mode) {
-    const container = document.getElementById('schedule-container');
-    container.innerHTML = '';
-    
-    if(mode === 'week') {
-        let content = '<div style="display: flex; flex-direction: column; gap: 10px;">';
-        appData.horario.forEach(h => {
-            content += `<div style="padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;"><strong>${h.dia} - ${h.hora}</strong>: ${h.asignatura} (${h.aula})</div>`;
-        });
-        content += '</div>';
-        container.innerHTML = content;
-    } else {
-        container.innerHTML = '<p>Vista diaria: Mostrando clases programadas para la jornada de hoy.</p>';
-    }
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
-function setScheduleView(mode) {
-    document.getElementById('btn-view-week').classList.remove('active');
-    document.getElementById('btn-view-day').classList.remove('active');
-    if(mode === 'week') {
-        document.getElementById('btn-view-week').classList.add('active');
-    } else {
-        document.getElementById('btn-view-day').classList.add('active');
-    }
-    renderSchedule(mode);
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    padding-bottom: 90px; /* Espacio para la barra inferior */
 }
 
-function renderTasks() {
-    const list = document.getElementById('tasks-full-list');
-    list.innerHTML = '';
-    appData.tareas.forEach(t => {
-        const li = document.createElement('li');
-        li.innerHTML = `<label><input type="checkbox" ${t.completada ? 'checked' : ''} onchange="toggleTask(${t.id})"> ${t.texto} <em>(${t.asignatura})</em></label>`;
-        list.appendChild(li);
-    });
+.tab-section {
+    display: none;
 }
 
-function toggleTask(id) {
-    const task = appData.tareas.find(t => t.id === id);
-    if(task) {
-        task.completada = !task.completada;
-        saveData();
-        initApp();
-    }
+.tab-section.active {
+    display: block;
 }
 
-function renderSubjects() {
-    const container = document.getElementById('subjects-container');
-    container.innerHTML = '';
-    appData.asignaturas.forEach(s => {
-        container.innerHTML += `<div class="card"><h3>${s.nombre}</h3><p>Profesor: ${s.profesor}</p><p>Aula: ${s.aula}</p></div>`;
-    });
+.header-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
 }
 
-function renderRepertoire() {
-    const container = document.getElementById('repertoire-container');
-    container.innerHTML = '';
-    appData.repertorio.forEach(r => {
-        container.innerHTML += `<div class="card"><h3>${r.obra}</h3><p>Compositor: ${r.compositor}</p><p>Instrumento: ${r.instrumento}</p></div>`;
-    });
+.app-brand {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-// Personalización de Color
-function changeThemeColor(color) {
-    appData.primaryColor = color;
-    document.documentElement.style.setProperty('--primary', color);
-    saveData();
+.header-top-bar p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
 }
 
-// Temporizador
-let timerInterval;
-let timeLeft = 25 * 60;
-function updateTimerDisplay() {
-    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-    const s = (timeLeft % 60).toString().padStart(2, '0');
-    document.getElementById('timer-display').innerText = `${m}:${s}`;
-    document.getElementById('widget-timer-shortcut').innerText = `${m}m`;
-}
-function startTimer() {
-    if (timerInterval) return;
-    timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-            timeLeft--;
-            updateTimerDisplay();
-        } else {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            alert('Sesión finalizada.');
-        }
-    }, 1000);
-}
-function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
-function resetTimer() { clearInterval(timerInterval); timerInterval = null; timeLeft = 25 * 60; updateTimerDisplay(); }
-
-// Copias de seguridad
-function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-    const dl = document.createElement('a');
-    dl.setAttribute("href", dataStr);
-    dl.setAttribute("download", "ritmoacade_backup.json");
-    document.body.appendChild(dl);
-    dl.click();
-    dl.remove();
+.icon-btn-menu {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-function importData(event) {
-    const reader = new FileReader();
-    if(event.target.files[0]) {
-        reader.readAsText(event.target.files[0], "UTF-8");
-        reader.onload = (e) => {
-            appData = JSON.parse(e.target.result);
-            saveData();
-            initApp();
-            alert('Datos importados con éxito.');
-        }
-    }
+/* Grid Asimétrico Estilo iOS */
+.ios-asymmetric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
-window.onload = () => {
-    initApp();
-    updateTimerDisplay();
-};
+.ios-widget {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ios-widget:hover {
+    transform: translateY(-2px);
+    background-color: var(--card-hover);
+}
+
+.widget-long {
+    grid-column: span 2;
+    min-height: 110px;
+}
+
+.widget-small {
+    grid-column: span 1;
+    min-height: 100px;
+}
+
+.widget-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.widget-big-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.widget-highlight {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.widget-content-text {
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+/* Tarjetas y Secciones */
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    margin-bottom: 16px;
+}
+
+.card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+/* Listas */
+.task-list, .agenda-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-list li, .agenda-list div {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.9; }
+.btn.primary { background-color: var(--primary); color: white; }
+.btn.secondary { background-color: rgba(255, 255, 255, 0.06); color: var(--text-main); }
+.btn.danger { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* Repertorio pestañas internas */
+.repertoire-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+/* Barra de Navegación Inferior (Accesos Rápidos) */
+.bottom-quick-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    z-index: 100;
+}
+
+.bottom-quick-nav .nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: color 0.2s;
+}
+
+.bottom-quick-nav .nav-btn.active {
+    color: var(--primary);
+    background-color: rgba(129, 140, 248, 0.1);
+}
+
+/* Menú Lateral Desplegable (Drawer) */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: flex-end;
+    z-index: 1000;
+}
+
+.drawer-overlay.open {
+    display: flex;
+}
+
+.drawer-content {
+    width: 280px;
+    height: 100%;
+    background-color: var(--card-bg);
+    border-left: 1px solid var(--border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    animation: slideInRight 0.25s ease;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.icon-btn-close {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.drawer-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.drawer-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    text-align: left;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.drawer-btn:hover {
+    background-color: var(--card-hover);
+}
+
+/* Temporizador */
+.timer-card {
+    max-width: 380px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.timer-digits {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
