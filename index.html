@@ -50,6 +50,7 @@ function normalizeTeacher(item){return {id:item.id||uid("te"),name:item.name||""
 function normalizeRoom(item){return {id:item.id||uid("room"),name:item.name||"",edificio:item.edificio||"",planta:item.planta||"",observaciones:item.observaciones||""};}
 function normalizeSubject(item){return {id:item.id||uid("sub"),name:item.name||"",teacher:item.teacher||"",teacherId:item.teacherId||"",email:item.email||"",room:item.room||"",roomId:item.roomId||"",course:item.course||"",group:item.group||"",day:item.day||"",start:item.start||"",end:item.end||"",color:item.color||"#a78bfa",objectives:item.objectives||"",material:item.material||"",startDate:item.startDate||"",endDate:item.endDate||"",credits:item.credits||"",notes:item.notes||""};}
 function normalizeTask(item){return {id:item.id||uid("task"),title:item.title||"",description:item.description||"",subject:item.subject||"",subjectId:item.subjectId||"",dueDate:item.dueDate||item.due||"",priority:item.priority||"Media",status:item.status||"Pendiente",tags:Array.isArray(item.tags)?item.tags:[],timeEstimated:item.timeEstimated||0,timeSpent:item.timeSpent||0,notes:item.notes||"",subtasks:Array.isArray(item.subtasks)?item.subtasks:[]};}
+function normalizeExam(item){return {id:item.id||uid("exam"),subject:item.subject||"",subjectId:item.subjectId||"",type:item.type||"",convocation:item.convocation||"",date:item.date||"",time:item.time||"",room:item.room||"",roomId:item.roomId||"",teacher:item.teacher||"",teacherId:item.teacherId||"",syllabus:item.syllabus||"",notes:item.notes||"",preparationStatus:item.preparationStatus||"No iniciada"};}
 function migrateV4ToV5(raw){
  const source = raw && typeof raw === "object" ? raw : {};
  const base = merge(defaults, source);
@@ -58,7 +59,7 @@ function migrateV4ToV5(raw){
  result.study=Array.isArray(base.study)?base.study:[];
  result.repertoire=Array.isArray(base.repertoire)?base.repertoire:[];
  result.tasks=(Array.isArray(base.tasks)?base.tasks:[]).map(normalizeTask);
- result.exams=Array.isArray(base.exams)?base.exams:[];
+ result.exams=(Array.isArray(base.exams)?base.exams:[]).map(normalizeExam);
  result.rehearsals=Array.isArray(base.rehearsals)?base.rehearsals:[];
  result.events=Array.isArray(base.events)?base.events:[];
  result.weekly=Array.isArray(base.weekly)?base.weekly:[];
@@ -80,6 +81,14 @@ function migrateV4ToV5(raw){
    normalized.roomId = matchedRoom ? matchedRoom.id : "";
    normalized.room = matchedRoom ? matchedRoom.name : (roomName || "");
    if (matchedTeacher && !matchedTeacher.asignaturas.includes(normalized.id)) matchedTeacher.asignaturas.push(normalized.id);
+   return normalized;
+ });
+ result.exams = result.exams.map(e=>{
+   const subjectName = e.subject || "";
+   const matchedSubject = result.subjects.find(s => s.name === subjectName) || null;
+   const normalized = normalizeExam(e);
+   normalized.subjectId = matchedSubject ? matchedSubject.id : "";
+   normalized.subject = matchedSubject ? matchedSubject.name : (subjectName || "");
    return normalized;
  });
  result.settings = merge(defaults.settings, base.settings||{});
@@ -147,6 +156,21 @@ function addTask(id){
   if(id){const i=db.tasks.findIndex(x=>x.id===id); if(i>=0) db.tasks[i]={...db.tasks[i],...o};} else {db.tasks.push(o);} save(); render();
  });
 }
+function addExam(id){
+ const x=id?db.exams.find(x=>x.id===id)||{}:{};
+ const body=`<div class="grid gap-3">${S("Asignatura","subjectId",db.subjects.map(s=>s.name),x.subjectId||"","Sin asignar")}${S("Tipo de examen","type",db.lists.examTypes,x.type)}${F("Convocatoria","convocation","text",x.convocation||"")}${F("Fecha","date","date",x.date||"")}${F("Hora","time","time",x.time||"")}${S("Aula","roomId",db.rooms.map(r=>r.name),x.roomId||"","Sin aula")}${S("Profesor","teacherId",db.teachers.map(t=>t.name),x.teacherId||"","Sin asignar")}${T("Temario","syllabus",x.syllabus||"")}${T("Notas","notes",x.notes||"")}${S("Estado de preparación","preparationStatus",["No iniciada","En progreso","Bien preparada","Repaso final"],x.preparationStatus||"No iniciada")}</div>`;
+ openModal(id?"Editar examen":"Nuevo examen", body, ()=>{
+  const f=document.querySelector("#modal");
+  const subjectId = val(f,"subjectId") || "";
+  const subjectName = db.subjects.find(s=>s.id===subjectId)?.name || "";
+  const roomId = val(f,"roomId") || "";
+  const roomName = db.rooms.find(r=>r.id===roomId)?.name || "";
+  const teacherId = val(f,"teacherId") || "";
+  const teacherName = db.teachers.find(t=>t.id===teacherId)?.name || "";
+  const o={id:id||uid("exam"),subject:subjectName,subjectId,type:val(f,"type"),convocation:val(f,"convocation"),date:val(f,"date"),time:val(f,"time"),room:roomName,roomId,teacher:teacherName,teacherId,syllabus:val(f,"syllabus"),notes:val(f,"notes"),preparationStatus:val(f,"preparationStatus")||"No iniciada"};
+  if(id){const i=db.exams.findIndex(x=>x.id===id); if(i>=0) db.exams[i]={...db.exams[i],...o};} else {db.exams.push(o);} save(); render();
+ });
+}
 function priorityBadge(p){const classes={Alta:"badge-high",Media:"badge-medium",Baja:"badge-low"}; return `<span class="pill ${classes[p]||''}">${esc(p)}</span>`}
 function isOverdue(dueDate){return dueDate && daysFromToday(dueDate)<0}
 function filterTasks(){
@@ -175,11 +199,21 @@ function taskCard(t){
  const progress=t.subtasks&&t.subtasks.length?Math.round(t.subtasks.filter(s=>s.done).length/t.subtasks.length*100):0;
  return `<div class="card p-3 mb-2 ${overdue?'border-l-4 border-red-500':''}"><div class="flex justify-between gap-2"><div class="flex-1"><div class="flex items-center gap-2"><b>${esc(t.title)}</b>${priorityBadge(t.priority)}</div><div class="small muted mt-1">${esc(t.subject||"Sin asignatura")} · ${t.dueDate?fmtDate(t.dueDate):"-"} ${overdue?'⚠ Atrasada':days===0?'Hoy':days===1?'Mañana':''}</div>${t.description?`<div class="small muted mt-1">${esc(t.description.substring(0,80))}</div>`:''}<div class="task-meta">${t.timeEstimated?`<span class="meta-item">⏱ ${t.timeEstimated}min est</span>`:''} ${t.timeSpent?`<span class="meta-item">✓ ${t.timeSpent}min real</span>`:''} ${t.tags.length?t.tags.map(tag=>`<span class="meta-item">#${esc(tag)}</span>`).join(''):''}</div>${progress>0?`<div class="progress mt-2"><i style="width:${progress}%"></i></div>`:''}</div><div class="flex gap-1"><button class="btn secondary" onclick="edit('tasks','${t.id}')">✎</button><button class="btn secondary" onclick="del('tasks','${t.id}')">×</button></div></div></div>`;
 }
+function examCard(e){
+ const days=daysFromToday(e.date);
+ const statusColor={
+  "No iniciada":"text-yellow-400",
+  "En progreso":"text-blue-400",
+  "Bien preparada":"text-green-400",
+  "Repaso final":"text-orange-400"
+ };
+ return `<div class="card p-3 mb-2"><div class="flex justify-between gap-2"><div class="flex-1"><b>${esc(e.subject||"Sin asignatura")}</b><div class="small muted mt-1">${esc(e.type)} · ${esc(e.convocation||"")} · ${e.date?fmtDate(e.date):"-"} ${e.time?e.time:""}</div><div class="small muted mt-1">👨‍🏫 ${esc(e.teacher||"Sin profesor")} · 📍 ${esc(e.room||"Sin aula")}</div>${e.syllabus?`<div class="small muted mt-1">📚 ${esc(e.syllabus.substring(0,60))}</div>`:''}<div class="task-meta"><span class="meta-item ${statusColor[e.preparationStatus]||''}">Status: ${esc(e.preparationStatus)}</span></div></div><div class="flex gap-1"><button class="btn secondary" onclick="edit('exams','${e.id}')">✎</button><button class="btn secondary" onclick="del('exams','${e.id}')">×</button></div></div></div>`;
+}
 function del(type,id){if(!confirm("¿Eliminar este elemento?")) return; db[type]=db[type].filter(x=>x.id!==id); save(); render();}
-function edit(type,id){({teachers:addTeacher,rooms:addRoom,subjects:addSubject,tasks:addTask}[type])(id)}
+function edit(type,id){({teachers:addTeacher,rooms:addRoom,subjects:addSubject,tasks:addTask,exams:addExam}[type])(id)}
 function nav(v){view=v; render();}
 function layout(content){return `<div class="safe min-h-screen"><header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur"><div class="flex justify-between items-center"><div><div class="text-xs uppercase tracking-[.2em] text-violet-300/80">RitmoAcade</div><div class="text-lg font-black">5.0</div></div><button class="btn secondary" onclick="addTask()">+ Tarea</button></div></header><main class="px-4 pb-6">${content}</main></div>`}
-function today(){const items=[]; db.subjects.filter(x=>x.day&&x.start&&((new Date(currentDate()+"T12:00:00")).toLocaleDateString("es-ES",{weekday:"long"})===x.day || ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"][new Date(currentDate()+"T12:00:00").getDay()]===x.day)).forEach(x=>items.push({kind:"Clase",title:x.name,start:x.start,end:x.end,place:x.room,sub:x.id,type:"subjects"})); return layout(`<div class="grid gap-3 mt-2"><div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(currentDate())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="small muted mt-1">${items.length?"Agenda actualizada":"Sin actividades programadas"}</div></div>${sectionHead("Tareas","addTask()")}${db.tasks.filter(t=>t.status!=="Completada"&&t.status!=="Cancelada").length?db.tasks.filter(t=>t.status!=="Completada"&&t.status!=="Cancelada").sort((a,b)=>(a.dueDate||"9999").localeCompare(b.dueDate||"9999")).slice(0,5).map(t=>taskCard(t)).join(""):`<div class="empty">No tienes tareas pendientes.</div>`}</div>`)}
+function today(){const items=[]; db.subjects.filter(x=>x.day&&x.start&&((new Date(currentDate()+"T12:00:00")).toLocaleDateString("es-ES",{weekday:"long"})===x.day || ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"][new Date(currentDate()+"T12:00:00").getDay()]===x.day)).forEach(x=>items.push({kind:"Clase",title:x.name,start:x.start,end:x.end,place:x.room,sub:x.id,type:"subjects"})); return layout(`<div class="grid gap-3 mt-2"><div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(currentDate())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="small muted mt-1">${items.length?"Agenda actualizada":"Sin actividades programadas"}</div></div>${sectionHead("Tareas","addTask()")}${db.tasks.filter(t=>t.status!=="Completada"&&t.status!=="Cancelada").length?db.tasks.filter(t=>t.status!=="Completada"&&t.status!=="Cancelada").sort((a,b)=>(a.dueDate||"9999").localeCompare(b.dueDate||"9999")).slice(0,5).map(t=>taskCard(t)).join(""):`<div class="empty">No tienes tareas pendientes.</div>`}${sectionHead("Exámenes próximos","addExam()")}${db.exams.filter(e=>e.date&&daysFromToday(e.date)>=0).length?db.exams.filter(e=>e.date&&daysFromToday(e.date)>=0).sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999")).slice(0,3).map(e=>examCard(e)).join(""):`<div class="empty">No tienes exámenes próximos.</div>`}</div>`)}
 function horario(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Horario</div><div class="small muted mt-1">Vista general de la semana</div></div>${sectionHead("Profesores","addTeacher()")}${db.teachers.length?db.teachers.map(t=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(t.name)}</b><div class="small muted">${esc(t.email||"Sin correo")} · ${esc(t.horario||"Sin horario")}</div></div><button class="btn secondary" onclick="edit('teachers','${t.id}')">✎</button></div></div>`).join(""):`<div class="empty">No hay profesores.</div>`}${sectionHead("Aulas","addRoom()")}${db.rooms.length?db.rooms.map(r=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.name)}</b><div class="small muted">${esc(r.edificio||"Sin edificio")} · ${esc(r.planta||"Sin planta")}</div></div><button class="btn secondary" onclick="edit('rooms','${r.id}')">✎</button></div></div>`).join(""):`<div class="empty">No hay aulas.</div>`}`)}
 function tasksView(){
  const filtered = filterTasks();
@@ -187,21 +221,25 @@ function tasksView(){
  const uniqueSubjects = [...new Set(db.tasks.map(t=>t.subjectId).filter(Boolean))].map(id=>db.subjects.find(s=>s.id===id)).filter(Boolean);
  return layout(`<div class="mt-4"><div class="section-title">Tareas</div><div class="filters-bar mt-3"><button class="filter-btn ${taskFilters.status?'':'active'}" onclick="toggleTaskFilter('status','')">Todas</button><button class="filter-btn ${taskFilters.status==='Pendiente'?'active':''}" onclick="toggleTaskFilter('status','Pendiente')">Pendientes</button><button class="filter-btn ${taskFilters.status==='En progreso'?'active':''}" onclick="toggleTaskFilter('status','En progreso')">En progreso</button><button class="filter-btn ${taskFilters.status==='Completada'?'active':''}" onclick="toggleTaskFilter('status','Completada')">Completadas</button></div><div class="filters-bar"><button class="filter-btn ${taskFilters.priority==='Alta'?'active':''}" onclick="toggleTaskFilter('priority','Alta')">Alta</button><button class="filter-btn ${taskFilters.priority==='Media'?'active':''}" onclick="toggleTaskFilter('priority','Media')">Media</button><button class="filter-btn ${taskFilters.priority==='Baja'?'active':''}" onclick="toggleTaskFilter('priority','Baja')">Baja</button></div>${uniqueSubjects.length?`<div class="filters-bar"><button class="filter-btn ${taskFilters.subject===''?'active':''}" onclick="toggleTaskFilter('subject','')">Todas las asignaturas</button>${uniqueSubjects.map(s=>`<button class="filter-btn ${taskFilters.subject===s.id?'active':''}" onclick="toggleTaskFilter('subject','${s.id}')">${esc(s.name)}</button>`).join('')}</div>`:''}${allTags.length?`<div class="filters-bar"><button class="filter-btn ${taskFilters.tag===''?'active':''}" onclick="toggleTaskFilter('tag','')">Todas etiquetas</button>${allTags.map(tag=>`<button class="filter-btn ${taskFilters.tag===tag?'active':''}" onclick="toggleTaskFilter('tag','${esc(tag)}')">#${esc(tag)}</button>`).join('')}</div>`:''}${db.tasks.filter(t=>isOverdue(t.dueDate)&&t.status!=='Completada').length?`<div class="card p-3 mb-3 border-l-4 border-red-500"><div class="text-sm font-bold text-red-400">⚠ ${db.tasks.filter(t=>isOverdue(t.dueDate)&&t.status!=='Completada').length} tarea(s) atrasada(s)</div></div>`:''}<button class="btn secondary mb-3" onclick="addTask()">+ Nueva tarea</button>${filtered.length?filtered.map(t=>taskCard(t)).join(""):`<div class="empty">No hay tareas con estos filtros.</div>`}</div>`);
 }
-function estudio(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Estudio</div><div class="small muted mt-1">Registro semanal</div></div><div class="empty">Fase 2: tareas mejoradas implementadas.</div>`)}
+function examsView(){
+ return layout(`<div class="mt-4"><div class="section-title">Exámenes</div><button class="btn secondary mb-3" onclick="addExam()">+ Nuevo examen</button>${db.exams.length?db.exams.sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999")).map(e=>examCard(e)).join(""):`<div class="empty">No hay exámenes registrados.</div>`}</div>`);
+}
+function estudio(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Estudio</div><div class="small muted mt-1">Registro semanal</div></div><div class="empty">Fase 2: tareas y exámenes mejorados implementados.</div>`)}
 function repertorio(){return layout(`<div class="card p-3 mt-2"><div class="text-lg font-black">Repertorio</div><div class="small muted mt-1">Se conserva la lógica actual.</div></div><div class="empty">Esta vista sigue funcionando con la estructura base.</div>`)}
 function sectionHead(title,add,extra=""){return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn secondary" onclick="${add}">+</button></div></div>`}
 function render(){
  if(view==="tareas"){document.querySelector("#app").innerHTML=tasksView();}
+ else if(view==="exams"){document.querySelector("#app").innerHTML=examsView();}
  else {document.querySelector("#app").innerHTML = view==="hoy"?today():view==="horario"?horario():view==="estudio"?estudio():view==="repertorio"?repertorio():today();
  }
 }
 // Inicializar rutas de vista
 window.addEventListener('hashchange',()=>{
  const hash = location.hash.slice(1) || 'hoy';
- if(['hoy','horario','estudio','repertorio','tareas'].includes(hash)) view = hash;
+ if(['hoy','horario','estudio','repertorio','tareas','exams'].includes(hash)) view = hash;
  render();
 });
-if(location.hash){const hash=location.hash.slice(1); if(['hoy','horario','estudio','repertorio','tareas'].includes(hash)) view=hash;}
+if(location.hash){const hash=location.hash.slice(1); if(['hoy','horario','estudio','repertorio','tareas','exams'].includes(hash)) view=hash;}
 render();
 </script>
 </body>
