@@ -12,7 +12,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 :root{--bg:#070b16;--card:#111827;--card2:#172033;--line:#263247;--text:#eef2ff;--muted:#94a3b8;--accent:#a78bfa;--accent2:#60a5fa}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#070b16,#0b1020 55%,#070b16);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.safe{padding-bottom:calc(90px + env(safe-area-inset-bottom))}.glass{background:rgba(17,24,39,.86);border:1px solid var(--line);backdrop-filter:blur(12px)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px}.pill{border:1px solid var(--line);background:#0f172a;border-radius:999px;padding:6px 10px;font-size:12px}.field{width:100%;background:#0b1220;border:1px solid #2a3952;color:#eef2ff;border-radius:12px;padding:11px 12px;outline:none}.field:focus{border-color:var(--accent)}.label{font-size:12px;color:#aab6ca;margin-bottom:5px;display:block}.btn{border-radius:12px;padding:10px 13px;font-weight:700}.primary{background:#8b5cf6;color:white}.secondary{background:#172033;border:1px solid #2a3952}.danger{background:#3a1620;border:1px solid #6b2635;color:#fecdd3}.navbtn{color:#8290a8;font-size:11px;padding:9px 5px}.navbtn.active{color:#c4b5fd}.navbtn span{display:block;font-size:20px;line-height:22px;margin-bottom:2px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:flex-end}.sheet{width:100%;max-height:92vh;overflow:auto;background:#0b1120;border-top:1px solid #334155;border-radius:24px 24px 0 0;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}.hide{display:none!important}.progress{height:8px;background:#1e293b;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#8b5cf6,#60a5fa);border-radius:99px}.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.daycell{min-height:92px;background:#0d1525;border:1px solid #223049;border-radius:10px;padding:5px}.eventdot{font-size:9px;line-height:12px;background:#172554;border-radius:5px;padding:2px 4px;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:80;background:#e2e8f0;color:#0f172a;padding:10px 14px;border-radius:12px;font-weight:700;box-shadow:0 8px 30px #0008}.drag{touch-action:none}.small{font-size:12px}.muted{color:var(--muted)}.section-title{font-weight:800;font-size:18px}.empty{border:1px dashed #334155;border-radius:16px;padding:20px;text-align:center;color:#94a3b8}.checkrow{display:flex;gap:9px;align-items:center}.checkrow input{width:18px;height:18px;accent-color:#8b5cf6}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#070b16,#0b1020 55%,#070b16);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe U[...]
 </style>
 </head>
 <body>
@@ -50,14 +50,14 @@ function load(){
 function merge(a,b){const o=structuredClone(a); for(const k of Object.keys(b||{})){if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&o[k])o[k]=merge(o[k],b[k]);else o[k]=b[k]} return o}
 function save(){localStorage.setItem(KEY,JSON.stringify(db))}
 function fmtDate(d){if(!d)return "";return new Date(d+"T00:00:00").toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}
-function today(){return new Date().toISOString().slice(0,10)}
-function daysFromToday(ds){if(!ds)return null;return Math.round((new Date(ds+"T00:00:00")-new Date(today()+"T00:00:00"))/86400000)}
+function currentDate(){return new Date().toISOString().slice(0,10)}
+function daysFromToday(ds){if(!ds)return null;return Math.round((new Date(ds+"T00:00:00")-new Date(currentDate()+"T00:00:00"))/86400000)}
 function allNamed(){return [...db.subjects.map(x=>x.name),...db.repertoire.map(x=>x.work),...db.tasks.map(x=>x.title)].filter(Boolean)}
 function toast(s){const t=document.querySelector("#toast");t.textContent=s;t.classList.remove("hide");setTimeout(()=>t.classList.add("hide"),1800)}
-function openModal(title,body,onSave,label="Guardar"){document.querySelector("#modal").innerHTML=`<div class="sheet"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-extrabold">${title}</h2><button class="secondary btn" onclick="closeModal()">✕</button></div>${body}<div class="flex gap-2 mt-5"><button class="btn secondary flex-1" onclick="closeModal()">Cancelar</button><button id="saveModal" class="btn primary flex-1">${label}</button></div></div>`;document.querySelector("#modal").classList.remove("hide");document.querySelector("#saveModal").onclick=onSave}
+function openModal(title,body,onSave,label="Guardar"){document.querySelector("#modal").innerHTML=`<div class="sheet"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-ext[...]
 function closeModal(){document.querySelector("#modal").classList.add("hide")}
 function F(label,name,type="text",value="",extra=""){return `<div><label class="label">${label}</label><input class="field" name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
-function S(label,name,opts,value="",allow=""){return `<div><label class="label">${label}</label><select class="field" name="${name}">${allow?`<option value="">${allow}</option>`:""}${opts.map(o=>`<option ${o==value?"selected":""} value="${esc(o)}">${esc(o)}</option>`).join("")}</select></div>`}
+function S(label,name,opts,value="",allow=""){return `<div><label class="label">${label}</label><select class="field" name="${name}">${allow?`<option value="">${allow}</option>`:""}${opts.map(o=>`[...]
 function T(label,name,value=""){return `<div><label class="label">${label}</label><textarea class="field" name="${name}" rows="2">${esc(value)}</textarea></div>`}
 function val(form,n){return form.querySelector(`[name="${n}"]`)?.value||""}
 function multiOptions(list, fallback){return [...new Set([...list,...fallback])].filter(Boolean)}
@@ -71,65 +71,65 @@ function addSubject(id){
  ${S("Día","day",["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],x.day)}
  <div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>
  ${S("¿Hay tareas para la próxima sesión?","nextTasks",["Sí","No"],x.nextTasks)}
- ${S("¿Tienes que hacer algo más?","extra","SíNo".split(""),x.extra==="Sí"?"Sí":"No")}
+ ${S("¿Tienes que hacer algo más?","extra",["Sí","No"],x.extra==="Sí"?"Sí":"No")}
  ${F("Acción adicional","extraDetail","text",x.extraDetail)}
  ${T("Notas","notes",x.notes)}</div>`;
- openModal(id?"Editar asignatura":"Nueva asignatura",body,()=>{const f=document.querySelector("#modal form")||document.querySelector("#modal"); const get=n=>val(f,n); const o={id:id||uid("sub"),name:get("name"),teacher:get("teacher"),email:get("email"),room:get("room"),course:get("course"),day:get("day"),start:get("start"),end:get("end"),nextTasks:get("nextTasks"),extra:get("extra"),extraDetail:get("extraDetail"),notes:get("notes")}; upsert(db.subjects,o); save();closeModal();render()},"Guardar");
+ openModal(id?"Editar asignatura":"Nueva asignatura",body,()=>{const f=document.querySelector("#modal form")||document.querySelector("#modal"); const get=n=>val(f,n); const o={id:id||uid("sub"),na[...]
  // wrap fields in form so val works
  const sheet=document.querySelector(".sheet"); const content=sheet.innerHTML; sheet.innerHTML=content.replace(`<div class="flex gap-2 mt-5">`,`<form id="modalForm"><div class="flex gap-2 mt-5">`);
- sheet.querySelector("#saveModal").onclick=()=>{const f=document.querySelector("#modalForm"); const get=n=>val(f,n); const o={id:id||uid("sub"),name:get("name"),teacher:get("teacher"),email:get("email"),room:get("room"),course:get("course"),day:get("day"),start:get("start"),end:get("end"),nextTasks:get("nextTasks"),extra:get("extra"),extraDetail:get("extraDetail"),notes:get("notes")};upsert(db.subjects,o);save();closeModal();render()}
+ sheet.querySelector("#saveModal").onclick=()=>{const f=document.querySelector("#modalForm"); const get=n=>val(f,n); const o={id:id||uid("sub"),name:get("name"),teacher:get("teacher"),email:get("e[...]
 }
 function addStudy(id){
  const x=id?db.study.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento / asignatura","instrument",db.lists.instruments,x.instrument,"Selecciona")}${S("Tipo de sesión","type",db.lists.studyTypes,x.type)}${F("Objetivo","objective","text",x.objective)}${F("Duración (min)","duration","number",x.duration||60,"min='1'")}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
- openModal(id?"Editar sesión":"Nueva sesión",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("stu"),instrument:val(f,"instrument"),type:val(f,"type"),objective:val(f,"objective"),duration:+val(f,"duration")||0,date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.study,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento / asignatura","instrument",db.lists.instruments,x.instrument,"Selecciona")}${S("Tipo de sesión","type",db.lists.studyTypes,x.[...]
+ openModal(id?"Editar sesión":"Nueva sesión",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("stu"),instrument:val(f,"instrument"),type:val(f,"type"),objective:val(f,"[...]
 }
 function addRep(id){
  const x=id?db.repertoire.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${F("Compositor","composer","text",x.composer)}${F("Obra","work","text",x.work)}${S("Dificultad","difficulty",["Inicial","Media","Alta","Muy alta"],x.difficulty)}${S("Estado de preparación","state",["Por empezar","En estudio","Montada","En perfeccionamiento","Memorizada","Lista"],x.state)}${F("Progreso (%)","progress","number",x.progress||0,"min='0' max='100'")}${F("Fecha objetivo","target","date",x.target)}${S("Profesor","teacher",db.lists.teachers,x.teacher,"Sin asignar")}${S("Asignatura vinculada","subject",db.subjects.map(s=>s.name),x.subject,"Sin asignar")}${S("Memorización","memory",["No","Parcial","Sí"],x.memory)}${F("Tiempo habitual (min)","minutes","number",x.minutes||30)}${T("Problemas técnicos","issues",x.issues)}${T("Notas","notes",x.notes)}</form>`;
- openModal(id?"Editar repertorio":"Nueva obra",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("rep"),instrument:val(f,"instrument"),composer:val(f,"composer"),work:val(f,"work"),difficulty:val(f,"difficulty"),state:val(f,"state"),progress:+val(f,"progress")||0,target:val(f,"target"),teacher:val(f,"teacher"),subject:val(f,"subject"),memory:val(f,"memory"),minutes:+val(f,"minutes")||0,issues:val(f,"issues"),notes:val(f,"notes")};upsert(db.repertoire,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${F("Compositor","composer","text",x.composer)}${F("Obra","work","text",x.wor[...]
+ openModal(id?"Editar repertorio":"Nueva obra",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("rep"),instrument:val(f,"instrument"),composer:val(f,"composer"),work:val([...]
 }
 function addTask(id){
  const x=id?db.tasks.find(x=>x.id===id):{};
  const subs=(x.subtasks||[]).map(s=>`<div class="checkrow"><input type="checkbox" class="subcheck" ${s.done?"checked":""}><input class="field subtext" value="${esc(s.text)}"></div>`).join("");
- const body=`<form id="modalForm" class="grid gap-3">${F("Tarea","title","text",x.title)}${S("Asignatura relacionada","subject",db.subjects.map(s=>s.name),x.subject,"Sin asignar")}${S("Categoría","category",["Deberes","Estudiar","Llevar / preparar","Preguntar","Enviar","Leer / revisar","Administrativo","Otro"],x.category)}${S("Prioridad","priority",db.lists.priorities,x.priority||"Media")}${S("Estado","status",["Pendiente","En curso","Hecha"],x.status||"Pendiente")}${F("Fecha límite","due","date",x.due)}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}<div><div class="flex justify-between items-center mb-2"><span class="font-bold">Mini tareas</span><button type="button" class="btn secondary" onclick="addSubtaskRow()">+ Añadir</button></div><div id="subtasks" class="grid gap-2">${subs}</div></div></form>`;
- openModal(id?"Editar tarea":"Nueva tarea",body,()=>{const f=document.querySelector("#modalForm");const subtasks=[...f.querySelectorAll(".checkrow")].map(r=>({id:uid("st"),done:r.querySelector(".subcheck").checked,text:r.querySelector(".subtext").value})).filter(s=>s.text.trim());const o={id:id||uid("task"),title:val(f,"title"),subject:val(f,"subject"),category:val(f,"category"),priority:val(f,"priority"),status:val(f,"status"),due:val(f,"due"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes"),subtasks};upsert(db.tasks,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${F("Tarea","title","text",x.title)}${S("Asignatura relacionada","subject",db.subjects.map(s=>s.name),x.subject,"Sin asignar")}${S("Categoría"[...]
+ openModal(id?"Editar tarea":"Nueva tarea",body,()=>{const f=document.querySelector("#modalForm");const subtasks=[...f.querySelectorAll(".checkrow")].map(r=>({id:uid("st"),done:r.querySelector(".s[...]
 }
-function addSubtaskRow(){document.querySelector("#subtasks").insertAdjacentHTML("beforeend",`<div class="checkrow"><input type="checkbox" class="subcheck"><input class="field subtext" placeholder="Mini tarea"></div>`)}
+function addSubtaskRow(){document.querySelector("#subtasks").insertAdjacentHTML("beforeend",`<div class="checkrow"><input type="checkbox" class="subcheck"><input class="field subtext" placeholder=[...]
 function addExam(id){
  const x=id?db.exams.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Asignatura","subject",db.subjects.map(s=>s.name),x.subject)}${S("Tipo de examen","type",db.lists.examTypes,x.type)}${F("Convocatoria","call","text",x.call)}${S("Estado","status",["No empezado","Preparando","Listo","Realizado"],x.status||"No empezado")}${F("Fecha","date","date",x.date)}${F("Nota","grade","number",x.grade,"min='0' max='10' step='0.01'")}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
- openModal(id?"Editar examen":"Nuevo examen",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("exam"),subject:val(f,"subject"),type:val(f,"type"),call:val(f,"call"),status:val(f,"status"),date:val(f,"date"),grade:val(f,"grade"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.exams,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Asignatura","subject",db.subjects.map(s=>s.name),x.subject)}${S("Tipo de examen","type",db.lists.examTypes,x.type)}${F("Convocatoria","ca[...]
+ openModal(id?"Editar examen":"Nuevo examen",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("exam"),subject:val(f,"subject"),type:val(f,"type"),call:val(f,"call"),stat[...]
 }
 function addRehearsal(id){
  const x=id?db.rehearsals.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Agrupación","group",db.lists.groups,x.group)}${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${S("Director","director",db.lists.teachers,x.director,"Sin asignar")}${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}${S("Prioridad","priority",db.lists.priorities,x.priority||"Media")}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${F("Repertorio","repertoire","text",x.repertoire)}${T("Notas","notes",x.notes)}</form>`;
- openModal(id?"Editar ensayo":"Nuevo ensayo",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("reh"),group:val(f,"group"),instrument:val(f,"instrument"),director:val(f,"director"),place:val(f,"place"),priority:val(f,"priority"),date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),repertoire:val(f,"repertoire"),notes:val(f,"notes")};upsert(db.rehearsals,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Agrupación","group",db.lists.groups,x.group)}${S("Instrumento","instrument",db.lists.instruments,x.instrument)}${S("Director","director"[...]
+ openModal(id?"Editar ensayo":"Nuevo ensayo",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("reh"),group:val(f,"group"),instrument:val(f,"instrument"),director:val(f,"[...]
 }
 function addEvent(id){
  const x=id?db.events.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Tipo de evento","type",db.lists.eventTypes,x.type)}${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}${F("Asignatura / agrupación relacionada","related","text",x.related)}${F("Fecha","date","date",x.date||today())}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${T("Notas","notes",x.notes)}</form>`;
- openModal(id?"Editar evento":"Nuevo evento",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("evt"),type:val(f,"type"),place:val(f,"place"),related:val(f,"related"),date:val(f,"date"),start:val(f,"start"),end:val(f,"end"),notes:val(f,"notes")};upsert(db.events,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Tipo de evento","type",db.lists.eventTypes,x.type)}${S("Lugar","place",db.lists.rooms,x.place,"Selecciona lugar")}${F("Asignatura / agrup[...]
+ openModal(id?"Editar evento":"Nuevo evento",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("evt"),type:val(f,"type"),place:val(f,"place"),related:val(f,"related"),dat[...]
 }
 function addWeekly(id){
  const x=id?db.weekly.find(x=>x.id===id):{};
- const body=`<form id="modalForm" class="grid gap-3">${S("Tipo","type",["Clase","Ensayo","Estudio","Evento"],x.type)}${F("Título","title","text",x.title)}${S("Día","day",["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],x.day)}<div class="grid grid-cols-2 gap-3">${F("Inicio","start","time",x.start)}${F("Final","end","time",x.end)}</div>${F("Lugar","place","text",x.place)}${F("Relacionado","related","text",x.related)}${S("Activo","active",["Sí","No"],x.active||"Sí")}</form>`;
- openModal(id?"Editar actividad semanal":"Nueva actividad semanal",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("wek"),type:val(f,"type"),title:val(f,"title"),day:val(f,"day"),start:val(f,"start"),end:val(f,"end"),place:val(f,"place"),related:val(f,"related"),active:val(f,"active")};upsert(db.weekly,o);save();closeModal();render()});
+ const body=`<form id="modalForm" class="grid gap-3">${S("Tipo","type",["Clase","Ensayo","Estudio","Evento"],x.type)}${F("Título","title","text",x.title)}${S("Día","day",["Lunes","Martes","Mié[...]
+ openModal(id?"Editar actividad semanal":"Nueva actividad semanal",body,()=>{const f=document.querySelector("#modalForm");const o={id:id||uid("wek"),type:val(f,"type"),title:val(f,"title"),day:va[...]
 }
 function upsert(arr,o){const i=arr.findIndex(x=>x.id===o.id);if(i<0)arr.push(o);else arr[i]=o}
 function del(type,id){if(!confirm("¿Eliminar este elemento?"))return;db[type]=db[type].filter(x=>x.id!==id);save();render()}
 function edit(type,id){({subjects:addSubject,study:addStudy,repertoire:addRep,tasks:addTask,exams:addExam,rehearsals:addRehearsal,events:addEvent,weekly:addWeekly}[type])(id)}
 function nav(v){view=v;render()}
 function layout(content){
- return `<div class="safe min-h-screen"><header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur"><div class="flex justify-between items-center"><div><div class="text-xs uppercase tracking-[.2em] text-violet-300">RitmoAcade</div><h1 class="text-2xl font-black">Centro de control</h1></div><button class="btn secondary" onclick="settings()">⚙️</button></div></header><main class="px-4 max-w-3xl mx-auto">${content}</main><nav class="fixed bottom-0 left-0 right-0 z-30 glass px-2 pb-[env(safe-area-inset-bottom)]"><div class="max-w-3xl mx-auto grid grid-cols-5">${navBtn("hoy","⌂","Hoy")}${navBtn("horario","▦","Horario")}${navBtn("estudio","◉","Estudio")}${navBtn("repertorio","♫","Repertorio")}${navBtn("mas","☰","Más")}</div></nav></div>`;
+ return `<div class="safe min-h-screen"><header class="px-4 pt-5 pb-3 sticky top-0 z-20 bg-[#070b16]/90 backdrop-blur"><div class="flex justify-between items-center"><div><div class="text-xs uppe[...]
 }
 function navBtn(v,i,t){return `<button class="navbtn ${view===v?"active":""}" onclick="nav('${v}')"><span>${i}</span>${t}</button>`}
-function sectionHead(title,add,extra=""){return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn primary" onclick="${add}">+ Añadir</button></div></div>`}
+function sectionHead(title,add,extra=""){return `<div class="flex items-center justify-between mb-3 mt-6"><h2 class="section-title">${title}</h2><div class="flex gap-2">${extra}<button class="btn[...]
 function eventTime(x){return [x.start,x.end].filter(Boolean).join("–")}
 function todayItems(){
- const d=today(), a=[];
+ const d=currentDate(), a=[];
  db.subjects.filter(x=>x.day&&x.start&&dayName(new Date(d+"T12:00:00"))===x.day).forEach(x=>a.push({kind:"Clase",title:x.name,start:x.start,end:x.end,place:x.room,sub:x.id,type:"subjects"}));
- [...db.events.filter(x=>x.date===d),...db.study.filter(x=>x.date===d),...db.rehearsals.filter(x=>x.date===d)].forEach(x=>a.push({kind:x.type||"Actividad",title:x.title||x.objective||x.group||x.related||x.repertoire||"Actividad",start:x.start,end:x.end,place:x.place,sub:x.id,type:x.type==="Estudio"?"study":x.group?"rehearsals":"events"}));
+ [...db.events.filter(x=>x.date===d),...db.study.filter(x=>x.date===d),...db.rehearsals.filter(x=>x.date===d)].forEach(x=>a.push({kind:x.type||"Actividad",title:x.title||x.objective||x.group||x.r[...]
  db.weekly.filter(x=>x.active!=="No"&&x.day===dayName(new Date(d+"T12:00:00"))).forEach(x=>a.push({kind:x.type,title:x.title,start:x.start,end:x.end,place:x.place,sub:x.id,type:"weekly"}));
  return a.sort((a,b)=>(a.start||"99").localeCompare(b.start||"99"));
 }
@@ -138,80 +138,80 @@ function taskProgress(t){const s=t.subtasks||[];if(!s.length)return t.status==="
 function today(){
  const items=todayItems(), pending=db.tasks.filter(x=>x.status!=="Hecha").sort((a,b)=>(a.due||"99").localeCompare(b.due||"99")).slice(0,5);
  const exams=db.exams.filter(x=>x.date&&daysFromToday(x.date)>=0).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);
- const due=db.tasks.filter(x=>x.due===today()&&x.status!=="Hecha").length;
+ const due=db.tasks.filter(x=>x.due===currentDate()&&x.status!=="Hecha").length;
  const mins=db.study.filter(x=>x.date>=weekStart()&&x.date<=weekEnd()).reduce((n,x)=>n+(+x.duration||0),0);
  return layout(`<div class="grid gap-3 mt-2">
- <div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(today())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="muted mt-1">${items.length?`${items[0].kind} · ${eventTime(items[0])} ${items[0].place?"· "+items[0].place:""}`:"Añade una actividad para empezar"}</div><div class="flex gap-2 mt-4"><button class="btn primary" onclick="quickStudy()">▶ Empezar estudio</button><button class="btn secondary" onclick="searchView()">⌕ Buscar</button></div></div>
- <div class="grid grid-cols-3 gap-2"><div class="card p-3"><div class="text-2xl font-black">${due}</div><div class="small muted">Vencen hoy</div></div><div class="card p-3"><div class="text-2xl font-black">${mins}</div><div class="small muted">min esta semana</div></div><div class="card p-3"><div class="text-2xl font-black">${exams.length}</div><div class="small muted">exámenes próximos</div></div></div>
+ <div class="card p-4"><div class="text-sm muted">Hoy · ${fmtDate(currentDate())}</div><div class="text-2xl font-black mt-1">${items.length?items[0].title:"Día libre de agenda"}</div><div class="mute[...]
+ <div class="grid grid-cols-3 gap-2"><div class="card p-3"><div class="text-2xl font-black">${due}</div><div class="small muted">Vencen hoy</div></div><div class="card p-3"><div class="text-2xl f[...]
  ${sectionHead("Agenda de hoy","quickEvent()")}
- ${items.length?items.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><div class="font-bold">${esc(x.title)}</div><div class="small muted">${esc(x.kind)} · ${eventTime(x)} ${x.place?"· "+esc(x.place):""}</div></div><span class="pill">${esc(x.start||"")}</span></div>`).join(""):`<div class="empty">No hay actividades registradas para hoy.</div>`}
+ ${items.length?items.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><div class="font-bold">${esc(x.title)}</div><div class="small muted">${esc(x.kind)} · ${eventTime(x)} ${x.place[...]
  ${sectionHead("Tareas pendientes","addTask()")}
  ${pending.length?pending.map(t=>taskCard(t)).join(""):`<div class="empty">No tienes tareas pendientes.</div>`}
  ${sectionHead("Próximos exámenes","addExam")}
- ${exams.length?exams.map(e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><b>${esc(e.subject)}</b><span class="pill">${daysFromToday(e.date)} días</span></div><div class="small muted">${esc(e.type)} · ${fmtDate(e.date)} · ${esc(e.status)}</div></div>`).join(""):`<div class="empty">Sin exámenes próximos.</div>`}
+ ${exams.length?exams.map(e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><b>${esc(e.subject)}</b><span class="pill">${daysFromToday(e.date)} días</span></div><div class="small [...]
  </div>`);
 }
-function taskCard(t){return `<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(t.title)}</b><div class="small muted">${esc(t.subject||"Sin asignatura")} · ${esc(t.category||"")} · ${esc(t.priority||"")}</div></div><div class="flex gap-1"><button class="pill" onclick="edit('tasks','${t.id}')">Editar</button><button class="pill" onclick="finishTask('${t.id}')">${t.status==="Hecha"?"✓":"Hecha"}</button></div></div>${(t.subtasks||[]).length?`<div class="progress mt-3"><i style="width:${taskProgress(t)}%"></i></div><div class="small muted mt-1">${taskProgress(t)}% · ${t.subtasks.filter(x=>x.done).length}/${t.subtasks.length} mini tareas</div>`:""}</div>`}
+function taskCard(t){return `<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(t.title)}</b><div class="small muted">${esc(t.subject||"Sin asignatura")} · ${esc(t.[...]
 function finishTask(id){const t=db.tasks.find(x=>x.id===id);if(!t)return;t.status=t.status==="Hecha"?"Pendiente":"Hecha";save();render()}
 function horario(){
  const d=new Date(calDate), y=d.getFullYear(),m=d.getMonth(), first=new Date(y,m,1), days=new Date(y,m+1,0).getDate(), offset=(first.getDay()+6)%7;
  let cells="";for(let i=0;i<offset;i++)cells+=`<div></div>`;
- for(let n=1;n<=days;n++){const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(n).padStart(2,"0")}`;const its=calendarItems(ds);cells+=`<div class="daycell"><div class="text-xs font-bold">${n}</div>${its.slice(0,4).map(x=>`<div class="eventdot">${esc((x.start?x.start+" ":"")+x.title)}</div>`).join("")}</div>`}
+ for(let n=1;n<=days;n++){const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(n).padStart(2,"0")}`;const its=calendarItems(ds);cells+=`<div class="daycell"><div class="text-xs font-bold">${n}<[...]
  const month=d.toLocaleDateString("es-ES",{month:"long",year:"numeric"});
- return layout(`<div class="flex items-center justify-between mt-2"><button class="btn secondary" onclick="calMove(-1)">‹</button><h2 class="text-xl font-black capitalize">${month}</h2><button class="btn secondary" onclick="calMove(1)">›</button></div>
+ return layout(`<div class="flex items-center justify-between mt-2"><button class="btn secondary" onclick="calMove(-1)">‹</button><h2 class="text-xl font-black capitalize">${month}</h2><button [...]
  <div class="calgrid mt-4 text-center text-xs muted">${["L","M","X","J","V","S","D"].map(x=>`<div>${x}</div>`).join("")}</div><div class="calgrid mt-1">${cells}</div>
  ${sectionHead("Actividades semanales","addWeekly")}
- ${db.weekly.length?db.weekly.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><b>${esc(x.title)}</b><div class="small muted">${esc(x.day)} · ${eventTime(x)} · ${esc(x.place||"")}</div></div><div><button class="pill" onclick="edit('weekly','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('weekly','${x.id}')">×</button></div></div>`).join(""):`<div class="empty">Añade clases, ensayos o estudio recurrente.</div>`}
+ ${db.weekly.length?db.weekly.map(x=>`<div class="card p-3 mb-2 flex justify-between"><div><b>${esc(x.title)}</b><div class="small muted">${esc(x.day)} · ${eventTime(x)} · ${esc(x.place||"")}</[...]
  ${sectionHead("Asignaturas","addSubject")}
- ${db.subjects.length?db.subjects.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.name)}</b><div class="small muted">${esc(x.day||"")} · ${eventTime(x)} · ${esc(x.room||"")}</div><div class="small muted">${esc(x.teacher||"")}${x.email?" · "+esc(x.email):""}</div></div><div><button class="pill" onclick="edit('subjects','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('subjects','${x.id}')">×</button></div></div></div>`).join(""):`<div class="empty">Crea tu primera asignatura.</div>`}`);
+ ${db.subjects.length?db.subjects.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.name)}</b><div class="small muted">${esc(x.day||"")} · ${eventTime(x)} · $[...]
 }
 function calMove(n){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+n,1);render()}
 function calendarItems(ds){
- return [...db.events.filter(x=>x.date===ds),...db.study.filter(x=>x.date===ds),...db.rehearsals.filter(x=>x.date===ds),...db.tasks.filter(x=>x.due===ds),...db.exams.filter(x=>x.date===ds),...db.weekly.filter(x=>x.active!=="No"&&x.day===dayName(new Date(ds+"T12:00:00")))].map(x=>({title:x.title||x.objective||x.subject||x.group||x.type||"Actividad",start:x.start}));
+ return [...db.events.filter(x=>x.date===ds),...db.study.filter(x=>x.date===ds),...db.rehearsals.filter(x=>x.date===ds),...db.tasks.filter(x=>x.due===ds),...db.exams.filter(x=>x.date===ds),...db.[...]
 }
 function estudio(){
  const ws=weekStart(),we=weekEnd(),logs=db.study.filter(x=>x.date>=ws&&x.date<=we),mins=logs.reduce((n,x)=>n+(+x.duration||0),0);
  return layout(`${sectionHead("Estudio","addStudy",`<button class="btn secondary" onclick="quickStudy()">▶ Temporizador</button>`)}
- <div class="card p-4 mb-3"><div class="text-sm muted">Objetivo semanal</div><div class="text-3xl font-black">${mins} / ${db.profile.weeklyGoal||420} min</div><div class="progress mt-3"><i style="width:${Math.min(100,mins/(db.profile.weeklyGoal||420)*100)}%"></i></div><div class="small muted mt-2">${logs.length} sesiones registradas</div></div>
- ${logs.length?logs.sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start)).map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.instrument)} · ${esc(x.type)}</b><div class="small muted">${fmtDate(x.date)} · ${x.duration} min · ${esc(x.objective||"")}</div></div><button class="pill" onclick="edit('study','${x.id}')">Editar</button></div></div>`).join(""):`<div class="empty">Registra tus sesiones para ver estadísticas y cumplir objetivos.</div>`}`);
+ <div class="card p-4 mb-3"><div class="text-sm muted">Objetivo semanal</div><div class="text-3xl font-black">${mins} / ${db.profile.weeklyGoal||420} min</div><div class="progress mt-3"><i style=[...]
+ ${logs.length?logs.sort((a,b)=>(b.date+b.start).localeCompare(a.date+a.start)).map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(x.instrument)} · ${esc(x.type)}[...]
 }
 function weekStart(){const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.toISOString().slice(0,10)}
 function weekEnd(){const d=new Date(weekStart()+"T12:00:00");d.setDate(d.getDate()+6);return d.toISOString().slice(0,10)}
 function quickStudy(){let secs=25*60;timer={running:true,seconds:secs,startedAt:Date.now(),sessionType:"Estudio",instrument:db.lists.instruments[0]||""};timerModal()}
 function timerModal(){
- const body=`<div class="text-center"><div id="timerClock" class="text-6xl font-black tracking-tight">25:00</div><div class="muted mt-2">Temporizador de estudio</div><div class="grid gap-3 mt-5">${S("Instrumento","instrument",db.lists.instruments,timer.instrument)}${S("Tipo","type",db.lists.studyTypes,timer.sessionType)}${F("Objetivo","objective","text","")}</div></div>`;
+ const body=`<div class="text-center"><div id="timerClock" class="text-6xl font-black tracking-tight">25:00</div><div class="muted mt-2">Temporizador de estudio</div><div class="grid gap-3 mt-5">[...]
  openModal("Sesión de estudio",body,()=>{const f=document.querySelector("#modalForm");if(!f){saveTimer();return}saveTimer()});
  const sheet=document.querySelector(".sheet"); const saveBtn=document.querySelector("#saveModal"); saveBtn.textContent="Terminar y guardar";
- const clock=setInterval(()=>{if(!document.querySelector("#timerClock")){clearInterval(clock);return} if(timer.seconds>0){timer.seconds--;document.querySelector("#timerClock").textContent=`${String(Math.floor(timer.seconds/60)).padStart(2,"0")}:${String(timer.seconds%60).padStart(2,"0")}`}},1000);
+ const clock=setInterval(()=>{if(!document.querySelector("#timerClock")){clearInterval(clock);return} if(timer.seconds>0){timer.seconds--;document.querySelector("#timerClock").textContent=`${Stri[...]
 }
-function saveTimer(){const f=document.querySelector("#modal");const instrument=f.querySelector('[name="instrument"]')?.value||timer.instrument;const type=f.querySelector('[name="type"]')?.value||timer.sessionType;const objective=f.querySelector('[name="objective"]')?.value||"Sesión cronometrada";const elapsed=Math.max(1,Math.round((25*60-timer.seconds)/60));db.study.push({id:uid("stu"),instrument,type,objective,duration:elapsed,date:today(),start:new Date().toTimeString().slice(0,5),end:new Date().toTimeString().slice(0,5),notes:"Temporizador"});save();closeModal();render();toast(`Sesión guardada: ${elapsed} min`)}
+function saveTimer(){const f=document.querySelector("#modal");const instrument=f.querySelector('[name="instrument"]')?.value||timer.instrument;const type=f.querySelector('[name="type"]')?.value||[...]
 function repertorio(){
  return layout(`${sectionHead("Repertorio","addRep")}
- ${db.repertoire.length?db.repertoire.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(x.composer)} — ${esc(x.work)}</b><div class="small muted">${esc(x.instrument)} · ${esc(x.state)} · dificultad ${esc(x.difficulty)}</div><div class="progress mt-3"><i style="width:${x.progress||0}%"></i></div><div class="small muted mt-1">${x.progress||0}%${x.target?" · objetivo "+fmtDate(x.target):""}</div></div><div><button class="pill" onclick="edit('repertoire','${x.id}')">Editar</button><button class="pill ml-1" onclick="del('repertoire','${x.id}')">×</button></div></div></div>`).join(""):`<div class="empty">Añade obras y controla su preparación por porcentaje, estado y fecha objetivo.</div>`}`);
+ ${db.repertoire.length?db.repertoire.map(x=>`<div class="card p-3 mb-2"><div class="flex justify-between gap-3"><div><b>${esc(x.composer)} — ${esc(x.work)}</b><div class="small muted">${esc(x.[...]
 }
 function mas(){
  return layout(`<div class="grid gap-3 mt-3">
- ${["Tareas","Exámenes","Ensayos","Eventos","Buscar","Estadísticas","Configuración"].map((x,i)=>`<button class="card p-4 text-left flex justify-between items-center" onclick="${["tasksView","examsView","rehearsalsView","eventsView","searchView","statsView","settings"][i]}()"><span><b>${x}</b><div class="small muted">${["Deberes, mini tareas y prioridades","Convocatorias, notas y cuenta atrás","Agrupaciones y repertorio","Agenda extraordinaria","Busca en toda la aplicación","Tiempo de estudio y carga","Listas, perfil y copias de seguridad"][i]}</div></span><span>›</span></button>`).join("")}
+ ${["Tareas","Exámenes","Ensayos","Eventos","Buscar","Estadísticas","Configuración"].map((x,i)=>`<button class="card p-4 text-left flex justify-between items-center" onclick="${["tasksView","e[...]
  </div>`);
 }
-function genericView(title,type,add,items,renderItem){return layout(`${sectionHead(title,add)}${items.length?items.map(renderItem).join(""):`<div class="empty">No hay elementos todavía.</div>`}`)}
-function tasksView(){return genericView("Tareas","tasks","addTask",db.tasks,t=>taskCard(t)+`<div class="text-right -mt-1 mb-2"><button class="pill" onclick="del('tasks','${t.id}')">Eliminar</button></div>`)}
-function examsView(){return genericView("Exámenes","exams","addExam",db.exams,(e)=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.subject)}</b><div class="small muted">${esc(e.type)} · ${esc(e.call)} · ${fmtDate(e.date)} · ${esc(e.status)}${e.grade?" · nota "+esc(e.grade):""}</div></div><div><button class="pill" onclick="edit('exams','${e.id}')">Editar</button><button class="pill ml-1" onclick="del('exams','${e.id}')">×</button></div></div></div>`)}
-function rehearsalsView(){return genericView("Ensayos","rehearsals","addRehearsal",db.rehearsals,r=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.group)}</b><div class="small muted">${fmtDate(r.date)} · ${eventTime(r)} · ${esc(r.place)} · ${esc(r.director||"")}</div><div class="small muted">Repertorio: ${esc(r.repertoire||"")}</div></div><div><button class="pill" onclick="edit('rehearsals','${r.id}')">Editar</button><button class="pill ml-1" onclick="del('rehearsals','${r.id}')">×</button></div></div></div>`)}
-function eventsView(){return genericView("Eventos","events","addEvent",db.events,e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.type)}</b><div class="small muted">${fmtDate(e.date)} · ${eventTime(e)} · ${esc(e.place||"")}</div><div class="small muted">${esc(e.related||"")}</div></div><div><button class="pill" onclick="edit('events','${e.id}')">Editar</button><button class="pill ml-1" onclick="del('events','${e.id}')">×</button></div></div></div>`)}
-function statsView(){const logs=db.study.filter(x=>x.date>=weekStart()&&x.date<=weekEnd());const by={};logs.forEach(x=>by[x.instrument]=(by[x.instrument]||0)+(+x.duration||0));return layout(`<h2 class="text-xl font-black mt-3">Estadísticas</h2><div class="card p-4 mt-3"><div class="text-sm muted">Esta semana</div><div class="text-4xl font-black">${logs.reduce((n,x)=>n+(+x.duration||0),0)} min</div><div class="mt-4 grid gap-2">${Object.entries(by).map(([k,v])=>`<div><div class="flex justify-between"><span>${esc(k)}</span><b>${v} min</b></div><div class="progress mt-1"><i style="width:${Math.min(100,v/(db.profile.weeklyGoal||420)*100)}%"></i></div></div>`).join("")||"<div class='muted'>Sin sesiones esta semana.</div>"}</div></div>`) }
+function genericView(title,type,add,items,renderItem){return layout(`${sectionHead(title,add)}${items.length?items.map(renderItem).join(""):`<div class="empty">No hay elementos todavía.</div>`}`[...]
+function tasksView(){return genericView("Tareas","tasks","addTask",db.tasks,t=>taskCard(t)+`<div class="text-right -mt-1 mb-2"><button class="pill" onclick="del('tasks','${t.id}')">Eliminar</butt[...]
+function examsView(){return genericView("Exámenes","exams","addExam",db.exams,(e)=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.subject)}</b><div class="small mu[...]
+function rehearsalsView(){return genericView("Ensayos","rehearsals","addRehearsal",db.rehearsals,r=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(r.group)}</b><div c[...]
+function eventsView(){return genericView("Eventos","events","addEvent",db.events,e=>`<div class="card p-3 mb-2"><div class="flex justify-between"><div><b>${esc(e.type)}</b><div class="small muted[...]
+function statsView(){const logs=db.study.filter(x=>x.date>=weekStart()&&x.date<=weekEnd());const by={};logs.forEach(x=>by[x.instrument]=(by[x.instrument]||0)+(+x.duration||0));return layout(`<h2 [...]
 function settings(){
  const lists=Object.keys(db.lists);
- const body=`<form id="modalForm" class="grid gap-3"><div class="font-bold">Perfil</div>${F("Nombre","name","text",db.profile.name)}${F("Estudios / itinerario","career","text",db.profile.career)}${F("Centro","institution","text",db.profile.institution)}${F("Objetivo semanal de estudio (min)","weeklyGoal","number",db.profile.weeklyGoal)}<div class="border-t border-slate-700 pt-3 font-bold">Listas configurables</div>${lists.map(k=>T(k,"list_"+k,(db.lists[k]||[]).join("\\n"))).join("")}</form>
- <div class="grid grid-cols-2 gap-2 mt-4"><button class="btn secondary" onclick="exportData()">⬇ Exportar copia</button><button class="btn secondary" onclick="document.querySelector('#importFile').click()">⬆ Importar copia</button></div><input id="importFile" type="file" accept=".json" class="hide" onchange="importData(event)"><button class="btn danger w-full mt-2" onclick="resetData()">Borrar todos los datos</button>`;
- openModal("Configuración",body,()=>{const f=document.querySelector("#modalForm");db.profile.name=val(f,"name");db.profile.career=val(f,"career");db.profile.institution=val(f,"institution");db.profile.weeklyGoal=+val(f,"weeklyGoal")||420;for(const k of lists)db.lists[k]=val(f,"list_"+k).split("\n").map(x=>x.trim()).filter(Boolean);save();closeModal();render();toast("Configuración guardada")});
+ const body=`<form id="modalForm" class="grid gap-3"><div class="font-bold">Perfil</div>${F("Nombre","name","text",db.profile.name)}${F("Estudios / itinerario","career","text",db.profile.career)}[...]
+ <div class="grid grid-cols-2 gap-2 mt-4"><button class="btn secondary" onclick="exportData()">⬇ Exportar copia</button><button class="btn secondary" onclick="document.querySelector('#importFil[...]
+ openModal("Configuración",body,()=>{const f=document.querySelector("#modalForm");db.profile.name=val(f,"name");db.profile.career=val(f,"career");db.profile.institution=val(f,"institution");db.p[...]
 }
-function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ritmoacade-backup.json";a.click();URL.revokeObjectURL(a.href)}
-function importData(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{db=merge(defaults,JSON.parse(r.result));save();closeModal();render();toast("Copia importada")}catch(e){toast("Archivo no válido")}};r.readAsText(file)}
+function exportData(){const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ritmoacade-backup[...]
+function importData(ev){const file=ev.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{db=merge(defaults,JSON.parse(r.result));save();closeModal();render();toast("Copia [...]
 function resetData(){if(confirm("Esto borrará todos los datos locales de RitmoAcade. ¿Continuar?")){db=structuredClone(defaults);save();closeModal();render()}}
 function searchView(){
- const q=prompt("¿Qué quieres buscar?");if(q===null)return;const z=q.toLowerCase();const out=[];for(const [type,arr] of Object.entries(db)){if(!Array.isArray(arr))continue;arr.forEach(x=>{const s=JSON.stringify(x).toLowerCase();if(s.includes(z))out.push({type,id:x.id,title:x.name||x.title||x.work||x.subject||x.group||x.type||type,detail:s.replace(/[{}"]/g," ").slice(0,180)})})}
- return openModal("Resultados de búsqueda",out.length?out.map(x=>`<div class="card p-3 mb-2"><b>${esc(x.title)}</b><div class="small muted">${esc(x.type)} · ${esc(x.detail)}</div></div>`).join(""):`<div class="empty">No se encontraron resultados.</div>`,()=>closeModal(),"Cerrar");
+ const q=prompt("¿Qué quieres buscar?");if(q===null)return;const z=q.toLowerCase();const out=[];for(const [type,arr] of Object.entries(db)){if(!Array.isArray(arr))continue;arr.forEach(x=>{const[...]
+ return openModal("Resultados de búsqueda",out.length?out.map(x=>`<div class="card p-3 mb-2"><b>${esc(x.title)}</b><div class="small muted">${esc(x.type)} · ${esc(x.detail)}</div></div>`).join([...]
 }
 function quickEvent(){addEvent()}
 function render(){
