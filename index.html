@@ -161,7 +161,24 @@
       margin-top: 10px;
       padding-top: 8px;
       border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    .tarea-acciones {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-accion-txt {
+      background: none;
+      border: none;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-editar { color: var(--primary); }
+    .btn-eliminar { color: var(--danger); }
 
     .progress {
       width: 100%;
@@ -430,7 +447,7 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 5: MÁS (AJUSTES CON ACCESO A TAREAS) ================= -->
+  <!-- ================= VISTA 5: MÁS (AJUSTES) ================= -->
   <div id="vista-mas" class="view">
     <header>
       <div class="titulo">Ajustes y Perfil</div>
@@ -438,7 +455,6 @@
     <p class="fecha">Preferencias de la aplicación.</p>
 
     <div class="grid">
-      <!-- NUEVO ACCESO A TAREAS PENDIENTES DESDE AJUSTES -->
       <div class="card interactive" onclick="cambiarVista('tareas')">
         <div class="section-flex">
           <h4>📝 Tareas Pendientes</h4>
@@ -452,7 +468,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v3.4 - Con gestión de tareas.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v3.5 - Edición de tareas y asignaturas.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -468,29 +484,41 @@
 
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Listado de tus pendientes musicales.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTarea()">+ Añadir tarea</button>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTareaParaCrear()">+ Añadir tarea</button>
     </div>
 
     <!-- Contenedor dinámico de tareas -->
     <div class="grid" id="lista-tareas-container">
-      <div class="card">
+      <div class="card" data-id="1">
         <div class="section-flex">
-          <span class="badge">Saxofón</span>
-          <span class="badge-danger">Urgente</span>
+          <span class="badge asignatura-tag">Saxofón</span>
+          <span class="badge-danger prioridad-tag">Urgente</span>
         </div>
-        <h4 style="margin-top: 6px;">Repasar articulación compases 30-45</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Estudio detallado del pasaje rápido en la sonata.</p>
-        <div class="footer-info">📅 Fecha límite: Mañana • ⏰ Aviso activado</div>
+        <h4 style="margin-top: 6px;" class="titulo-tag">Repasar articulación compases 30-45</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">Estudio detallado del pasaje rápido en la sonata.</p>
+        <div class="footer-info">
+          <span class="fecha-aviso-tag">📅 Fecha: Mañana • ⏰ Aviso activado</span>
+          <div class="tarea-acciones">
+            <button class="btn-accion-txt btn-editar" onclick="editarTarea(this)">Editar</button>
+            <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(this)">Eliminar</button>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-id="2">
         <div class="section-flex">
-          <span class="badge">Piano</span>
-          <span class="badge-warn">Normal</span>
+          <span class="badge asignatura-tag">Piano</span>
+          <span class="badge-warn prioridad-tag">Normal</span>
         </div>
-        <h4 style="margin-top: 6px;">Memorizar la sección B del Nocturno</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Práctica de manos separadas y unificación posterior.</p>
-        <div class="footer-info">📅 Fecha límite: 30 Septiembre • ⏰ Aviso activado</div>
+        <h4 style="margin-top: 6px;" class="titulo-tag">Memorizar la sección B del Nocturno</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">Práctica de manos separadas y unificación posterior.</p>
+        <div class="footer-info">
+          <span class="fecha-aviso-tag">📅 Fecha: 30 Septiembre • ⏰ Aviso activado</span>
+          <div class="tarea-acciones">
+            <button class="btn-accion-txt btn-editar" onclick="editarTarea(this)">Editar</button>
+            <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(this)">Eliminar</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -541,13 +569,16 @@
     </div>
   </div>
 
-  <!-- ================= MODAL AÑADIR TAREA ================= -->
+  <!-- ================= MODAL AÑADIR / EDITAR TAREA ================= -->
   <div id="modalTarea" class="modal" onclick="cerrarModalTareaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nueva Tarea Musical</h3>
+        <h3 id="modal-tarea-titulo">Nueva Tarea Musical</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalTarea()">✕</span>
       </div>
+
+      <!-- Campo oculto para saber si estamos editando una tarea existente -->
+      <input type="hidden" id="input-edit-index" value="-1">
 
       <div class="form-group">
         <label>Título de la tarea</label>
@@ -556,11 +587,12 @@
 
       <div class="form-group">
         <label>Asignatura / Instrumento</label>
-        <select id="input-asignatura-tarea" class="form-control">
+        <select id="input-asignatura-tarea" class="form-control" onchange="verificarAsignaturaPersonalizada(this)">
           <option value="Saxofón">🎷 Saxofón</option>
           <option value="Piano">🎹 Piano</option>
           <option value="Lenguaje Musical">🎼 Lenguaje Musical</option>
           <option value="Armonía">🎶 Armonía</option>
+          <option value="__nueva__">+ Añadir asignatura personalizada...</option>
         </select>
       </div>
 
@@ -593,12 +625,11 @@
         <textarea id="input-desc-tarea" class="form-control" rows="2" placeholder="Notas adicionales sobre la tarea..."></textarea>
       </div>
 
-      <button class="btn-main" onclick="guardarNuevaTarea()">Guardar tarea</button>
+      <button class="btn-main" id="btn-guardar-tarea" onclick="guardarOActualizarTarea()">Guardar tarea</button>
     </div>
   </div>
 
   <script>
-    // Función global limpia y directa para cambiar de vista sin fallos
     function cambiarVista(idVista) {
       document.querySelectorAll('.view').forEach(v => {
         v.classList.remove('active');
@@ -635,8 +666,36 @@
       if (e.target.id === 'modalRacha') cerrarRacha();
     }
 
-    // Funciones del Modal de Tareas
-    function abrirModalTarea() {
+    // --- GESTIÓN DE ASIGNATURAS PERSONALIZADAS ---
+    function verificarAsignaturaPersonalizada(selectElem) {
+      if (selectElem.value === '__nueva__') {
+        const nuevaAsig = prompt('Introduce el nombre de la nueva asignatura o instrumento:');
+        if (nuevaAsig && nuevaAsig.trim() !== '') {
+          const nombreLimpio = nuevaAsig.trim();
+          // Crear nueva opción antes de la opción de añadir
+          const nuevaOp = document.createElement('option');
+          nuevaOp.value = nombreLimpio;
+          nuevaOp.textContent = '📚 ' + nombreLimpio;
+          selectElem.insertBefore(nuevaOp, selectElem.lastElementChild);
+          selectElem.value = nombreLimpio;
+        } else {
+          selectElem.value = 'Saxofón'; // por defecto si cancela
+        }
+      }
+    }
+
+    // --- MODAL DE TAREAS (CREAR / EDITAR) ---
+    function abrirModalTareaParaCrear() {
+      document.getElementById('modal-tarea-titulo').textContent = 'Nueva Tarea Musical';
+      document.getElementById('input-edit-index').value = '-1';
+      document.getElementById('input-titulo-tarea').value = '';
+      document.getElementById('input-asignatura-tarea').value = 'Saxofón';
+      document.getElementById('input-prioridad-tarea').value = 'Normal';
+      document.getElementById('input-fecha-tarea').value = '';
+      document.getElementById('input-aviso-tarea').value = 'Aviso activado (1 hora antes)';
+      document.getElementById('input-desc-tarea').value = '';
+      document.getElementById('btn-guardar-tarea').textContent = 'Guardar tarea';
+
       const m = document.getElementById('modalTarea');
       if (m) m.classList.add('active');
     }
@@ -650,53 +709,139 @@
       if (e.target.id === 'modalTarea') cerrarModalTarea();
     }
 
-    // Lógica para guardar y pintar la nueva tarea
-    function guardarNuevaTarea() {
+    // Guardar nueva tarea o actualizar existente
+    function guardarOActualizarTarea() {
       const titulo = document.getElementById('input-titulo-tarea').value.trim();
       const asignatura = document.getElementById('input-asignatura-tarea').value;
       const prioridad = document.getElementById('input-prioridad-tarea').value;
       const fecha = document.getElementById('input-fecha-tarea').value.trim() || 'Próximamente';
       const aviso = document.getElementById('input-aviso-tarea').value;
       const desc = document.getElementById('input-desc-tarea').value.trim();
+      const editIndex = parseInt(document.getElementById('input-edit-index').value);
 
       if (!titulo) {
         alert('Por favor, introduce al menos un título para la tarea.');
         return;
       }
 
-      const contenedor = document.getElementById('lista-tareas-container');
-      const nuevaCard = document.createElement('div');
-      nuevaCard.className = 'card';
-
       let claseBadgePrioridad = 'badge';
       if (prioridad === 'Urgente') claseBadgePrioridad = 'badge-danger';
       else if (prioridad === 'Normal') claseBadgePrioridad = 'badge-warn';
 
-      nuevaCard.innerHTML = `
-        <div class="section-flex">
-          <span class="badge">${asignatura}</span>
-          <span class="${claseBadgePrioridad}">${prioridad}</span>
-        </div>
-        <h4 style="margin-top: 6px;">${titulo}</h4>
-        ${desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${desc}</p>` : ''}
-        <div class="footer-info">📅 Fecha: ${fecha} • ⏰ ${aviso}</div>
-      `;
+      const contenedor = document.getElementById('lista-tareas-container');
 
-      // Añadir la nueva tarea arriba del todo
-      contenedor.insertBefore(nuevaCard, contenedor.firstChild);
+      if (editIndex === -1) {
+        // CREAR NUEVA TAREA
+        const nuevaCard = document.createElement('div');
+        nuevaCard.className = 'card';
+        nuevaCard.innerHTML = `
+          <div class="section-flex">
+            <span class="badge asignatura-tag">${asignatura}</span>
+            <span class="${claseBadgePrioridad} prioridad-tag">${prioridad}</span>
+          </div>
+          <h4 style="margin-top: 6px;" class="titulo-tag">${titulo}</h4>
+          ${desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">${desc}</p>` : '<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px; display:none;" class="desc-tag"></p>'}
+          <div class="footer-info">
+            <span class="fecha-aviso-tag">📅 Fecha: ${fecha} • ⏰ ${aviso}</span>
+            <div class="tarea-acciones">
+              <button class="btn-accion-txt btn-editar" onclick="editarTarea(this)">Editar</button>
+              <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(this)">Eliminar</button>
+            </div>
+          </div>
+        `;
+        contenedor.insertBefore(nuevaCard, contenedor.firstChild);
 
-      // Actualizar contador del widget de inicio
-      const contadorWidget = document.getElementById('contador-tareas-num');
-      if (contadorWidget) {
-        let total = parseInt(contadorWidget.textContent || 0) + 1;
-        contadorWidget.textContent = total;
+        // Actualizar contador del widget de inicio
+        const contadorWidget = document.getElementById('contador-tareas-num');
+        if (contadorWidget) {
+          let total = parseInt(contadorWidget.textContent || 0) + 1;
+          contadorWidget.textContent = total;
+        }
+      } else {
+        // EDITAR TAREA EXISTENTE
+        const cards = contenedor.querySelectorAll('.card');
+        const cardToEdit = cards[editIndex];
+        if (cardToEdit) {
+          cardToEdit.querySelector('.asignatura-tag').textContent = asignatura;
+          
+          const badgePrio = cardToEdit.querySelector('.prioridad-tag');
+          badgePrio.className = `${claseBadgePrioridad} prioridad-tag`;
+          badgePrio.textContent = prioridad;
+
+          cardToEdit.querySelector('.titulo-tag').textContent = titulo;
+          
+          const pDesc = cardToEdit.querySelector('.desc-tag');
+          if (desc) {
+            pDesc.textContent = desc;
+            pDesc.style.display = 'block';
+          } else {
+            pDesc.textContent = '';
+            pDesc.style.display = 'none';
+          }
+
+          cardToEdit.querySelector('.fecha-aviso-tag').textContent = `📅 Fecha: ${fecha} • ⏰ ${aviso}`;
+        }
       }
 
-      // Limpiar formulario y cerrar modal
-      document.getElementById('input-titulo-tarea').value = '';
-      document.getElementById('input-fecha-tarea').value = '';
-      document.getElementById('input-desc-tarea').value = '';
       cerrarModalTarea();
+    }
+
+    // Cargar datos en el modal para editar
+    function editarTarea(btn) {
+      const card = btn.closest('.card');
+      const contenedor = document.getElementById('lista-tareas-container');
+      const cardsArray = Array.from(contenedor.querySelectorAll('.card'));
+      const index = cardsArray.indexOf(card);
+
+      const titulo = card.querySelector('.titulo-tag').textContent;
+      const asignatura = card.querySelector('.asignatura-tag').textContent;
+      const prioridad = card.querySelector('.prioridad-tag').textContent;
+      const descElem = card.querySelector('.desc-tag');
+      const desc = descElem.style.display !== 'none' ? descElem.textContent : '';
+
+      // Rellenar modal
+      document.getElementById('modal-tarea-titulo').textContent = 'Editar Tarea Musical';
+      document.getElementById('input-edit-index').value = index;
+      document.getElementById('input-titulo-tarea').value = titulo;
+      
+      // Comprobar si la asignatura existe en el select, si no, crearla al vuelo
+      const selectAsig = document.getElementById('input-asignatura-tarea');
+      let encontrada = false;
+      for (let opt of selectAsig.options) {
+        if (opt.value === asignatura) {
+          encontrada = true;
+          break;
+        }
+      }
+      if (!encontrada) {
+        const nuevaOp = document.createElement('option');
+        nuevaOp.value = asignatura;
+        nuevaOp.textContent = '📚 ' + asignatura;
+        selectAsig.insertBefore(nuevaOp, selectAsig.lastElementChild);
+      }
+      selectAsig.value = asignatura;
+
+      document.getElementById('input-prioridad-tarea').value = prioridad;
+      document.getElementById('input-desc-tarea').value = desc;
+      document.getElementById('btn-guardar-tarea').textContent = 'Actualizar tarea';
+
+      const m = document.getElementById('modalTarea');
+      if (m) m.classList.add('active');
+    }
+
+    // Eliminar tarea
+    function eliminarTarea(btn) {
+      if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
+        const card = btn.closest('.card');
+        card.remove();
+
+        // Actualizar contador del widget de inicio
+        const contadorWidget = document.getElementById('contador-tareas-num');
+        if (contadorWidget) {
+          let total = Math.max(0, parseInt(contadorWidget.textContent || 0) - 1);
+          contadorWidget.textContent = total;
+        }
+      }
     }
 
     let cronoActivo = false;
