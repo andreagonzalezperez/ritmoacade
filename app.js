@@ -15,6 +15,9 @@ function cambiarVista(idVista, elementoNav) {
     });
     elementoNav.classList.add('active');
   }
+  
+  // Forzar scroll al inicio al cambiar de vista
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // --- Control del Bottom Sheet Contextual para la Racha ---
@@ -54,6 +57,7 @@ function cerrarModalInstFuera(event) {
 // --- Lógica para Crear Nuevos Instrumentos ---
 function guardarNuevoInstrumento() {
   const input = document.getElementById('nombre-instrumento');
+  if (!input) return;
   const nombre = input.value.trim();
 
   if (!nombre) {
@@ -66,7 +70,8 @@ function guardarNuevoInstrumento() {
     if (grid) {
       const botonAnadir = grid.querySelector('.card-add');
       const nuevaTarjeta = document.createElement('article');
-      nuevaTarjeta.className = 'card-instrumento';
+      nuevaTarjeta.className = 'card-instrumento interactive-card';
+      nuevaTarjeta.onclick = function() { cambiarVista('tareas', null); };
       nuevaTarjeta.innerHTML = `
         <span class="icono">🎵</span>
         <h4>${nombre}</h4>
@@ -95,8 +100,10 @@ function iniciarSesionEstudio() {
 
   if (!sesionActiva) {
     sesionActiva = true;
-    btn.textContent = "Finalizar sesión de estudio";
-    btn.style.backgroundColor = "#EF4444";
+    if (btn) {
+      btn.textContent = "Finalizar sesión de estudio";
+      btn.style.backgroundColor = "#EF4444";
+    }
 
     intervaloCronometro = setInterval(() => {
       segundosEstudio++;
@@ -104,25 +111,33 @@ function iniciarSesionEstudio() {
       let minutos = Math.floor((segundosEstudio % 3600) / 60);
       let segundos = segundosEstudio % 60;
 
-      displayCronometro.textContent = 
-        String(horas).padStart(2, '0') + ":" + 
-        String(minutos).padStart(2, '0') + ":" + 
-        String(segundos).padStart(2, '0');
+      if (displayCronometro) {
+        displayCronometro.textContent = 
+          String(horas).padStart(2, '0') + ":" + 
+          String(minutos).padStart(2, '0') + ":" + 
+          String(segundos).padStart(2, '0');
+      }
     }, 1000);
   } else {
     clearInterval(intervaloCronometro);
     sesionActiva = false;
-    btn.textContent = "Empezar sesión de estudio";
-    btn.style.backgroundColor = "var(--primary)";
+    if (btn) {
+      btn.textContent = "Empezar sesión de estudio";
+      btn.style.backgroundColor = "var(--primary)";
+    }
     
     const minEstudiadosElem = document.getElementById('num-minutos');
-    let minutosActuales = parseInt(minEstudiadosElem.textContent) || 0;
-    let minutosNuevos = Math.floor(segundosEstudio / 60);
-    minutosActuales += minutosNuevos > 0 ? minutosNuevos : 1;
-    document.getElementById('num-minutos').textContent = minutosActuales;
+    if (minEstudiadosElem) {
+      let minutosActuales = parseInt(minEstudiadosElem.textContent) || 0;
+      let minutosNuevos = Math.floor(segundosEstudio / 60);
+      minutosActuales += minutosNuevos > 0 ? minutosNuevos : 1;
+      minEstudiadosElem.textContent = minutosActuales;
+    }
 
     segundosEstudio = 0;
-    displayCronometro.textContent = "00:00:00";
+    if (displayCronometro) {
+      displayCronometro.textContent = "00:00:00";
+    }
   }
 }
 
@@ -132,7 +147,10 @@ function ajustarBPM(cambio) {
   bpmActual += cambio;
   if (bpmActual < 40) bpmActual = 40;
   if (bpmActual > 240) bpmActual = 240;
-  document.getElementById('bpm-display').textContent = bpmActual + " BPM";
+  const bpmDisp = document.getElementById('bpm-display');
+  if (bpmDisp) {
+    bpmDisp.textContent = bpmActual + " BPM";
+  }
 }
 
 function cambiarFiltroHorario(select) {
@@ -140,5 +158,5 @@ function cambiarFiltroHorario(select) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("RitmoAcade operativo y definitivo.");
+  console.log("RitmoAcade cargado. Capas táctiles y eventos operativos al 100%.");
 });
