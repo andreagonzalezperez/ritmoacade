@@ -15,6 +15,7 @@
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
+      --calendar-accent: #EC4899; /* Color distintivo para la vista de Calendario/Horario visual */
     }
 
     * {
@@ -214,7 +215,7 @@
       border: 1px solid var(--border);
     }
 
-    /* Selector de pestañas para el Horario */
+    /* Selector de pestañas para el Horario (4 opciones ahora) */
     .horario-tabs {
       display: flex;
       background: var(--bg-card);
@@ -222,12 +223,13 @@
       border-radius: 10px;
       padding: 4px;
       margin-bottom: 16px;
+      gap: 2px;
     }
     .horario-tab {
       flex: 1;
       text-align: center;
-      padding: 8px;
-      font-size: 12px;
+      padding: 8px 4px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
@@ -238,6 +240,14 @@
       background: var(--primary);
       color: white;
     }
+    /* Estilo especial para la pestaña de Calendario/Horario visual */
+    .horario-tab.tab-calendar {
+      color: var(--calendar-accent);
+    }
+    .horario-tab.tab-calendar.active {
+      background: var(--calendar-accent);
+      color: white;
+    }
 
     .horario-subview {
       display: none !important;
@@ -246,6 +256,40 @@
       display: flex !important;
       flex-direction: column;
       gap: 14px;
+    }
+
+    /* Estilos para el Calendario Visual tipo Excel / Calendar */
+    .calendar-grid-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 420px;
+      font-size: 11px;
+    }
+    .calendar-table th, .calendar-table td {
+      border: 1px solid var(--border);
+      padding: 8px 4px;
+      text-align: center;
+    }
+    .calendar-table th {
+      background: var(--bg-main);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .calendar-slot {
+      background: rgba(236, 72, 153, 0.1);
+      color: #F472B6;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 4px;
+      margin: 2px 0;
+      font-size: 10px;
     }
 
     /* BARRA INFERIOR FIJA MÁS ANCHA Y CÓMODA */
@@ -428,18 +472,19 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 2: HORARIO (CON VISTAS DIARIA, SEMANAL Y MENSUAL) ================= -->
+  <!-- ================= VISTA 2: HORARIO (DIARIA, SEMANAL, MENSUAL Y CALENDARIO TIPO EXCEL) ================= -->
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
     </header>
     <p class="fecha">Organiza tus clases y ensayos.</p>
     
-    <!-- Selector de pestañas Horario -->
+    <!-- Selector de pestañas Horario (Con la nueva opción "Horario" en tono distinto) -->
     <div class="horario-tabs">
       <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
       <div class="horario-tab" onclick="cambiarHorarioTab('semanal', this)">Semanal</div>
       <div class="horario-tab" onclick="cambiarHorarioTab('mensual', this)">Mensual</div>
+      <div class="horario-tab tab-calendar" onclick="cambiarHorarioTab('calendario', this)">📅 Horario</div>
     </div>
 
     <!-- Subvista Diaria -->
@@ -509,6 +554,57 @@
       </div>
     </div>
 
+    <!-- Subvista Horario Visual / Calendario tipo Excel -->
+    <div id="subview-calendario" class="horario-subview">
+      <div class="card" style="padding: 12px;">
+        <div class="section-flex" style="margin-bottom: 10px;">
+          <h4 style="color: var(--calendar-accent);">📊 Cuadrante Semanal</h4>
+          <span style="font-size: 11px; color: var(--text-muted);">Vista de clases</span>
+        </div>
+        <div class="calendar-grid-container">
+          <table class="calendar-table">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Lun</th>
+                <th>Mar</th>
+                <th>Mié</th>
+                <th>Jue</th>
+                <th>Vie</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: var(--text-muted); font-weight: bold;">09:00</td>
+                <td><div class="calendar-slot">Saxofón</div></td>
+                <td>-</td>
+                <td><div class="calendar-slot">Saxofón</div></td>
+                <td>-</td>
+                <td><div class="calendar-slot">Orquesta</div></td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-muted); font-weight: bold;">11:00</td>
+                <td>-</td>
+                <td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td>
+                <td>-</td>
+                <td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-muted); font-weight: bold;">16:00</td>
+                <td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Armonía</div></td>
+                <td>-</td>
+                <td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Armonía</div></td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center;">Cuadrante visual interactivo de asignaturas</p>
+      </div>
+    </div>
+
   </div>
 
   <!-- ================= VISTA 3: ESTUDIO ================= -->
@@ -566,7 +662,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v3.6 - Horario con vistas Diaria, Semanal y Mensual.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v3.7 - Horario visual tipo Calendar integrado.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -749,7 +845,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- CAMBIAR PESTAÑAS DE HORARIO (DIARIA, SEMANAL, MENSUAL) ---
+    // --- CAMBIAR PESTAÑAS DE HORARIO (DIARIA, SEMANAL, MENSUAL, CALENDARIO) ---
     function cambiarHorarioTab(tipo, tabElem) {
       document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
       tabElem.classList.add('active');
