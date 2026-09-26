@@ -11,7 +11,6 @@
 <body>
     <div class="app-container">
         
-        <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
             
             <!-- VISTA: HOY -->
@@ -23,14 +22,14 @@
                 <div class="sub-header-date" id="welcome-date">Viernes, 25 de septiembre</div>
                 <h2 class="hero-title">Tu día, de un vistazo.</h2>
 
-                <!-- Widget Principal Próximo -->
+                <!-- Widget Próximo -->
                 <div class="card-hero" onclick="switchTab('horario')">
                     <span class="widget-label">PRÓXIMO</span>
                     <div id="widget-next-event" class="widget-hero-title">Sin eventos próximos</div>
-                    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">Añade clases, ensayos o conciertos.</p>
+                    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;" id="widget-next-time">Añade clases, ensayos o conciertos.</p>
                 </div>
 
-                <!-- Cuadrícula 2x2 de Estadísticas / Widgets -->
+                <!-- Cuadrícula 2x2 -->
                 <div class="ios-2x2-grid">
                     <div class="card stat-card" onclick="switchTab('tareas')">
                         <div class="stat-number" id="widget-tasks-count">0</div>
@@ -40,17 +39,30 @@
                         <div class="stat-number" id="widget-study-mins">0</div>
                         <div class="stat-desc">min estudiados</div>
                     </div>
-                    <div class="card stat-card" onclick="switchTab('repertorio')">
-                        <div class="stat-number" id="widget-repertoire-avg">0%</div>
-                        <div class="stat-desc">repertorio medio</div>
+                    <div class="card stat-card" onclick="switchTab('tareas')">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <div class="stat-number" id="widget-daily-goal-text">0%</div>
+                            <div class="circular-progress" id="daily-circle-progress" style="--p: 0;">
+                                <div class="circular-progress-inner"></div>
+                            </div>
+                        </div>
+                        <div class="stat-desc">objetivos diarios</div>
                     </div>
-                    <div class="card stat-card" onclick="switchTab('horario')">
-                        <div class="stat-number" id="widget-week-events">0</div>
-                        <div class="stat-desc">eventos esta semana</div>
+                    <div class="card stat-card" onclick="switchTab('estudio')">
+                        <div class="stat-number" id="widget-streak-count">🔥 0</div>
+                        <div class="stat-desc">racha de práctica</div>
                     </div>
                 </div>
 
-                <!-- Plan de hoy -->
+                <!-- Cuenta atrás para exámenes en la vista Hoy -->
+                <div class="section-block-header">
+                    <h3>Próximos Exámenes</h3>
+                    <button class="text-btn" onclick="openModal('exam-modal')">+ examen</button>
+                </div>
+                <div class="card" id="today-exams-container">
+                    <p style="color: var(--text-muted); text-align:center;">No hay exámenes próximos.</p>
+                </div>
+
                 <div class="section-block-header">
                     <h3>Plan de hoy</h3>
                     <button class="text-btn" onclick="openModal('task-modal')">+ tarea</button>
@@ -60,7 +72,7 @@
                 </div>
             </section>
 
-            <!-- VISTA: HORARIO (CALENDARIO) -->
+            <!-- VISTA: HORARIO -->
             <section id="horario" class="tab-section">
                 <header class="header-top-bar">
                     <h1 class="app-brand">RitmoAcade</h1>
@@ -71,18 +83,30 @@
                     <button class="text-btn" onclick="openModal('schedule-modal')">+ evento</button>
                 </div>
                 
-                <!-- Mini Calendario Visual -->
-                <div class="card calendar-card">
-                    <div class="calendar-grid-header">
-                        <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                    </div>
-                    <div class="calendar-grid-days" id="calendar-days"></div>
+                <div class="repertoire-tabs" style="margin-bottom:14px;">
+                    <button class="btn primary rep-tab-btn active" onclick="switchScheduleView('calendar', this)">Calendario</button>
+                    <button class="btn secondary rep-tab-btn" onclick="switchScheduleView('weekly', this)">Semanal (Parrilla)</button>
                 </div>
 
-                <div class="card" style="margin-top:16px;">
-                    <h3>Eventos del día</h3>
-                    <div id="schedule-day-events" style="margin-top:10px;">
-                        <p style="color:var(--text-muted);">No hay eventos para esta fecha.</p>
+                <div id="schedule-view-calendar">
+                    <div class="card calendar-card">
+                        <div class="calendar-grid-header">
+                            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                        </div>
+                        <div class="calendar-grid-days" id="calendar-days"></div>
+                    </div>
+                    <div class="card" style="margin-top:16px;">
+                        <h3>Eventos del día (pulsa para añadir recordatorios)</h3>
+                        <div id="schedule-day-events" style="margin-top:10px;">
+                            <p style="color:var(--text-muted);">No hay eventos para esta fecha.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="schedule-view-weekly" style="display:none;">
+                    <div class="card">
+                        <h3>Organización Semanal</h3>
+                        <div id="weekly-grid-container" style="margin-top:12px; overflow-x:auto;"></div>
                     </div>
                 </div>
             </section>
@@ -108,10 +132,14 @@
 
                 <div class="card timer-card-v2">
                     <span class="widget-label">TEMPORIZADOR</span>
+                    <div style="margin: 8px 0;">
+                        <label style="font-size:0.8rem; color:var(--text-muted);">Duración (min):</label>
+                        <input type="number" id="timer-duration-input" value="25" min="1" max="180" onchange="changeTimerDuration(this.value)" class="modal-input" style="width:100px; display:inline-block; margin-left:8px; text-align:center;">
+                    </div>
                     <div id="timer-display" class="timer-digits-v2">25:00</div>
-                    <div class="timer-controls-v2">
-                        <button class="btn-round" onclick="toggleTimer()">▶ / ❚❚</button>
-                        <button class="btn-round" onclick="resetTimer()">↺</button>
+                    <div class="timer-controls-natural">
+                        <button class="btn-play-pause" id="btn-toggle-timer" onclick="toggleTimer()">▶ Iniciar</button>
+                        <button class="btn-reset" onclick="resetTimer()">Reiniciar</button>
                     </div>
                     <div style="margin-top:16px;">
                         <select id="timer-subject" class="modal-input"></select>
@@ -137,11 +165,7 @@
                     <button class="text-btn" onclick="openModal('repertoire-modal')">+ obra</button>
                 </div>
                 
-                <div class="repertoire-tabs" style="margin-bottom:16px;">
-                    <button class="btn primary rep-tab-btn active" onclick="switchRepertoireTab('piano')">Piano</button>
-                    <button class="btn secondary rep-tab-btn" onclick="switchRepertoireTab('saxo')">Saxofón</button>
-                </div>
-                
+                <div class="repertoire-tabs-wide" id="repertoire-tabs-container" style="margin-bottom:16px;"></div>
                 <div id="repertoire-container"></div>
             </section>
 
@@ -154,19 +178,19 @@
                 
                 <div class="ios-2x2-grid" style="margin-bottom:24px;">
                     <div class="card stat-card" onclick="switchTab('tareas')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.2rem; margin-bottom:4px;">✓</div>
+                        <div style="font-size:1.4rem; margin-bottom:4px;">✓</div>
                         <div style="font-weight:600;">Tareas</div>
                     </div>
                     <div class="card stat-card" onclick="openModal('exam-modal')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.2rem; margin-bottom:4px;">⏰</div>
+                        <div style="font-size:1.4rem; margin-bottom:4px;">⏰</div>
                         <div style="font-weight:600;">Exámenes</div>
                     </div>
                     <div class="card stat-card" onclick="switchTab('repertorio')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.2rem; margin-bottom:4px;">🎵</div>
+                        <div style="font-size:1.4rem; margin-bottom:4px;">🎵</div>
                         <div style="font-weight:600;">Ensayos / Obras</div>
                     </div>
                     <div class="card stat-card" onclick="openSettingsModal()" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.2rem; margin-bottom:4px;">⚙️</div>
+                        <div style="font-size:1.4rem; margin-bottom:4px;">⚙️</div>
                         <div style="font-weight:600;">Ajustes & Centros</div>
                     </div>
                 </div>
@@ -186,7 +210,7 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN: GESTIÓN DE TAREAS CON FILTROS -->
+            <!-- VISTA: TAREAS -->
             <section id="tareas" class="tab-section">
                 <header class="header-top-bar">
                     <h1 class="app-brand">RitmoAcade</h1>
@@ -210,10 +234,8 @@
 
         </main>
 
-        <!-- BOTÓN FLOTANTE CENTRAL + -->
         <button class="floating-plus-btn" onclick="openGlobalAddModal()">+</button>
 
-        <!-- MODAL GENERAL DE CREACIÓN / EDICIÓN -->
         <div id="app-modal" class="drawer-overlay" style="justify-content: center; align-items: center;">
             <div class="card" style="width: 90%; max-width: 400px; background: var(--card-bg);" onclick="event.stopPropagation()">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -224,7 +246,6 @@
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGACIÓN INFERIOR (Estilo v2.0 exacto) -->
         <nav class="bottom-quick-nav">
             <button class="nav-btn active" data-tab="hoy" onclick="switchTab('hoy')">
                 <span class="nav-icon">⌂</span>
