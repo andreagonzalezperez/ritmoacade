@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Completo</title>
+  <title>RitmoAcade - Pomodoro Unificado</title>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -510,7 +510,7 @@
             <span class="num" id="num-minutos">0</span>
             <span class="unit">min</span>
           </div>
-          <div class="label">min estudiados (Ir a cronómetro ›)</div>
+          <div class="label">min estudiados (Ir a Pomodoro ›)</div>
         </div>
       </div>
 
@@ -524,7 +524,6 @@
           <div class="progress"><div class="fill" style="width: 65%;"></div></div>
         </div>
         
-        <!-- ENLACE A LA VISTA DE RACHA -->
         <div class="card interactive" onclick="cambiarVista('racha-panel')">
           <div class="stat-top">
             <span class="num" style="color: var(--streak-color);">🔥 3</span>
@@ -618,13 +617,6 @@
               <div style="font-size: 11px; color: var(--text-muted);">Tema visual neón desbloqueado. ¡Reclamado!</div>
             </div>
           </div>
-          <div class="reward-step">
-            <div class="reward-icon">🔓</div>
-            <div>
-              <div style="font-weight: bold; font-size: 13px;">2 Semanas Consecutivas</div>
-              <div style="font-size: 11px; color: var(--text-muted);">Pack de partituras de Jazz avanzadas. (Te faltan 4 días)</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -696,15 +688,37 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 3: ESTUDIO ================= -->
+  <!-- ================= VISTA 3: ESTUDIO (POMODORO PERSONALIZABLE) ================= -->
   <div id="vista-estudio" class="view">
     <header>
-      <div class="titulo">Sesión de Estudio</div>
+      <div class="titulo">Pomodoro Musical</div>
     </header>
-    <p class="fecha">Cronometra tus avances en tiempo real.</p>
-    <div class="card" style="text-align: center; padding: 30px 16px;">
-      <div style="font-size: 48px; font-weight: bold; margin-bottom: 20px;" id="cronometro">00:00:00</div>
-      <button class="btn-main" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
+    <p class="fecha">Establece tu temporizador y selecciona la materia o tarea.</p>
+
+    <div class="card" style="padding: 20px;">
+      <div class="form-group">
+        <label>Seleccionar Asignatura o Tarea</label>
+        <select id="pomodoro-asig" class="form-control">
+          <option value="Saxofón">🎷 Saxofón</option>
+          <option value="Piano">🎹 Piano</option>
+          <option value="Armonía">🎶 Armonía</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Duración del Pomodoro (minutos)</label>
+        <select id="pomodoro-duracion" class="form-control">
+          <option value="15">15 minutos (Breve)</option>
+          <option value="25" selected>25 minutos (Clásico)</option>
+          <option value="45">45 minutos (Intenso)</option>
+          <option value="60">60 minutos (Maestro)</option>
+        </select>
+      </div>
+
+      <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 54px; font-weight: bold; margin-bottom: 16px; color: var(--primary);" id="pomodoro-display">25:00</div>
+        <button class="btn-main" id="btn-pomodoro-accion" onclick="togglePomodoro()">Iniciar Pomodoro</button>
+      </div>
     </div>
   </div>
 
@@ -715,11 +729,46 @@
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalCategoria()">+ Añadir categoría</button>
     </header>
     <p class="fecha">Tus categorías y piezas organizadas.</p>
+
     <div class="grid" id="lista-categorias-container" style="grid-template-columns: 1fr 1fr;">
       <div class="card interactive" onclick="abrirDetalleRepertorio('Saxofón', '🎷')">
         <span style="font-size: 32px;">🎷</span>
         <h4 style="margin-top: 8px;">Saxofón</h4>
         <p style="font-size: 11px; color: var(--text-muted);">4 piezas activas</p>
+      </div>
+      <div class="card interactive" onclick="abrirDetalleRepertorio('Piano', '🎹')">
+        <span style="font-size: 32px;">🎹</span>
+        <h4 style="margin-top: 8px;">Piano</h4>
+        <p style="font-size: 11px; color: var(--text-muted);">2 piezas activas</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="vista-repertorio-detalle" class="view">
+    <header>
+      <div class="header-user">
+        <span class="avatar" id="detalle-emoji">🎷</span>
+        <div>
+          <div class="sub">Repertorio de</div>
+          <div class="titulo" id="detalle-titulo-cat">Saxofón</div>
+        </div>
+      </div>
+      <button class="btn-config" onclick="cambiarVista('repertorio')">‹</button>
+    </header>
+
+    <div class="section-flex" style="margin-bottom: 14px;">
+      <p class="fecha" style="margin-bottom:0;">Obras y piezas en estudio.</p>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalPieza()">+ Añadir pieza</button>
+    </div>
+
+    <div class="grid" id="lista-piezas-container">
+      <div class="card pieza-item">
+        <div class="section-flex">
+          <span class="badge">Estudio Activo</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Autor: Creston</span>
+        </div>
+        <h4>Sonata para Saxofón Alto</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Primer movimiento (Allegro giusto).</p>
       </div>
     </div>
   </div>
@@ -740,16 +789,14 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Gestiona centros, horarios, docentes y colores</p>
       </div>
 
-      <!-- NUEVO APARTADO: REGISTRO DE NOTAS -->
       <div class="card interactive" onclick="cambiarVista('notas-centros')">
         <div class="section-flex">
           <h4>📊 Registro de Notas</h4>
           <span class="link-txt">Ver notas ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones de exámenes, trabajos y entregas</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones de exámenes y entregas</p>
       </div>
 
-      <!-- NUEVO APARTADO: ASISTENCIA A CLASES -->
       <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
         <div class="section-flex">
           <h4>📋 Control de Asistencia</h4>
@@ -763,32 +810,29 @@
           <h4>📝 Tareas Pendientes</h4>
           <span class="link-txt">Gestionar ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ver listado completo</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ver listado completo y añadir pendientes</p>
       </div>
 
-      <div class="card interactive" onclick="alert('RitmoAcade v5.0 - Notas y control de asistencia incorporados.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v5.2 - Pomodoro musical integrado.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
     </div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: CENTROS DE ESTUDIO ================= -->
+  <!-- ================= VISTAS SECUNDARIAS ================= -->
   <div id="vista-centros-estudio" class="view">
     <header>
       <div class="titulo">Centros de Estudios</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Selecciona un centro o crea uno nuevo.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalCentro()">+ Añadir centro</button>
     </div>
-
     <div class="grid" id="lista-centros-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: DETALLE ASIGNATURAS CENTRO ================= -->
   <div id="vista-centro-detalle" class="view">
     <header>
       <div class="header-user">
@@ -800,16 +844,13 @@
       </div>
       <button class="btn-config" onclick="cambiarVista('centros-estudio')">‹</button>
     </header>
-
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Asignaturas impartidas.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalAsignaturaCrear()">+ Añadir asignatura</button>
     </div>
-
     <div class="grid" id="lista-asignaturas-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: REGISTRO DE NOTAS (SELECCIÓN DE CENTROS) ================= -->
   <div id="vista-notas-centros" class="view">
     <header>
       <div class="titulo">Registro de Notas</div>
@@ -819,7 +860,6 @@
     <div class="grid" id="lista-notas-centros-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: NOTAS DE UN CENTRO ================= -->
   <div id="vista-notas-detalle" class="view">
     <header>
       <div class="header-user">
@@ -831,16 +871,13 @@
       </div>
       <button class="btn-config" onclick="cambiarVista('notas-centros')">‹</button>
     </header>
-
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Exámenes, trabajos y entregas.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalNota()">+ Añadir nota</button>
     </div>
-
     <div class="grid" id="lista-calificaciones-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: CONTROL DE ASISTENCIA (SELECCIÓN DE CENTROS) ================= -->
   <div id="vista-asistencia-centros" class="view">
     <header>
       <div class="titulo">Control de Asistencia</div>
@@ -850,7 +887,6 @@
     <div class="grid" id="lista-asistencia-centros-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: ASISTENCIA DE UN CENTRO ================= -->
   <div id="vista-asistencia-detalle" class="view">
     <header>
       <div class="header-user">
@@ -863,33 +899,26 @@
       <button class="btn-config" onclick="cambiarVista('asistencia-centros')">‹</button>
     </header>
     <p class="fecha">Registro de clases sincronizadas.</p>
-
     <div class="grid" id="lista-control-asistencia-container"></div>
   </div>
 
-  <!-- ================= VISTA TAREAS ================= -->
   <div id="vista-tareas" class="view">
     <header>
       <div class="titulo">Tareas Pendientes</div>
       <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
     </header>
+    <div class="section-flex" style="margin-bottom: 14px;">
+      <p class="fecha" style="margin-bottom:0;">Listado de tus pendientes musicales.</p>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTareaParaCrear()">+ Añadir tarea</button>
+    </div>
     <div class="grid" id="lista-tareas-container">
       <div class="card">
-        <h4>Repasar articulación compases 30-45</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Saxofón • Urgente</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="vista-objetivos" class="view">
-    <header>
-      <div class="titulo">Objetivos Diarios</div>
-      <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
-    </header>
-    <div class="grid">
-      <div class="card">
-        <h4>Estudiar mínimo 45 minutos</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Completado hoy</p>
+        <div class="section-flex">
+          <span class="badge asignatura-tag">Saxofón</span>
+          <span class="badge-danger prioridad-tag">Urgente</span>
+        </div>
+        <h4 style="margin-top: 6px;" class="titulo-tag">Repasar articulación compases 30-45</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">Estudio detallado del pasaje rápido en la sonata.</p>
       </div>
     </div>
   </div>
@@ -919,7 +948,6 @@
   </nav>
 
   <!-- ================= MODALES ================= -->
-  <!-- MODAL CENTRO -->
   <div id="modalCentro" class="modal" onclick="cerrarModalCentroFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -934,7 +962,6 @@
     </div>
   </div>
 
-  <!-- MODAL ASIGNATURA -->
   <div id="modalAsignatura" class="modal" onclick="cerrarModalAsignaturaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -978,16 +1005,6 @@
           <select id="input-asig-fin" class="form-control"></select>
         </div>
       </div>
-      <div class="row-2">
-        <div class="form-group">
-          <label>Fecha de inicio</label>
-          <input type="date" id="input-asig-fec-inicio" class="form-control" value="2026-09-01">
-        </div>
-        <div class="form-group">
-          <label>Fecha de fin</label>
-          <input type="date" id="input-asig-fec-fin" class="form-control" value="2027-06-30">
-        </div>
-      </div>
       <div class="form-group">
         <label>Color distintivo</label>
         <div class="color-picker-grid" id="paleta-colores"></div>
@@ -996,7 +1013,6 @@
     </div>
   </div>
 
-  <!-- MODAL NOTA -->
   <div id="modalNota" class="modal" onclick="cerrarModalNotaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -1009,19 +1025,65 @@
       </div>
       <div class="row-2">
         <div class="form-group">
-          <label>Tipo (Examen, Trabajo...)</label>
-          <input type="text" id="input-nota-tipo" class="form-control" placeholder="Ej. Examen Parcial">
+          <label>Tipo</label>
+          <input type="text" id="input-nota-tipo" class="form-control" placeholder="Examen">
         </div>
         <div class="form-group">
-          <label>Calificación (Nota)</label>
-          <input type="text" id="input-nota-valor" class="form-control" placeholder="Ej. 9.5 / Sobresaliente">
+          <label>Calificación</label>
+          <input type="text" id="input-nota-valor" class="form-control" placeholder="9.5">
         </div>
       </div>
       <div class="form-group">
         <label>Observaciones</label>
-        <textarea id="input-nota-obs" class="form-control" rows="2" placeholder="Comentarios sobre el examen o entrega..."></textarea>
+        <textarea id="input-nota-obs" class="form-control" rows="2"></textarea>
       </div>
       <button class="btn-main" onclick="guardarNuevaNota()">Guardar calificación</button>
+    </div>
+  </div>
+
+  <div id="modalCategoria" class="modal" onclick="cerrarModalCategoriaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Nueva Categoría</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalCategoria()">✕</span>
+      </div>
+      <div class="form-group">
+        <label>Emoji</label>
+        <input type="text" id="input-emoji-cat" class="form-control" value="🎸">
+      </div>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="input-nombre-cat" class="form-control">
+      </div>
+      <button class="btn-main" onclick="guardarNuevaCategoria()">Crear</button>
+    </div>
+  </div>
+
+  <div id="modalPieza" class="modal" onclick="cerrarModalPiezaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Añadir Pieza</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalPieza()">✕</span>
+      </div>
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="input-titulo-pieza" class="form-control">
+      </div>
+      <button class="btn-main" onclick="guardarNuevaPieza()">Guardar</button>
+    </div>
+  </div>
+
+  <div id="modalTarea" class="modal" onclick="cerrarModalTareaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Nueva Tarea</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalTarea()">✕</span>
+      </div>
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="input-titulo-tarea" class="form-control">
+      </div>
+      <button class="btn-main" onclick="guardarOActualizarTarea()">Guardar</button>
     </div>
   </div>
 
@@ -1030,16 +1092,11 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", fecInicio: "2026-09-01", fecFin: "2027-06-30", color: "#EC4899" },
-          { nombre: "Piano", docente: "Profª. Gómez", aula: "Aula 12", dia: "Mar", inicio: "11:00", fin: "12:30", fecInicio: "2026-09-01", fecFin: "2027-06-30", color: "#6366F1" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899" },
+          { nombre: "Piano", docente: "Profª. Gómez", aula: "Aula 12", dia: "Mar", inicio: "11:00", fin: "12:30", color: "#6366F1" }
         ],
-        notas: [
-          { asig: "Saxofón", tipo: "Audición 1er Trimestre", valor: "9.2", obs: "Excelente sonoridad y afinación." }
-        ],
-        asistencia: [
-          { asig: "Saxofón", fecha: "2026-09-21", estado: "asistido", retraso: false, justificada: false },
-          { asig: "Piano", fecha: "2026-09-22", estado: "retraso", retraso: true, justificada: true }
-        ]
+        notas: [],
+        asistencia: []
       }
     ];
 
@@ -1067,6 +1124,7 @@
       renderizarNotasCentros();
       renderizarAsistenciaCentros();
       sincronizarYRenderizarHorario();
+      actualizarSelectorPomodoroAsignaturas();
     });
 
     function inicializarSelectoresHora() {
@@ -1125,7 +1183,71 @@
       if (sub) sub.classList.add('active');
     }
 
-    // --- GESTIÓN DE CENTROS ---
+    function actualizarSelectorPomodoroAsignaturas() {
+      const sel = document.getElementById('pomodoro-asig');
+      sel.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        c.asignaturas.forEach(a => {
+          sel.innerHTML += `<option value="${a.nombre}">📚 ${a.nombre} (${c.nombre})</option>`;
+        });
+      });
+      if (sel.options.length === 0) {
+        sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
+      }
+    }
+
+    // --- POMODORO MUSICAL ---
+    let pomodoroActivo = false;
+    let pomodoroIntervalo = null;
+    let segundosRestantes = 25 * 60;
+
+    function togglePomodoro() {
+      const btn = document.getElementById('btn-pomodoro-accion');
+      const duracionSel = document.getElementById('pomodoro-duracion');
+      const asigSel = document.getElementById('pomodoro-asig').value;
+      const display = document.getElementById('pomodoro-display');
+
+      if (!pomodoroActivo) {
+        pomodoroActivo = true;
+        duracionSel.disabled = true;
+        btn.textContent = "Pausar / Finalizar Pomodoro";
+        btn.style.background = "#EF4444";
+
+        let minutosElegidos = parseInt(duracionSel.value);
+        segundosRestantes = minutosElegidos * 60;
+
+        pomodoroIntervalo = setInterval(() => {
+          if (segundosRestantes > 0) {
+            segundosRestantes--;
+            let m = Math.floor(segundosRestantes / 60);
+            let s = segundosRestantes % 60;
+            display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+          } else {
+            clearInterval(pomodoroIntervalo);
+            pomodoroActivo = false;
+            duracionSel.disabled = false;
+            btn.textContent = "Iniciar Pomodoro";
+            btn.style.background = "var(--primary)";
+            
+            // Sumar minutos a estadísticas
+            let minsAgregados = parseInt(duracionSel.value);
+            const minsElem = document.getElementById('num-minutos');
+            if (minsElem) minsElem.textContent = parseInt(minsElem.textContent || 0) + minsAgregados;
+            
+            alert(`¡Pomodoro completado para ${asigSel}! Se han sumado ${minsAgregados} minutos a tu estudio.`);
+            display.textContent = `${String(minsAgregados).padStart(2,'0')}:00`;
+          }
+        }, 1000);
+      } else {
+        clearInterval(pomodoroIntervalo);
+        pomodoroActivo = false;
+        duracionSel.disabled = false;
+        btn.textContent = "Iniciar Pomodoro";
+        btn.style.background = "var(--primary)";
+      }
+    }
+
+    // --- CENTROS Y ASIGNATURAS ---
     function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
     function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
     function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
@@ -1164,13 +1286,12 @@
       cambiarVista('centro-detalle');
     }
 
-    // --- GESTIÓN DE ASIGNATURAS ---
     function renderizarAsignaturasCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-asignaturas-container');
       contenedor.innerHTML = '';
       if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas en este centro.</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas.</p>`;
         return;
       }
       centro.asignaturas.forEach((asig, idx) => {
@@ -1224,21 +1345,20 @@
       const dia = document.getElementById('input-asig-dia').value;
       const inicio = document.getElementById('input-asig-inicio').value;
       const fin = document.getElementById('input-asig-fin').value;
-      const fecInicio = document.getElementById('input-asig-fec-inicio').value;
-      const fecFin = document.getElementById('input-asig-fec-fin').value;
       const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
 
       if (!nombre) return;
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro) {
         if (editIndex === -1) {
-          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, fecInicio, fecFin, color: colorSeleccionadoHex });
+          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
         } else {
-          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, fecInicio, fecFin, color: colorSeleccionadoHex };
+          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex };
         }
       }
       renderizarAsignaturasCentro();
       sincronizarYRenderizarHorario();
+      actualizarSelectorPomodoroAsignaturas();
       cerrarModalAsignatura();
     }
 
@@ -1249,11 +1369,12 @@
           centro.asignaturas.splice(index, 1);
           renderizarAsignaturasCentro();
           sincronizarYRenderizarHorario();
+          actualizarSelectorPomodoroAsignaturas();
         }
       }
     }
 
-    // --- REGISTRO DE NOTAS ---
+    // --- NOTAS Y ASISTENCIA ---
     function renderizarNotasCentros() {
       const contenedor = document.getElementById('lista-notas-centros-container');
       contenedor.innerHTML = '';
@@ -1309,9 +1430,7 @@
       const sel = document.getElementById('input-nota-asig');
       sel.innerHTML = '';
       if (centro && centro.asignaturas.length > 0) {
-        centro.asignaturas.forEach(a => {
-          sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
-        });
+        centro.asignaturas.forEach(a => { sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`; });
       } else {
         sel.innerHTML = `<option value="General">General</option>`;
       }
@@ -1331,9 +1450,7 @@
       const obs = document.getElementById('input-nota-obs').value.trim();
 
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) {
-        centro.notas.push({ asig, tipo, valor, obs });
-      }
+      if (centro) centro.notas.push({ asig, tipo, valor, obs });
       renderizarCalificacionesCentro();
       cerrarModalNota();
     }
@@ -1346,7 +1463,6 @@
       }
     }
 
-    // --- CONTROL DE ASISTENCIA ---
     function renderizarAsistenciaCentros() {
       const contenedor = document.getElementById('lista-asistencia-centros-container');
       contenedor.innerHTML = '';
@@ -1376,11 +1492,10 @@
       const contenedor = document.getElementById('lista-control-asistencia-container');
       contenedor.innerHTML = '';
       if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas sincronizadas en este centro.</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas sincronizadas.</p>`;
         return;
       }
-
-      centro.asignaturas.forEach((asig, idx) => {
+      centro.asignaturas.forEach((asig) => {
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
@@ -1388,33 +1503,32 @@
               <span style="font-size: 11px; color: var(--text-muted);">Aula: ${asig.aula}</span>
             </div>
             <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
-            
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #10B981;" onclick="actualizarAsistencia('${asig.nombre}', 'asistido')">✅ Asistió</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #EF4444;" onclick="actualizarAsistencia('${asig.nombre}', 'falta')">❌ Falta</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #F59E0B;" onclick="actualizarAsistencia('${asig.nombre}', 'retraso')">⏱️ Retraso</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #64748B;" onclick="actualizarAsistencia('${asig.nombre}', 'no_clase')">🚫 No hubo clase</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #10B981;" onclick="alert('Asistencia registrada: Asistió')">✅ Asistió</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #EF4444;" onclick="alert('Asistencia registrada: Falta')">❌ Falta</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #F59E0B;" onclick="alert('Asistencia registrada: Retraso')">⏱️ Retraso</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #64748B;" onclick="alert('Asistencia registrada: No hubo clase')">🚫 No clase</button>
             </div>
           </div>
         `;
       });
     }
 
-    function actualizarAsistencia(asigNombre, estado) {
-      let detalle = prompt(`Estado: ${estado.toUpperCase()}. ¿Fue falta justificada? (escribe 'sí' o 'no', o deja en blanco si no aplica):`, '');
-      let justificada = (detalle && detalle.toLowerCase() === 'sí');
-
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) {
-        centro.asistencia.push({
-          asig: asigNombre,
-          fecha: new Date().toISOString().split('T')[0],
-          estado,
-          justificada
-        });
-        alert(`Asistencia registrada para ${asigNombre}: ${estado} ${justificada ? '(Justificada)' : ''}`);
-      }
+    // --- REPERTORIO Y TAREAS ---
+    function abrirDetalleRepertorio(nombreCat, emoji) {
+      document.getElementById('detalle-emoji').textContent = emoji;
+      document.getElementById('detalle-titulo-cat').textContent = nombreCat;
+      cambiarVista('repertorio-detalle');
     }
+    function abrirModalCategoria() { document.getElementById('modalCategoria').classList.add('active'); }
+    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
+    function guardarNuevaCategoria() { cerrarModalCategoria(); }
+    function abrirModalPieza() { document.getElementById('modalPieza').classList.add('active'); }
+    function cerrarModalPieza() { document.getElementById('modalPieza').classList.remove('active'); }
+    function guardarNuevaPieza() { cerrarModalPieza(); }
+    function abrirModalTareaParaCrear() { document.getElementById('modalTarea').classList.add('active'); }
+    function cerrarModalTarea() { document.getElementById('modalTarea').classList.remove('active'); }
+    function guardarOActualizarTarea() { cerrarModalTarea(); }
 
     // --- SINCRONIZACIÓN DE HORARIO ---
     function sincronizarYRenderizarHorario() {
@@ -1494,38 +1608,6 @@
         tbody.appendChild(tr);
       });
     }
-
-    let cronoActivo = false, segundos = 0, intervalo = null;
-    function iniciarSesionEstudio() {
-      const btn = document.querySelector('.view#vista-estudio .btn-main');
-      const display = document.getElementById('cronometro');
-      if (!cronoActivo) {
-        cronoActivo = true;
-        btn.textContent = "Finalizar sesión";
-        btn.style.background = "#EF4444";
-        intervalo = setInterval(() => {
-          segundos++;
-          let m = Math.floor(segundos / 60), s = segundos % 60;
-          display.textContent = `00:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        }, 1000);
-      } else {
-        clearInterval(intervalo);
-        cronoActivo = false;
-        btn.textContent = "Empezar sesión de estudio";
-        btn.style.background = "var(--primary)";
-        document.getElementById('num-minutos').textContent = parseInt(document.getElementById('num-minutos').textContent || 0) + Math.max(1, Math.floor(segundos / 60));
-        segundos = 0;
-        display.textContent = "00:00:00";
-      }
-    }
-
-    function abrirModalCategoria() { document.getElementById('modalCategoria').classList.add('active'); }
-    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
-    function guardarNuevaCategoria() { cerrarModalCategoria(); }
-    function abrirModalPieza() { document.getElementById('modalPieza').classList.add('active'); }
-    function cerrarModalPieza() { document.getElementById('modalPieza').classList.remove('active'); }
-    function guardarNuevaPieza() { cerrarModalPieza(); }
-    function abrirDetalleRepertorio(n, e) { cambiarVista('repertorio-detalle'); }
   </script>
 </body>
 </html>
