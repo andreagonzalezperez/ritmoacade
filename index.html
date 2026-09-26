@@ -287,7 +287,6 @@
       top: 0;
       z-index: 2;
     }
-    /* Celdas unificadas de clases (bloques continuos) */
     .slot-saxo {
       background: rgba(236, 72, 153, 0.2);
       color: #F472B6;
@@ -305,13 +304,6 @@
     .slot-armonia {
       background: rgba(245, 158, 11, 0.2);
       color: #FBBF24;
-      font-weight: bold;
-      vertical-align: middle;
-      border-radius: 4px;
-    }
-    .slot-orquesta {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34D399;
       font-weight: bold;
       vertical-align: middle;
       border-radius: 4px;
@@ -601,11 +593,8 @@
               </tr>
             </thead>
             <tbody>
-              <!-- 08:00 -->
               <tr><td style="color: var(--text-muted);">08:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">08:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              
-              <!-- 09:00 a 10:30 (Saxofón: 3 tramos de media hora = rowspan 3) -->
               <tr>
                 <td style="color: var(--text-muted);">09:00</td>
                 <td rowspan="3" class="slot-saxo">Saxofón</td><td></td>
@@ -614,8 +603,6 @@
               <tr><td style="color: var(--text-muted);">09:30</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">10:00</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">10:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-              <!-- 11:00 a 12:30 (Piano: rowspan 3) -->
               <tr>
                 <td style="color: var(--text-muted);">11:00</td>
                 <td></td>
@@ -627,16 +614,12 @@
               <tr><td style="color: var(--text-muted);">11:30</td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">12:00</td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">12:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-              <!-- Resto de horas vacías hasta las 16:00 -->
               <tr><td style="color: var(--text-muted);">13:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">13:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">14:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">14:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">15:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">15:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-              <!-- 16:00 a 17:30 (Armonía: rowspan 3) -->
               <tr>
                 <td style="color: var(--text-muted);">16:00</td>
                 <td rowspan="3" class="slot-armonia">Armonía</td>
@@ -647,8 +630,6 @@
               <tr><td style="color: var(--text-muted);">16:30</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">17:00</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">17:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-              <!-- Horas restantes hasta las 22:00 -->
               <tr><td style="color: var(--text-muted);">18:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">18:30</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
               <tr><td style="color: var(--text-muted);">19:00</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -679,23 +660,64 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 4: REPERTORIO ================= -->
+  <!-- ================= VISTA 4: REPERTORIO (DINÁMICO CON CATEGORÍAS Y PIEZAS) ================= -->
   <div id="vista-repertorio" class="view">
     <header>
       <div class="titulo">Gestión de Repertorio</div>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalCategoria()">+ Añadir categoría</button>
     </header>
     <p class="fecha">Tus categorías y piezas organizadas.</p>
 
-    <div class="grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center;">
+    <!-- Listado de Categorías de Repertorio -->
+    <div class="grid" id="lista-categorias-container" style="grid-template-columns: 1fr 1fr;">
+      <div class="card interactive" onclick="abrirDetalleRepertorio('Saxofón', '🎷')">
         <span style="font-size: 32px;">🎷</span>
         <h4 style="margin-top: 8px;">Saxofón</h4>
-        <p style="font-size: 11px; color: var(--text-muted);">4 piezas activas</p>
+        <p style="font-size: 11px; color: var(--text-muted);" id="count-saxofon">4 piezas activas</p>
       </div>
-      <div class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center;">
+      <div class="card interactive" onclick="abrirDetalleRepertorio('Piano', '🎹')">
         <span style="font-size: 32px;">🎹</span>
         <h4 style="margin-top: 8px;">Piano</h4>
-        <p style="font-size: 11px; color: var(--text-muted);">2 piezas activas</p>
+        <p style="font-size: 11px; color: var(--text-muted);" id="count-piano">2 piezas activas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VISTA SECUNDARIA: DETALLE DE CATEGORÍA DE REPERTORIO ================= -->
+  <div id="vista-repertorio-detalle" class="view">
+    <header>
+      <div class="header-user">
+        <span class="avatar" id="detalle- emoji">🎷</span>
+        <div>
+          <div class="sub">Repertorio de</div>
+          <div class="titulo" id="detalle-titulo-cat">Saxofón</div>
+        </div>
+      </div>
+      <button class="btn-config" onclick="cambiarVista('repertorio')">‹</button>
+    </header>
+
+    <div class="section-flex" style="margin-bottom: 14px;">
+      <p class="fecha" style="margin-bottom:0;">Obras y piezas en estudio.</p>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalPieza()">+ Añadir pieza</button>
+    </div>
+
+    <!-- Contenedor dinámico de piezas -->
+    <div class="grid" id="lista-piezas-container">
+      <div class="card pieza-item" data-cat="Saxofón">
+        <div class="section-flex">
+          <span class="badge">Estudio Activo</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Autor: Creston</span>
+        </div>
+        <h4>Sonata para Saxofón Alto</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Primer movimiento (Allegro giusto).</p>
+      </div>
+      <div class="card pieza-item" data-cat="Saxofón">
+        <div class="section-flex">
+          <span class="badge-warn">En Progreso</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Autor: Glazunov</span>
+        </div>
+        <h4>Concierto en Mi bemol mayor</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Cadencia y pasajes rápidos.</p>
       </div>
     </div>
   </div>
@@ -721,7 +743,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v4.0 - Horario clásico tipo Excel con celdas unificadas.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v4.1 - Repertorio con categorías personalizables.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -819,6 +841,55 @@
       <h3>Tu Racha y Progreso</h3>
       <p style="color: #9CA3AF; margin: 8px 0 16px 0;">Racha actual: 3 días consecutivos 🔥</p>
       <button class="btn-main" onclick="cerrarRacha()">Entendido</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL AÑADIR CATEGORÍA DE REPERTORIO ================= -->
+  <div id="modalCategoria" class="modal" onclick="cerrarModalCategoriaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Nueva Categoría de Repertorio</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalCategoria()">✕</span>
+      </div>
+
+      <div class="form-group">
+        <label>Emoji identificativo</label>
+        <input type="text" id="input-emoji-cat" class="form-control" value="🎸" placeholder="Ej. 🎸, 🎻, 🎤...">
+      </div>
+
+      <div class="form-group">
+        <label>Nombre del instrumento o categoría</label>
+        <input type="text" id="input-nombre-cat" class="form-control" placeholder="Ej. Guitarra eléctrica...">
+      </div>
+
+      <button class="btn-main" onclick="guardarNuevaCategoria()">Crear categoría</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL AÑADIR PIEZA DE REPERTORIO ================= -->
+  <div id="modalPieza" class="modal" onclick="cerrarModalPiezaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Añadir Pieza de Repertorio</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalPieza()">✕</span>
+      </div>
+
+      <div class="form-group">
+        <label>Título de la obra / pieza</label>
+        <input type="text" id="input-titulo-pieza" class="form-control" placeholder="Ej. Nocturno Op. 9 No. 2...">
+      </div>
+
+      <div class="form-group">
+        <label>Autor / Compositor</label>
+        <input type="text" id="input-autor-pieza" class="form-control" placeholder="Ej. Chopin...">
+      </div>
+
+      <div class="form-group">
+        <label>Estado / Notas</label>
+        <input type="text" id="input-desc-pieza" class="form-control" placeholder="Ej. Primer movimiento, lectura inicial...">
+      </div>
+
+      <button class="btn-main" onclick="guardarNuevaPieza()">Guardar pieza</button>
     </div>
   </div>
 
@@ -928,6 +999,117 @@
 
     function cerrarRachaFuera(e) {
       if (e.target.id === 'modalRacha') cerrarRacha();
+    }
+
+    // --- GESTIÓN DE REPERTORIO ---
+    let categoriaActual = '';
+
+    function abrirDetalleRepertorio(nombreCat, emoji) {
+      categoriaActual = nombreCat;
+      document.getElementById('detalle-emoji').textContent = emoji;
+      document.getElementById('detalle-titulo-cat').textContent = nombreCat;
+
+      // Filtrar piezas según la categoría
+      const piezas = document.querySelectorAll('.pieza-item');
+      piezas.forEach(p => {
+        if (p.getAttribute('data-cat') === nombreCat) {
+          p.style.display = 'block';
+        } else {
+          p.style.display = 'none';
+        }
+      });
+
+      cambiarVista('repertorio-detalle');
+    }
+
+    function abrirModalCategoria() {
+      document.getElementById('input-emoji-cat').value = '🎸';
+      document.getElementById('input-nombre-cat').value = '';
+      const m = document.getElementById('modalCategoria');
+      if (m) m.classList.add('active');
+    }
+
+    function cerrarModalCategoria() {
+      const m = document.getElementById('modalCategoria');
+      if (m) m.classList.remove('active');
+    }
+
+    function cerrarModalCategoriaFuera(e) {
+      if (e.target.id === 'modalCategoria') cerrarModalCategoria();
+    }
+
+    function guardarNuevaCategoria() {
+      const emoji = document.getElementById('input-emoji-cat').value.trim() || '🎵';
+      const nombre = document.getElementById('input-nombre-cat').value.trim();
+
+      if (!nombre) {
+        alert('Por favor, introduce un nombre para la categoría.');
+        return;
+      }
+
+      const contenedor = document.getElementById('lista-categorias-container');
+      const nuevaCard = document.createElement('div');
+      nuevaCard.className = 'card interactive';
+      nuevaCard.setAttribute('onclick', `abrirDetalleRepertorio('${nombre}', '${emoji}')`);
+      nuevaCard.innerHTML = `
+        <span style="font-size: 32px;">${emoji}</span>
+        <h4 style="margin-top: 8px;">${nombre}</h4>
+        <p style="font-size: 11px; color: var(--text-muted);">0 piezas activas</p>
+      `;
+      contenedor.appendChild(nuevaCard);
+
+      // Añadir también al selector de tareas por si acaso
+      const selectAsig = document.getElementById('input-asignatura-tarea');
+      const nuevaOp = document.createElement('option');
+      nuevaOp.value = nombre;
+      nuevaOp.textContent = `${emoji} ${nombre}`;
+      selectAsig.insertBefore(nuevaOp, selectAsig.lastElementChild);
+
+      cerrarModalCategoria();
+    }
+
+    function abrirModalPieza() {
+      document.getElementById('input-titulo-pieza').value = '';
+      document.getElementById('input-autor-pieza').value = '';
+      document.getElementById('input-desc-pieza').value = '';
+      const m = document.getElementById('modalPieza');
+      if (m) m.classList.add('active');
+    }
+
+    function cerrarModalPieza() {
+      const m = document.getElementById('modalPieza');
+      if (m) m.classList.remove('active');
+    }
+
+    function cerrarModalPiezaFuera(e) {
+      if (e.target.id === 'modalPieza') cerrarModalPieza();
+    }
+
+    function guardarNuevaPieza() {
+      const titulo = document.getElementById('input-titulo-pieza').value.trim();
+      const autor = document.getElementById('input-autor-pieza').value.trim();
+      const desc = document.getElementById('input-desc-pieza').value.trim();
+
+      if (!titulo) {
+        alert('Por favor, introduce el título de la pieza.');
+        return;
+      }
+
+      const contenedor = document.getElementById('lista-piezas-container');
+      const nuevaCard = document.createElement('div');
+      nuevaCard.className = 'card pieza-item';
+      nuevaCard.setAttribute('data-cat', categoriaActual);
+      nuevaCard.innerHTML = `
+        <div class="section-flex">
+          <span class="badge">Nuevo</span>
+          ${autor ? `<span style="font-size: 11px; color: var(--text-muted);">Autor: ${autor}</span>` : ''}
+        </div>
+        <h4>${titulo}</h4>
+        ${desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${desc}</p>` : ''}
+      `;
+      contenedor.insertBefore(nuevaCard, contenedor.firstChild);
+
+      cerrarModalPieza();
     }
 
     // --- GESTIÓN DE ASIGNATURAS PERSONALIZADAS ---
