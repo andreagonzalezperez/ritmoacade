@@ -586,3 +586,30 @@ function renderStudyHistory() {
 
 window.onload = () => { initApp(); updateTimerDisplay(); };
 
+// Función para solicitar permisos de notificación al navegador/dispositivo
+async function solicitarPermisoNotificaciones() {
+  if (!("Notification" in window)) {
+    console.log("Este navegador no soporta notificaciones.");
+    return;
+  }
+  
+  let permission = await Notification.requestPermission();
+  if (permission === "granted") {
+    console.log("Permiso de notificaciones concedido.");
+    programarRecordatorioDiario();
+  }
+}
+
+// Ejemplo de aviso para mantener la racha viva
+function programarRecordatorioDiario() {
+  // Se puede programar usando la hora configurada en la sección de horarios
+  setTimeout(() => {
+    if (Notification.permission === "granted") {
+      new Notification("¡Hora de practicar! 🎷", {
+        body: "No rompas tu racha de estudio de hoy. ¡Dale caña!",
+        icon: "/path-to-icon.png"
+      });
+    }
+  }, 3600000); // Ejemplo de intervalo
+}
+
