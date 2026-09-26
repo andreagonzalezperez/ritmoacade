@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Sistema Total Sincronizado con Horario Avanzado</title>
+  <title>RitmoAcade - Sistema Total Sincronizado</title>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -55,7 +55,6 @@
     .grid { display: flex; flex-direction: column; gap: 14px; }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    /* Barra de navegación de días en el Inicio y Horario Diario */
     .day-navigator {
       display: flex;
       justify-content: space-between;
@@ -94,7 +93,6 @@
     .card.interactive { cursor: pointer; }
     .card.interactive:active { transform: scale(0.98); }
 
-    /* Tarjeta para Huecos Libres */
     .card-gap {
       background: rgba(45, 55, 72, 0.4);
       border: 1px dashed var(--border);
@@ -107,7 +105,7 @@
 
     .stat-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
     .num { font-size: 22px; font-weight: bold; }
-    .link-txt { font-size: 11px; color: var(--primary); font-weight: bold; }
+    .link-txt { font-size: 11px; color: var(--primary); font-weight: bold; cursor: pointer; }
     .label { font-size: 12px; color: var(--text-muted); }
 
     .badge { font-size: 10px; color: var(--primary); background: rgba(99,102,241,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
@@ -118,7 +116,6 @@
     .rep-preview { display: flex; gap: 8px; }
     .pill-rep { font-size: 12px; background: var(--bg-main); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-    /* Pestañas Horario */
     .horario-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
     .horario-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
     .horario-tab.active { background: var(--primary); color: white; }
@@ -128,7 +125,6 @@
     .horario-subview { display: none !important; flex-direction: column; gap: 14px; }
     .horario-subview.active { display: flex !important; }
 
-    /* Calendario Mensual Interactivo */
     .monthly-calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -172,13 +168,11 @@
       margin-top: 2px;
     }
 
-    /* Tabla Cuadrante Excel Actualizada */
     .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
     .calendar-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 10px; }
     .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 4px; text-align: center; height: 26px; }
     .calendar-table th { background: var(--bg-main); color: var(--text-muted); font-weight: 600; position: sticky; top: 0; z-index: 2; }
 
-    /* Estilos Insignias */
     .streak-header-card { background: linear-gradient(135deg, #1E1B4B, #311042); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
     .streak-fire-big { font-size: 64px; display: inline-block; }
     .streak-days-row { display: flex; justify-content: space-between; margin-top: 16px; gap: 6px; }
@@ -903,7 +897,7 @@
   <div id="modalObjetivo" class="modal" onclick="cerrarModalObjetivoFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nuevo Objetivo Diario</h3>
+        <h3 id="modal-obj-titulo">Nuevo Objetivo Diario</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalObjetivo()">✕</span>
       </div>
       <input type="hidden" id="input-edit-index-obj" value="-1">
@@ -925,9 +919,8 @@
     </div>
   </div>
 
-  <!-- ================= SCRIPT COMPLETO CON LÓGICA AVANZADA ================= -->
+  <!-- ================= SCRIPT COMPLETO CON CONTROL DE VISTAS ================= -->
   <script>
-    // --- PERSISTENCIA CON LOCALSTORAGE ---
     let centrosEstudios = JSON.parse(localStorage.getItem('ritmo_centros')) || [
       {
         nombre: "Conservatorio Superior de Música",
@@ -987,6 +980,57 @@
       "#D946EF", "#06B6D4", "#84CC16", "#EAB308", "#6D28D9",
       "#BE185D", "#047857", "#B45309", "#1E40AF", "#475569", "#7C3AED"
     ];
+
+    function cambiarVista(vistaId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      let target = document.getElementById('vista-' + vistaId);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      let navMap = {
+        'hoy': 'nav-hoy',
+        'racha-panel': 'nav-hoy',
+        'horario': 'nav-horario',
+        'estudio': 'nav-estudio',
+        'repertorio': 'nav-repertorio',
+        'repertorio-detalle': 'nav-repertorio',
+        'objetivos': 'nav-hoy',
+        'mas': 'nav-mas',
+        'centros-estudio': 'nav-mas',
+        'centro-detalle': 'nav-mas',
+        'notas-centros': 'nav-mas',
+        'notas-detalle': 'nav-mas',
+        'asistencia-centros': 'nav-mas',
+        'asistencia-detalle': 'nav-mas',
+        'tareas': 'nav-mas'
+      };
+
+      let activeNavId = navMap[vistaId];
+      if (activeNavId) {
+        let navElem = document.getElementById(activeNavId);
+        if (navElem) navElem.classList.add('active');
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function cambiarHorarioTab(tabId, el) {
+      document.querySelectorAll('.horario-subview').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
+      let targetSubview = document.getElementById('subview-' + tabId);
+      if(targetSubview) targetSubview.classList.add('active');
+      if(el) el.classList.add('active');
+    }
+
+    function cambiarAsistenciaTab(tabId, el) {
+      document.querySelectorAll('#vista-asistencia-detalle .horario-subview').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('#vista-asistencia-detalle .horario-tab').forEach(t => t.classList.remove('active'));
+      let targetSubview = document.getElementById('subview-asistencia-' + tabId);
+      if(targetSubview) targetSubview.classList.add('active');
+      if(el) el.classList.add('active');
+      if(tabId === 'estadisticas') renderizarEstadisticasAsistenciaCentro();
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       inicializarSelectoresHora();
