@@ -1,4 +1,4 @@
-// --- Navegación limpia entre Vistas ---
+// --- Navegación fluida entre Vistas ---
 function cambiarVista(idVista, elementoNav) {
   document.querySelectorAll('.view').forEach(vista => {
     vista.classList.remove('active-view');
@@ -9,15 +9,16 @@ function cambiarVista(idVista, elementoNav) {
     vistaSeleccionada.classList.add('active-view');
   }
 
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.remove('active');
-  });
+  // Si pasamos elementoNav desde la barra inferior, actualizamos clases
   if (elementoNav) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.remove('active');
+    });
     elementoNav.classList.add('active');
   }
 }
 
-// --- Control del Bottom Sheet Contextual para la Racha ---
+// --- Control del Bottom Sheet Contextual para la Racha (Aparece por debajo) ---
 function abrirRacha() {
   const modal = document.getElementById('modalRacha');
   if (modal) modal.classList.add('active');
@@ -34,7 +35,7 @@ function cerrarRachaFuera(event) {
   }
 }
 
-// --- Control del Modal para Añadir Instrumentos ---
+// --- Control del Modal para Añadir Instrumento ---
 function abrirModalInstrumento() {
   const modal = document.getElementById('modalInstrumento');
   if (modal) modal.classList.add('active');
@@ -51,7 +52,7 @@ function cerrarModalInstFuera(event) {
   }
 }
 
-// --- Lógica para Crear Nuevos Instrumentos en el Repertorio ---
+// --- Lógica para Crear Nuevos Instrumentos y Sincronizarlos ---
 function guardarNuevoInstrumento() {
   const input = document.getElementById('nombre-instrumento');
   const nombre = input.value.trim();
@@ -61,23 +62,32 @@ function guardarNuevoInstrumento() {
     return;
   }
 
-  const grid = document.getElementById('grid-instrumentos');
-  const botonAnadir = grid.querySelector('.card-add');
-
-  const nuevaTarjeta = document.createElement('article');
-  nuevaTarjeta.className = 'card-instrumento';
-  nuevaTarjeta.innerHTML = `
-    <span class="icono">🎵</span>
-    <h4>${nombre}</h4>
-  `;
-
-  grid.insertBefore(nuevaTarjeta, botonAnadir);
+  // Sincronizar en los grids de inicio y repertorio completo
+  ['grid-instrumentos-home', 'grid-instrumentos-completo'].forEach(idGrid => {
+    const grid = document.getElementById(idGrid);
+    if (grid) {
+      const botonAnadir = grid.querySelector('.card-add');
+      const nuevaTarjeta = document.article ? document.createElement('article') : document.createElement('article');
+      nuevaTarjeta.className = 'card-instrumento';
+      nuevaTarjeta.innerHTML = `
+        <span class="icono">🎵</span>
+        <h4>${nombre}</h4>
+        <span class="card-sub-instrumento">0 piezas</span>
+      `;
+      if (botonAnadir) {
+        grid.insertBefore(nuevaTarjeta, botonAnadir);
+      } else {
+        grid.appendChild(nuevaTarjeta);
+      }
+    }
+  });
 
   input.value = '';
   cerrarModalInstrumento();
+  alert(`Instrumento "${nombre}" añadido correctamente.`);
 }
 
-// --- Cronómetro y Feedback de la Sesión de Estudio ---
+// --- Cronómetro y Feedback Interactivo de la Sesión de Estudio ---
 let sesionActiva = false;
 let segundosEstudio = 0;
 let intervaloCronometro = null;
@@ -88,8 +98,8 @@ function iniciarSesionEstudio() {
 
   if (!sesionActiva) {
     sesionActiva = true;
-    btn.textContent = "Finalizar sesión";
-    btn.style.backgroundColor = "#EF4444"; // Color rojo de parada
+    btn.textContent = "Finalizar sesión de estudio";
+    btn.style.backgroundColor = "#EF4444"; // Rojo para indicar acción activa
 
     intervaloCronometro = setInterval(() => {
       segundosEstudio++;
@@ -111,7 +121,8 @@ function iniciarSesionEstudio() {
     // Actualizar minutos acumulados en el dashboard principal
     const minEstudiadosElem = document.getElementById('num-minutos');
     let minutosActuales = parseInt(minEstudiadosElem.textContent) || 0;
-    minutosActuales += Math.floor(segundosEstudio / 60);
+    let minutosNuevos = Math.floor(segundosEstudio / 60);
+    minutosActuales += minutosNuevos > 0 ? minutosNuevos : 1; // Mínimo 1 min si completó
     minEstudiadosElem.textContent = minutosActuales;
 
     segundosEstudio = 0;
@@ -120,10 +131,19 @@ function iniciarSesionEstudio() {
   }
 }
 
+// --- Metrónomo de Apoyo ---
+let bpmActual = 120;
+function ajustarBPM(cambio) {
+  bpmActual += cambio;
+  if (bpmActual < 40) bpmActual = 40;
+  if (bpmActual > 240) bpmActual = 240;
+  document.getElementById('bpm-display').textContent = bpmActual + " BPM";
+}
+
 function cambiarFiltroHorario(select) {
   console.log("Filtro de horario seleccionado:", select.value);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("RitmoAcade cargado y optimizado al 100% con todas las correcciones.");
+  console.log("RitmoAcade cargado al 100% con todas las secciones, widgets y mejoras implementadas.");
 });
