@@ -588,17 +588,29 @@
           <input type="text" id="input-asig-aula" class="form-control" placeholder="Aula...">
         </div>
       </div>
-      <div class="form-group">
-        <label>Día de la semana</label>
-        <select id="input-asig-dia" class="form-control">
-          <option value="Lun">Lunes</option>
-          <option value="Mar">Martes</option>
-          <option value="Mié">Miércoles</option>
-          <option value="Jue">Jueves</option>
-          <option value="Vie">Viernes</option>
-          <option value="Sáb">Sábado</option>
-          <option value="Dom">Domingo</option>
-        </select>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Día de la semana</label>
+          <select id="input-asig-dia" class="form-control">
+            <option value="Lun">Lunes</option>
+            <option value="Mar">Martes</option>
+            <option value="Mié">Miércoles</option>
+            <option value="Jue">Jueves</option>
+            <option value="Vie">Viernes</option>
+            <option value="Sáb">Sábado</option>
+            <option value="Dom">Domingo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Periodo Lectivo</label>
+          <select id="input-asig-periodo" class="form-control" onchange="toggleSelectorPeriodo()">
+            <option value="1_cuatri">1º Cuatrimestre</option>
+            <option value="2_cuatri">2º Cuatrimestre</option>
+            <option value="1_trim">1º Trimestre</option>
+            <option value="2_trim">2º Trimestre</option>
+            <option value="3_trim">3º Trimestre</option>
+          </select>
+        </div>
       </div>
       <div class="row-2">
         <div class="form-group">
@@ -786,7 +798,7 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", estadoAsistencia: "Asistió" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -845,32 +857,58 @@
       actualizarHomePorFecha();
     }
 
+    function calcularFechasPeriodo(periodo) {
+      let y = fechaHomeActual.getFullYear();
+      if (periodo === '1_cuatri') {
+        return { inicio: "2026-09-26", fin: "2027-01-31" };
+      } else if (periodo === '2_cuatri') {
+        return { inicio: "2027-02-01", fin: "2027-06-01" };
+      } else if (periodo === '1_trim') {
+        return { inicio: "2026-09-26", fin: "2026-11-27" };
+      } else if (periodo === '2_trim') {
+        return { inicio: "2026-11-28", fin: "2027-03-05" };
+      } else if (periodo === '3_trim') {
+        return { inicio: "2027-03-05", fin: "2027-06-22" };
+      }
+      return { inicio: "2026-09-26", fin: "2027-06-30" };
+    }
+
     function actualizarHomePorFecha() {
       let yyyy = fechaHomeActual.getFullYear();
       let mm = String(fechaHomeActual.getMonth() + 1).padStart(2, '0');
       let dd = String(fechaHomeActual.getDate()).padStart(2, '0');
-      let fechaStr = `${yyyy}-${mm}-${mm}`; // O formato local
+      let fechaIso = `${yyyy}-${mm}-${dd}`;
+      
       let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       let fechaFormateada = fechaHomeActual.toLocaleDateString('es-ES', options);
       
       document.getElementById('home-fecha-actual').textContent = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
       document.getElementById('home-nav-titulo-dia').textContent = `${fechaHomeActual.getDate()} ${fechaHomeActual.toLocaleString('es-ES', { month: 'short' })} (${yyyy})`;
 
-      // Filtrar evento próximo o tarea para este día
-      let fechaIso = `${yyyy}-${mm}-${dd}`;
       let todasAsig = [];
       centrosEstudios.forEach(c => todasAsig = todasAsig.concat(c.asignaturas));
-      
-      // Buscar tarea para esta fecha
+
+      // Comprobar si hay una asignatura activa en este día según su rango de periodo
+      let asigHoy = todasAsig.find(a => {
+        let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
+        let enRangoFechas = fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin;
+        return a.dia === diaSemanaStr && enRangoFegrading && enRangoFechas;
+      });
+
       let tareaDelDia = tareasPendientes.find(t => t.fecha === fechaIso);
-      if (tareaDelDia) {
+
+      if (asigHoy) {
+        document.getElementById('home-evento-titulo').textContent = `${asigHoy.nombre}`;
+        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Periodo lectivo activo`;
+        document.getElementById('home-evento-info').textContent = `📍 ${asigHoy.aula} • ⏱️ ${asigHoy.inicio} - ${asigHoy.fin} (Ver horario ›)`;
+      } else if (tareaDelDia) {
         document.getElementById('home-evento-titulo').textContent = `📝 Tarea: ${tareaDelDia.titulo}`;
         document.getElementById('home-evento-desc').textContent = tareaDelDia.desc || 'Sin descripción';
         document.getElementById('home-evento-info').textContent = `Asignatura: ${tareaDelDia.asignatura} • Prioridad: ${tareaDelDia.prioridad}`;
       } else {
-        document.getElementById('home-evento-titulo').textContent = 'Práctica libre o ensayo programado';
-        document.getElementById('home-evento-desc').textContent = 'No hay eventos críticos asignados para este día.';
-        document.getElementById('home-evento-info').textContent = 'Estudio Principal • ⏱️ Flexible';
+        document.getElementById('home-evento-titulo').textContent = 'Sin clases lectivas programadas';
+        document.getElementById('home-evento-desc').textContent = 'Jornada libre de eventos académicos para este día.';
+        document.getElementById('home-evento-info').textContent = 'Estudio Principal • ⏱️ Horario flexible';
       }
     }
 
@@ -929,14 +967,6 @@
       const sub = document.getElementById('subview-asistencia-' + tipo);
       if (sub) sub.classList.add('active');
       if (tipo === 'estadisticas') renderizarEstadisticasAsistenciaCentro();
-    }
-
-    function cambiarStreakTab(tipo, tabElem) {
-      document.querySelectorAll('.streak-tab').forEach(t => t.classList.remove('active'));
-      tabElem.classList.add('active');
-      document.querySelectorAll('.streak-subview').forEach(sub => sub.classList.remove('active'));
-      const sub = document.getElementById('streak-sub-' + tipo);
-      if (sub) sub.classList.add('active');
     }
 
     // --- NOTAS CON CÓDIGO DE COLOR ---
@@ -1335,6 +1365,13 @@
         return;
       }
       centro.asignaturas.forEach((asig, idx) => {
+        let textoPeriodo = "Periodo general";
+        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (Hasta 31 Ene)";
+        else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb - 1 Jun)";
+        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (Hasta 27 Nov)";
+        else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (28 Nov - 5 Mar)";
+        else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (5 Mar - 22 Jun)";
+
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
@@ -1346,6 +1383,7 @@
             </div>
             <h4 style="margin-top: 6px;">${asig.nombre}</h4>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
+            <p style="font-size: 11px; color: var(--primary); margin-top: 4px;">📅 ${textoPeriodo}</p>
           </div>
         `;
       });
@@ -1357,6 +1395,7 @@
       document.getElementById('input-asig-nombre').value = '';
       document.getElementById('input-asig-docente').value = '';
       document.getElementById('input-asig-aula').value = '';
+      document.getElementById('input-asig-periodo').value = '1_cuatri';
       document.getElementById('modalAsignatura').classList.add('active');
     }
 
@@ -1371,6 +1410,7 @@
       document.getElementById('input-asig-dia').value = asig.dia;
       document.getElementById('input-asig-inicio').value = asig.inicio;
       document.getElementById('input-asig-fin').value = asig.fin;
+      document.getElementById('input-asig-periodo').value = asig.periodo || '1_cuatri';
       colorSeleccionadoHex = asig.color;
       document.getElementById('modalAsignatura').classList.add('active');
     }
@@ -1385,13 +1425,20 @@
       const dia = document.getElementById('input-asig-dia').value;
       const inicio = document.getElementById('input-asig-inicio').value;
       const fin = document.getElementById('input-asig-fin').value;
+      const periodo = document.getElementById('input-asig-periodo').value;
       const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
 
       if (!nombre) return;
+      let fechasRango = calcularFechasPeriodo(periodo);
+
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro) {
         if (editIndex === -1) {
-          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar' });
+          centro.asignaturas.push({
+            nombre, docente, aula, dia, inicio, fin, periodo,
+            fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
+            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar'
+          });
         } else {
           centro.asignaturas[editIndex].nombre = nombre;
           centro.asignaturas[editIndex].docente = docente;
@@ -1399,6 +1446,9 @@
           centro.asignaturas[editIndex].dia = dia;
           centro.asignaturas[editIndex].inicio = inicio;
           centro.asignaturas[editIndex].fin = fin;
+          centro.asignaturas[editIndex].periodo = periodo;
+          centro.asignaturas[editIndex].fechaInicio = fechasRango.inicio;
+          centro.asignaturas[editIndex].fechaFin = fechasRango.fin;
           centro.asignaturas[editIndex].color = colorSeleccionadoHex;
         }
       }
@@ -1639,7 +1689,7 @@
       const contMensual = document.getElementById('container-mensual-dinamico');
       contMensual.innerHTML = `
         <div class="card">
-          <h4 style="margin-bottom: 6px; color: var(--primary);">📅 Septiembre / Octubre 2026</h4>
+          <h4 style="margin-bottom: 6px; color: var(--primary);">📅 Septiembre 2026 - Junio 2027</h4>
           <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Compromisos y entregas programadas:</p>
           <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
       `;
