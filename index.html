@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Versión Definitiva</title>
+  <title>RitmoAcade - Sistema Definitivo Total</title>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -37,12 +37,8 @@
       padding-bottom: 140px;
     }
 
-    .view {
-      display: none !important;
-    }
-    .view.active {
-      display: block !important;
-    }
+    .view { display: none !important; }
+    .view.active { display: block !important; }
 
     header {
       display: flex;
@@ -51,47 +47,13 @@
       margin-bottom: 16px;
     }
 
-    .header-user {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar {
-      font-size: 24px;
-      background: var(--bg-card);
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-
-    .sub {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .titulo {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .fecha {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .header-user { display: flex; align-items: center; gap: 12px; }
+    .avatar { font-size: 24px; background: var(--bg-card); padding: 8px; border-radius: 10px; border: 1px solid var(--border); }
+    .sub { font-size: 12px; color: var(--text-muted); }
+    .titulo { font-size: 18px; font-weight: bold; }
+    .fecha { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .grid { display: flex; flex-direction: column; gap: 14px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     .card {
       background: var(--bg-card);
@@ -99,372 +61,71 @@
       border-radius: 14px;
       padding: 16px;
     }
+    .card.interactive { cursor: pointer; }
+    .card.interactive:active { transform: scale(0.98); }
 
-    .card.interactive {
-      cursor: pointer;
-    }
-    .card.interactive:active {
-      transform: scale(0.98);
-    }
+    .stat-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .num { font-size: 22px; font-weight: bold; }
+    .link-txt { font-size: 11px; color: var(--primary); font-weight: bold; }
+    .label { font-size: 12px; color: var(--text-muted); }
 
-    .stat-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 4px;
-    }
+    .badge { font-size: 10px; color: var(--primary); background: rgba(99,102,241,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .badge-warn { font-size: 10px; color: #F59E0B; background: rgba(245,158,11,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .badge-danger { font-size: 10px; color: #EF4444; background: rgba(239,68,68,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
-    .num {
-      font-size: 22px;
-      font-weight: bold;
-    }
+    .section-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .rep-preview { display: flex; gap: 8px; }
+    .pill-rep { font-size: 12px; background: var(--bg-main); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-    .link-txt {
-      font-size: 11px;
-      color: var(--primary);
-      font-weight: bold;
-    }
+    /* Pestañas Horario / Racha */
+    .horario-tabs, .streak-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
+    .horario-tab, .streak-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
+    .horario-tab.active, .streak-tab.active { background: var(--primary); color: white; }
+    .horario-tab.tab-calendar { color: var(--calendar-accent); }
+    .horario-tab.tab-calendar.active { background: var(--calendar-accent); color: white; }
+    .streak-tab.active { background: var(--streak-color); color: white; }
 
-    .label {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .horario-subview, .streak-subview { display: none !important; flex-direction: column; gap: 14px; }
+    .horario-subview.active, .streak-subview.active { display: flex !important; }
 
-    .badge {
-      font-size: 10px;
-      color: var(--primary);
-      background: rgba(99,102,241,0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-    }
+    /* Tabla Excel */
+    .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
+    .calendar-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 10px; }
+    .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 4px; text-align: center; height: 26px; }
+    .calendar-table th { background: var(--bg-main); color: var(--text-muted); font-weight: 600; position: sticky; top: 0; z-index: 2; }
 
-    .badge-warn {
-      font-size: 10px;
-      color: #F59E0B;
-      background: rgba(245,158,11,0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-    }
+    /* Estilos Racha */
+    .streak-header-card { background: linear-gradient(135deg, #1E1B4B, #311042); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
+    .streak-fire-big { font-size: 64px; display: inline-block; }
+    .streak-days-row { display: flex; justify-content: space-between; margin-top: 16px; gap: 6px; }
+    .streak-day-bubble { flex: 1; background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 8px 2px; text-align: center; }
+    .streak-day-bubble.active { background: var(--streak-bg); border-color: var(--streak-color); }
+    .streak-day-bubble span { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+    .streak-day-bubble strong { font-size: 14px; }
 
-    .badge-danger {
-      font-size: 10px;
-      color: #EF4444;
-      background: rgba(239,68,68,0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-    }
+    .reward-step { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .reward-step.unlocked { border-color: var(--success); background: rgba(16, 185, 129, 0.08); }
+    .reward-icon { font-size: 28px; background: var(--bg-main); padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
 
-    .section-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+    .color-picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 6px; }
+    .color-option { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; }
+    .color-option.selected { border-color: #fff; transform: scale(1.1); }
 
-    .rep-preview {
-      display: flex;
-      gap: 8px;
-    }
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #111827; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 14px 0 32px 0; z-index: 9999; }
+    .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; padding: 6px 0; }
+    .nav-item span { font-size: 26px; display: block; margin-bottom: 4px; }
+    .nav-item small { font-size: 11px; font-weight: 500; }
+    .nav-item.active { color: var(--primary); }
 
-    .pill-rep {
-      font-size: 12px;
-      background: var(--bg-main);
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    /* Pestañas de Horario */
-    .horario-tabs {
-      display: flex;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 16px;
-      gap: 2px;
-    }
-    .horario-tab {
-      flex: 1;
-      text-align: center;
-      padding: 8px 2px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-    }
-    .horario-tab.active {
-      background: var(--primary);
-      color: white;
-    }
-    .horario-tab.tab-calendar {
-      color: var(--calendar-accent);
-    }
-    .horario-tab.tab-calendar.active {
-      background: var(--calendar-accent);
-      color: white;
-    }
-
-    .horario-subview {
-      display: none !important;
-    }
-    .horario-subview.active {
-      display: flex !important;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    /* Tabla tipo Excel */
-    .calendar-grid-container {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 8px;
-      overflow-x: auto;
-      max-height: 500px;
-      overflow-y: auto;
-    }
-    .calendar-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 600px;
-      font-size: 10px;
-    }
-    .calendar-table th, .calendar-table td {
-      border: 1px solid var(--border);
-      padding: 4px;
-      text-align: center;
-      height: 26px;
-    }
-    .calendar-table th {
-      background: var(--bg-main);
-      color: var(--text-muted);
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    /* Estilos de Racha */
-    .streak-header-card {
-      background: linear-gradient(135deg, #1E1B4B, #311042);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      text-align: center;
-    }
-    .streak-fire-big {
-      font-size: 64px;
-      display: inline-block;
-      animation: pulseFire 2s infinite ease-in-out;
-    }
-    @keyframes pulseFire {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-    .streak-days-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 16px;
-      gap: 6px;
-    }
-    .streak-day-bubble {
-      flex: 1;
-      background: var(--bg-main);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 2px;
-      text-align: center;
-    }
-    .streak-day-bubble.active {
-      background: var(--streak-bg);
-      border-color: var(--streak-color);
-    }
-    .streak-day-bubble span {
-      display: block;
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .streak-day-bubble strong {
-      font-size: 14px;
-    }
-
-    .streak-tabs {
-      display: flex;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 4px;
-      gap: 4px;
-    }
-    .streak-tab {
-      flex: 1;
-      text-align: center;
-      padding: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .streak-tab.active {
-      background: var(--streak-color);
-      color: white;
-    }
-    .streak-subview {
-      display: none !important;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .streak-subview.active {
-      display: flex !important;
-    }
-
-    .reward-step {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .reward-step.unlocked {
-      border-color: var(--success);
-      background: rgba(16, 185, 129, 0.08);
-    }
-    .reward-icon {
-      font-size: 28px;
-      background: var(--bg-main);
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-
-    .color-picker-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .color-option {
-      width: 100%;
-      height: 32px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
-    .color-option.selected {
-      border-color: #fff;
-      transform: scale(1.1);
-    }
-
-    .nav-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      max-width: 480px;
-      margin: 0 auto;
-      background: #111827;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      padding: 14px 0 32px 0;
-      z-index: 9999;
-    }
-    .nav-item {
-      text-align: center;
-      color: var(--text-muted);
-      cursor: pointer;
-      flex: 1;
-      padding: 6px 0;
-    }
-    .nav-item span {
-      font-size: 26px;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .nav-item small {
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .nav-item.active {
-      color: var(--primary);
-    }
-
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      align-items: flex-end;
-      z-index: 10000;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: var(--bg-card);
-      width: 100%;
-      padding: 24px;
-      border-radius: 20px 20px 0 0;
-      border-top: 1px solid var(--border);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .form-control {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-size: 14px;
-    }
-    .btn-main {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-    .btn-config {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .btn-accion-txt {
-      background: none;
-      border: none;
-      font-size: 11px;
-      cursor: pointer;
-      font-weight: 500;
-    }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: flex-end; z-index: 10000; }
+    .modal.active { display: flex; }
+    .modal-content { background: var(--bg-card); width: 100%; padding: 24px; border-radius: 20px 20px 0 0; border-top: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .form-control { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-main); color: var(--text-main); font-size: 14px; }
+    .btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+    .btn-config { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-accion-txt { background: none; border: none; font-size: 11px; cursor: pointer; font-weight: 500; }
     .btn-editar { color: var(--primary); }
     .btn-eliminar { color: var(--danger); }
   </style>
@@ -517,11 +178,10 @@
       <div class="row-2">
         <div class="card interactive" onclick="cambiarVista('objetivos')">
           <div class="stat-top">
-            <span class="num">65%</span>
+            <span class="num" id="num-objetivos-home">1</span>
             <span class="link-txt">Ver metas ›</span>
           </div>
           <div class="label">objetivos diarios</div>
-          <div class="progress"><div class="fill" style="width: 65%;"></div></div>
         </div>
         
         <div class="card interactive" onclick="cambiarVista('racha-panel')">
@@ -557,8 +217,7 @@
       <div class="streak-header-card">
         <div class="streak-fire-big">🔥</div>
         <div style="font-size: 32px; font-weight: bold; margin: 4px 0;">3 DÍAS</div>
-        <p style="color: var(--text-muted); font-size: 13px;">¡Estás a 4 días de batir tu récord personal de 7 días!</p>
-        
+        <p style="color: var(--text-muted); font-size: 13px;">¡Estás a 4 días de batir tu récord personal!</p>
         <div class="streak-days-row">
           <div class="streak-day-bubble active"><span>L</span><strong>✓</strong></div>
           <div class="streak-day-bubble active"><span>M</span><strong>✓</strong></div>
@@ -582,17 +241,17 @@
             <h4>Análisis de Hoy</h4>
             <span class="badge" style="background: var(--streak-bg); color: var(--streak-color);">Completado</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has practicado 45 minutos hoy distribuidos en Saxofón y Armonía.</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has practicado 25 minutos hoy con tu Pomodoro musical.</p>
         </div>
       </div>
 
       <div id="streak-sub-semanal" class="streak-subview">
         <div class="card">
           <div class="section-flex">
-            <h4>Resumen de la Semana</h4>
+            <h4>Resumen Semanal</h4>
             <span class="badge">3.5 hrs total</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Tu día más productivo fue el miércoles con 1h 20m de estudio.</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Constancia alta de lunes a miércoles.</p>
         </div>
       </div>
 
@@ -602,7 +261,18 @@
             <h4 style="color: var(--streak-color);">📅 Septiembre 2026</h4>
             <span class="badge-warn">18 días activos</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has acumulado 14 horas de práctica instrumental este mes.</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">14 horas acumuladas este mes.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin-bottom: 12px; color: var(--streak-color);">🎁 Recompensas</h4>
+        <div class="reward-step unlocked">
+          <div class="reward-icon">🎁</div>
+          <div>
+            <div style="font-weight: bold; font-size: 13px; color: var(--success);">1 Semana Consecutiva</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Tema neón desbloqueado.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -613,13 +283,13 @@
     <header>
       <div class="titulo">Horarios y Planificación</div>
     </header>
-    <p class="fecha">Organiza tus clases y ensayos.</p>
+    <p class="fecha">Organiza tus clases, ensayos y tareas por fecha exacta.</p>
     
     <div class="horario-tabs">
       <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
       <div class="horario-tab" onclick="cambiarHorarioTab('semanal', this)">Semanal</div>
       <div class="horario-tab" onclick="cambiarHorarioTab('mensual', this)">Mensual</div>
-      <div class="horario-tab tab-calendar" onclick="cambiarHorarioTab('calendario', this)">📅 Horario</div>
+      <div class="horario-tab tab-calendar" onclick="cambiarHorarioTab('calendario', this)">📅 Cuadrante</div>
     </div>
 
     <div id="subview-diaria" class="horario-subview active">
@@ -631,23 +301,13 @@
     </div>
 
     <div id="subview-mensual" class="horario-subview">
-      <div class="card">
-        <h4 style="margin-bottom: 6px; color: var(--primary);">📅 Octubre 2026</h4>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Resumen de compromisos clave del mes:</p>
-        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
-          <div class="section-flex" style="background: var(--bg-main); padding: 8px; border-radius: 8px;">
-            <span>15 Oct - Audición Trimestral</span>
-            <span class="badge-danger">Examen</span>
-          </div>
-        </div>
-      </div>
+      <div id="container-mensual-dinamico" class="grid"></div>
     </div>
 
     <div id="subview-calendario" class="horario-subview">
       <div class="card" style="padding: 10px;">
         <div class="section-flex" style="margin-bottom: 8px;">
           <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal</h4>
-          <span style="font-size: 10px; color: var(--text-muted);">Desliza horizontal ➔</span>
         </div>
         <div class="calendar-grid-container">
           <table class="calendar-table">
@@ -664,12 +324,12 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 3: ESTUDIO (POMODORO INTEGRAL) ================= -->
+  <!-- ================= VISTA 3: ESTUDIO (POMODORO) ================= -->
   <div id="vista-estudio" class="view">
     <header>
       <div class="titulo">Pomodoro Musical</div>
     </header>
-    <p class="fecha">Elige tu asignatura o tarea teórica/instrumental y cronometra.</p>
+    <p class="fecha">Cronometra tus bloques de práctica instrumental o teórica.</p>
 
     <div class="card" style="padding: 20px;">
       <div class="form-group">
@@ -678,12 +338,12 @@
       </div>
 
       <div class="form-group">
-        <label>Duración del Bloque (minutos)</label>
+        <label>Duración (minutos)</label>
         <select id="pomodoro-duracion" class="form-control">
-          <option value="15">15 minutos (Breve)</option>
-          <option value="25" selected>25 minutos (Clásico)</option>
-          <option value="45">45 minutos (Intenso)</option>
-          <option value="60">60 minutos (Maestro)</option>
+          <option value="15">15 minutos</option>
+          <option value="25" selected>25 minutos</option>
+          <option value="45">45 minutos</option>
+          <option value="60">60 minutos</option>
         </select>
       </div>
 
@@ -719,10 +379,20 @@
 
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Obras y piezas en estudio.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalPieza()">+ Añadir pieza</button>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalPiezaCrear()">+ Añadir pieza</button>
     </div>
 
     <div class="grid" id="lista-piezas-container"></div>
+  </div>
+
+  <!-- ================= VISTA 4.1: OBJETIVOS DIARIOS ================= -->
+  <div id="vista-objetivos" class="view">
+    <header>
+      <div class="titulo">Objetivos Diarios</div>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalObjetivoCrear()">+ Nuevo objetivo</button>
+    </header>
+    <p class="fecha">Metas y tareas marcadas como objetivo diario.</p>
+    <div class="grid" id="lista-objetivos-container"></div>
   </div>
 
   <!-- ================= VISTA 5: MÁS (AJUSTES) ================= -->
@@ -746,7 +416,7 @@
           <h4>📊 Registro de Notas</h4>
           <span class="link-txt">Ver notas ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones de exámenes y entregas</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones codificadas por colores</p>
       </div>
 
       <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
@@ -762,17 +432,12 @@
           <h4>📝 Tareas Pendientes</h4>
           <span class="link-txt">Gestionar ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ver listado completo y añadir pendientes</p>
-      </div>
-
-      <div class="card interactive" onclick="alert('RitmoAcade v5.3 - Versión totalmente integrada.')">
-        <h4>ℹ️ Acerca de</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Listado con fecha exacta y calendario</p>
       </div>
     </div>
   </div>
 
-  <!-- ================= VISTAS SECUNDARIAS ================= -->
+  <!-- ================= VISTAS SECUNDARIAS DE AJUSTES ================= -->
   <div id="vista-centros-estudio" class="view">
     <header>
       <div class="titulo">Centros de Estudios</div>
@@ -808,7 +473,7 @@
       <div class="titulo">Registro de Notas</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-    <p class="fecha">Elige un centro para consultar o añadir calificaciones.</p>
+    <p class="fecha">Elige un centro para consultar calificaciones con código de color.</p>
     <div class="grid" id="lista-notas-centros-container"></div>
   </div>
 
@@ -824,7 +489,7 @@
       <button class="btn-config" onclick="cambiarVista('notas-centros')">‹</button>
     </header>
     <div class="section-flex" style="margin-bottom: 14px;">
-      <p class="fecha" style="margin-bottom:0;">Exámenes, trabajos y entregas.</p>
+      <p class="fecha" style="margin-bottom:0;">Exámenes y entregas.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalNota()">+ Añadir nota</button>
     </div>
     <div class="grid" id="lista-calificaciones-container"></div>
@@ -835,7 +500,7 @@
       <div class="titulo">Control de Asistencia</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-    <p class="fecha">Elige tu centro para pasar lista y revisar asistencias.</p>
+    <p class="fecha">Elige tu centro para pasar lista.</p>
     <div class="grid" id="lista-asistencia-centros-container"></div>
   </div>
 
@@ -860,23 +525,10 @@
       <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
     </header>
     <div class="section-flex" style="margin-bottom: 14px;">
-      <p class="fecha" style="margin-bottom:0;">Listado de tus pendientes musicales y teóricos.</p>
+      <p class="fecha" style="margin-bottom:0;">Listado con fecha exacta y calendario.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTareaParaCrear()">+ Añadir tarea</button>
     </div>
     <div class="grid" id="lista-tareas-container"></div>
-  </div>
-
-  <div id="vista-objetivos" class="view">
-    <header>
-      <div class="titulo">Objetivos Diarios</div>
-      <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
-    </header>
-    <div class="grid">
-      <div class="card">
-        <h4>Estudiar mínimo 45 minutos</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Completado hoy</p>
-      </div>
-    </div>
   </div>
 
   <!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
@@ -927,7 +579,7 @@
       <input type="hidden" id="input-asig-edit-index" value="-1">
       <div class="form-group">
         <label>Nombre</label>
-        <input type="text" id="input-asig-nombre" class="form-control" placeholder="Ej. Historia de la Música...">
+        <input type="text" id="input-asig-nombre" class="form-control" placeholder="Ej. Piano...">
       </div>
       <div class="row-2">
         <div class="form-group">
@@ -972,7 +624,7 @@
   <div id="modalNota" class="modal" onclick="cerrarModalNotaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Registrar Nota / Calificación</h3>
+        <h3>Registrar Nota (Color automático)</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalNota()">✕</span>
       </div>
       <div class="form-group">
@@ -985,8 +637,8 @@
           <input type="text" id="input-nota-tipo" class="form-control" placeholder="Examen / Trabajo">
         </div>
         <div class="form-group">
-          <label>Calificación</label>
-          <input type="text" id="input-nota-valor" class="form-control" placeholder="9.5">
+          <label>Calificación (0 a 10)</label>
+          <input type="number" step="0.01" min="0" max="10" id="input-nota-valor" class="form-control" placeholder="8.5">
         </div>
       </div>
       <div class="form-group">
@@ -1018,9 +670,10 @@
   <div id="modalPieza" class="modal" onclick="cerrarModalPiezaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Añadir Pieza / Obra</h3>
+        <h3 id="modal-pieza-titulo">Añadir Pieza / Obra</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalPieza()">✕</span>
       </div>
+      <input type="hidden" id="input-pieza-edit-index" value="-1">
       <div class="form-group">
         <label>Título de la obra</label>
         <input type="text" id="input-titulo-pieza" class="form-control">
@@ -1033,7 +686,17 @@
         <label>Observaciones / Movimiento</label>
         <input type="text" id="input-desc-pieza" class="form-control">
       </div>
-      <button class="btn-main" onclick="guardarNuevaPieza()">Guardar pieza</button>
+      <div class="form-group">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="input-pieza-es-obj" style="width: 18px; height: 18px;">
+          <label for="input-pieza-es-obj" style="margin-bottom:0; cursor:pointer;">Establecer como objetivo diario</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fecha para objetivo diario</label>
+        <input type="date" id="input-pieza-fecha-obj" class="form-control">
+      </div>
+      <button class="btn-main" onclick="guardarOActualizarPieza()">Guardar pieza</button>
     </div>
   </div>
 
@@ -1049,7 +712,7 @@
         <input type="text" id="input-titulo-tarea" class="form-control" placeholder="Ej. Analizar armonía...">
       </div>
       <div class="form-group">
-        <label>Asignatura / Categoría</label>
+        <label>Asignatura</label>
         <select id="input-asignatura-tarea" class="form-control"></select>
       </div>
       <div class="row-2">
@@ -1062,15 +725,40 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Fecha límite</label>
-          <input type="text" id="input-fecha-tarea" class="form-control" value="Mañana">
+          <label>Fecha exacta</label>
+          <input type="date" id="input-fecha-tarea" class="form-control">
         </div>
       </div>
       <div class="form-group">
         <label>Descripción</label>
         <textarea id="input-desc-tarea" class="form-control" rows="2"></textarea>
       </div>
-      <button class="btn-main" id="btn-guardar-tarea" onclick="guardarOActualizarTarea()">Guardar tarea</button>
+      <div class="form-group">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="input-tarea-es-obj" style="width: 18px; height: 18px;">
+          <label for="input-tarea-es-obj" style="margin-bottom:0; cursor:pointer;">Establecer como objetivo diario</label>
+        </div>
+      </div>
+      <button class="btn-main" onclick="guardarOActualizarTarea()">Guardar tarea</button>
+    </div>
+  </div>
+
+  <div id="modalObjetivo" class="modal" onclick="cerrarModalObjetivoFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3 id="modal-obj-titulo">Nuevo Objetivo Diario</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalObjetivo()">✕</span>
+      </div>
+      <input type="hidden" id="input-edit-index-obj" value="-1">
+      <div class="form-group">
+        <label>Título del objetivo</label>
+        <input type="text" id="input-titulo-obj" class="form-control" placeholder="Ej. Estudiar escala cromática...">
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="input-fecha-obj" class="form-control">
+      </div>
+      <button class="btn-main" onclick="guardarOActualizarObjetivo()">Guardar objetivo</button>
     </div>
   </div>
 
@@ -1079,10 +767,11 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899" },
-          { nombre: "Armonía", docente: "Profª. Gómez", aula: "Aula 12", dia: "Mar", inicio: "11:00", fin: "12:30", color: "#6366F1" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899" }
         ],
-        notas: [],
+        notas: [
+          { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
+        ],
         asistencia: []
       }
     ];
@@ -1092,7 +781,11 @@
     ];
 
     let tareasPendientes = [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "Mañana", desc: "Estudio detallado del pasaje rápido." }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-26", desc: "Pasaje rápido.", esObj: true }
+    ];
+
+    let objetivosDiarios = [
+      { titulo: "Repasar articulación compases 30-45", fecha: "2026-09-26" }
     ];
 
     let centroActivo = "";
@@ -1121,6 +814,7 @@
       renderizarAsistenciaCentros();
       renderizarRepertorioCategorias();
       renderizarTareas();
+      renderizarObjetivos();
       sincronizarYRenderizarHorario();
       actualizarSelectorPomodoroItems();
     });
@@ -1181,198 +875,106 @@
       if (sub) sub.classList.add('active');
     }
 
-    // --- POMODORO (ASIGNATURAS Y TAREAS) ---
-    function actualizarSelectorPomodoroItems() {
-      const sel = document.getElementById('pomodoro-item');
-      sel.innerHTML = '';
-      // Asignaturas
-      centrosEstudios.forEach(c => {
-        c.asignaturas.forEach(a => {
-          sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 Asignatura: ${a.nombre} (${c.nombre})</option>`;
-        });
-      });
-      // Tareas
-      tareasPendientes.forEach(t => {
-        sel.innerHTML += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo} (${t.asignatura})</option>`;
-      });
-      if (sel.options.length === 0) {
-        sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
-      }
+    // --- NOTAS CON CÓDIGO DE COLOR ---
+    function getColorNota(val) {
+      let num = parseFloat(val);
+      if (isNaN(num)) return "var(--text-main)";
+      if (num <= 4.99) return "var(--danger)"; // Rojo
+      if (num <= 7.5) return "var(--warning)";  // Amarillo / Ámbar
+      return "var(--success)";                  // Verde
     }
 
-    let pomodoroActivo = false;
-    let pomodoroIntervalo = null;
-    let segundosRestantes = 25 * 60;
-
-    function togglePomodoro() {
-      const btn = document.getElementById('btn-pomodoro-accion');
-      const duracionSel = document.getElementById('pomodoro-duracion');
-      const itemSel = document.getElementById('pomodoro-item').value;
-      const display = document.getElementById('pomodoro-display');
-
-      if (!pomodoroActivo) {
-        pomodoroActivo = true;
-        duracionSel.disabled = true;
-        btn.textContent = "Pausar / Finalizar Pomodoro";
-        btn.style.background = "#EF4444";
-
-        let minutosElegidos = parseInt(duracionSel.value);
-        segundosRestantes = minutosElegidos * 60;
-
-        pomodoroIntervalo = setInterval(() => {
-          if (segundosRestantes > 0) {
-            segundosRestantes--;
-            let m = Math.floor(segundosRestantes / 60);
-            let s = segundosRestantes % 60;
-            display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-          } else {
-            clearInterval(pomodoroIntervalo);
-            pomodoroActivo = false;
-            duracionSel.disabled = false;
-            btn.textContent = "Iniciar Pomodoro";
-            btn.style.background = "var(--primary)";
-            
-            let minsAgregados = parseInt(duracionSel.value);
-            const minsElem = document.getElementById('num-minutos');
-            if (minsElem) minsElem.textContent = parseInt(minsElem.textContent || 0) + minsAgregados;
-            
-            alert(`¡Pomodoro completado para "${itemSel}"! Se han sumado ${minsAgregados} minutos.`);
-            display.textContent = `${String(minsAgregados).padStart(2,'0')}:00`;
-          }
-        }, 1000);
-      } else {
-        clearInterval(pomodoroIntervalo);
-        pomodoroActivo = false;
-        duracionSel.disabled = false;
-        btn.textContent = "Iniciar Pomodoro";
-        btn.style.background = "var(--primary)";
-      }
-    }
-
-    // --- CENTROS Y ASIGNATURAS ---
-    function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
-    function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
-    function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
-
-    function guardarNuevoCentro() {
-      const nombre = document.getElementById('input-nombre-centro').value.trim();
-      if (!nombre) return;
-      centrosEstudios.push({ nombre: nombre, asignaturas: [], notas: [], asistencia: [] });
-      renderizarCentros();
-      renderizarNotasCentros();
-      renderizarAsistenciaCentros();
-      cerrarModalCentro();
-    }
-
-    function renderizarCentros() {
-      const contenedor = document.getElementById('lista-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirDetalleCentro('${c.nombre}')">
-            <div class="section-flex">
-              <span style="font-size: 24px;">🏫</span>
-              <span class="link-txt">Ver asignaturas ›</span>
-            </div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${c.asignaturas.length} asignaturas</p>
-          </div>
-        `;
-      });
-    }
-
-    function abrirDetalleCentro(nombreCentro) {
-      centroActivo = nombreCentro;
-      document.getElementById('titulo-centro-activo').textContent = nombreCentro;
-      renderizarAsignaturasCentro();
-      cambiarVista('centro-detalle');
-    }
-
-    function renderizarAsignaturasCentro() {
+    function renderizarCalificacionesCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const contenedor = document.getElementById('lista-asignaturas-container');
+      const contenedor = document.getElementById('lista-calificaciones-container');
       contenedor.innerHTML = '';
-      if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas.</p>`;
+      if (!centro || centro.notas.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay calificaciones registradas.</p>`;
         return;
       }
-      centro.asignaturas.forEach((asig, idx) => {
+      centro.notas.forEach((n, idx) => {
+        let colorNota = getColorNota(n.valor);
         contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${asig.color};">
+          <div class="card">
             <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio} - ${asig.fin}</span>
-              <div class="tarea-acciones">
-                <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
-                <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
-              </div>
+              <span class="badge">${n.asig}</span>
+              <span style="font-size: 18px; font-weight: bold; color: ${colorNota};">${n.valor}</span>
             </div>
-            <h4 style="margin-top: 6px;">${asig.nombre}</h4>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
+            <h4 style="margin-top: 4px;">${n.tipo}</h4>
+            ${n.obs ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Obs: ${n.obs}</p>` : ''}
+            <div class="footer-info" style="text-align: right; margin-top: 6px;">
+              <button class="btn-accion-txt btn-eliminar" onclick="eliminarNota(${idx})">Eliminar</button>
+            </div>
           </div>
         `;
       });
     }
 
-    function abrirModalAsignaturaCrear() {
-      document.getElementById('modal-asig-titulo').textContent = 'Nueva Asignatura';
-      document.getElementById('input-asig-edit-index').value = '-1';
-      document.getElementById('input-asig-nombre').value = '';
-      document.getElementById('input-asig-docente').value = '';
-      document.getElementById('input-asig-aula').value = '';
-      document.getElementById('modalAsignatura').classList.add('active');
-    }
-
-    function abrirModalAsignaturaEditar(index) {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const asig = centro.asignaturas[index];
-      document.getElementById('modal-asig-titulo').textContent = 'Editar Asignatura';
-      document.getElementById('input-asig-edit-index').value = index;
-      document.getElementById('input-asig-nombre').value = asig.nombre;
-      document.getElementById('input-asig-docente').value = asig.docente;
-      document.getElementById('input-asig-aula').value = asig.aula;
-      document.getElementById('input-asig-dia').value = asig.dia;
-      document.getElementById('input-asig-inicio').value = asig.inicio;
-      document.getElementById('input-asig-fin').value = asig.fin;
-      colorSeleccionadoHex = asig.color;
-      document.getElementById('modalAsignatura').classList.add('active');
-    }
-
-    function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
-    function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
-
-    function guardarOActualizarAsignatura() {
-      const nombre = document.getElementById('input-asig-nombre').value.trim();
-      const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
-      const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
-      const dia = document.getElementById('input-asig-dia').value;
-      const inicio = document.getElementById('input-asig-inicio').value;
-      const fin = document.getElementById('input-asig-fin').value;
-      const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
-
-      if (!nombre) return;
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) {
-        if (editIndex === -1) {
-          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
-        } else {
-          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex };
-        }
+    // --- OBJETIVOS DIARIOS ---
+    function renderizarObjetivos() {
+      const contenedor = document.getElementById('lista-objetivos-container');
+      contenedor.innerHTML = '';
+      document.getElementById('num-objetivos-home').textContent = objetivosDiarios.length;
+      if (objetivosDiarios.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay objetivos diarios.</p>`;
+        return;
       }
-      renderizarAsignaturasCentro();
-      sincronizarYRenderizarHorario();
-      actualizarSelectorPomodoroItems();
-      cerrarModalAsignatura();
+      objetivosDiarios.forEach((obj, idx) => {
+        contenedor.innerHTML += `
+          <div class="card">
+            <div class="section-flex">
+              <span class="badge">🎯 Meta</span>
+              <span style="font-size: 11px; color: var(--text-muted);">📅 ${obj.fecha || 'Sin fecha'}</span>
+            </div>
+            <h4 style="margin-top: 6px;">${obj.titulo}</h4>
+            <div class="footer-info" style="text-align: right; margin-top: 6px;">
+              <button class="btn-accion-txt btn-editar" onclick="abrirModalObjetivoEditar(${idx})">Editar</button>
+              <button class="btn-accion-txt btn-eliminar" onclick="eliminarObjetivo(${idx})">Eliminar</button>
+            </div>
+          </div>
+        `;
+      });
     }
 
-    function eliminarAsignatura(index) {
-      if (confirm('¿Eliminar esta asignatura?')) {
-        const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-        if (centro) {
-          centro.asignaturas.splice(index, 1);
-          renderizarAsignaturasCentro();
-          sincronizarYRenderizarHorario();
-          actualizarSelectorPomodoroItems();
-        }
+    function abrirModalObjetivoCrear() {
+      document.getElementById('modal-obj-titulo').textContent = 'Nuevo Objetivo Diario';
+      document.getElementById('input-edit-index-obj').value = '-1';
+      document.getElementById('input-titulo-obj').value = '';
+      document.getElementById('input-fecha-obj').value = new Date().toISOString().split('T')[0];
+      document.getElementById('modalObjetivo').classList.add('active');
+    }
+
+    function abrirModalObjetivoEditar(idx) {
+      const obj = objetivosDiarios[idx];
+      document.getElementById('modal-obj-titulo').textContent = 'Editar Objetivo Diario';
+      document.getElementById('input-edit-index-obj').value = idx;
+      document.getElementById('input-titulo-obj').value = obj.titulo;
+      document.getElementById('input-fecha-obj').value = obj.fecha || '';
+      document.getElementById('modalObjetivo').classList.add('active');
+    }
+
+    function cerrarModalObjetivo() { document.getElementById('modalObjetivo').classList.remove('active'); }
+    function cerrarModalObjetivoFuera(e) { if (e.target.id === 'modalObjetivo') cerrarModalObjetivo(); }
+
+    function guardarOActualizarObjetivo() {
+      const titulo = document.getElementById('input-titulo-obj').value.trim();
+      const fecha = document.getElementById('input-fecha-obj').value;
+      const editIndex = parseInt(document.getElementById('input-edit-index-obj').value);
+
+      if (!titulo) return;
+      if (editIndex === -1) {
+        objetivosDiarios.push({ titulo, fecha });
+      } else {
+        objetivosDiarios[editIndex] = { titulo, fecha };
+      }
+      renderizarObjetivos();
+      cerrarModalObjetivo();
+    }
+
+    function eliminarObjetivo(idx) {
+      if (confirm('¿Eliminar este objetivo?')) {
+        objetivosDiarios.splice(idx, 1);
+        renderizarObjetivos();
       }
     }
 
@@ -1389,7 +991,6 @@
           </div>
         `;
       });
-      // Actualizar home preview
       const previewHome = document.getElementById('preview-repertorio-home');
       if (previewHome && repertorioCategorias.length > 0) {
         previewHome.innerHTML = `<div class="pill-rep">${repertorioCategorias[0].emoji} ${repertorioCategorias[0].nombre} (${repertorioCategorias[0].piezas.length} piezas)</div>`;
@@ -1423,49 +1024,65 @@
             </div>
             <h4>${p.titulo}</h4>
             ${p.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</p>` : ''}
-            <div class="footer-info" style="margin-top: 8px; text-align: right;">
-              <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar pieza</button>
+            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo diario (${p.fechaObj || 'hoy'})</p>` : ''}
+            <div class="footer-info" style="text-align: right; margin-top: 8px;">
+              <button class="btn-accion-txt btn-editar" onclick="abrirModalPiezaEditar(${idx})">Editar</button>
+              <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar</button>
             </div>
           </div>
         `;
       });
     }
 
-    function abrirModalCategoria() {
-      document.getElementById('input-emoji-cat').value = '🎹';
-      document.getElementById('input-nombre-cat').value = '';
-      document.getElementById('modalCategoria').classList.add('active');
-    }
-    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
-    function cerrarModalCategoriaFuera(e) { if (e.target.id === 'modalCategoria') cerrarModalCategoria(); }
-
-    function guardarNuevaCategoria() {
-      const emoji = document.getElementById('input-emoji-cat').value.trim() || '🎵';
-      const nombre = document.getElementById('input-nombre-cat').value.trim();
-      if (!nombre) return;
-      repertorioCategorias.push({ nombre, emoji, piezas: [] });
-      renderizarRepertorioCategorias();
-      cerrarModalCategoria();
-    }
-
-    function abrirModalPieza() {
+    function abrirModalPiezaCrear() {
+      document.getElementById('modal-pieza-titulo').textContent = 'Añadir Pieza / Obra';
+      document.getElementById('input-pieza-edit-index').value = '-1';
       document.getElementById('input-titulo-pieza').value = '';
       document.getElementById('input-autor-pieza').value = '';
       document.getElementById('input-desc-pieza').value = '';
+      document.getElementById('input-pieza-es-obj').checked = false;
+      document.getElementById('input-pieza-fecha-obj').value = new Date().toISOString().split('T')[0];
       document.getElementById('modalPieza').classList.add('active');
     }
+
+    function abrirModalPiezaEditar(idx) {
+      const cat = repertorioCategorias.find(c => c.nombre === categoriaRepertorioActual);
+      const p = cat.piezas[idx];
+      document.getElementById('modal-pieza-titulo').textContent = 'Editar Pieza / Obra';
+      document.getElementById('input-pieza-edit-index').value = idx;
+      document.getElementById('input-titulo-pieza').value = p.titulo;
+      document.getElementById('input-autor-pieza').value = p.autor || '';
+      document.getElementById('input-desc-pieza').value = p.desc || '';
+      document.getElementById('input-pieza-es-obj').checked = p.esObj || false;
+      document.getElementById('input-pieza-fecha-obj').value = p.fechaObj || new Date().toISOString().split('T')[0];
+      document.getElementById('modalPieza').classList.add('active');
+    }
+
     function cerrarModalPieza() { document.getElementById('modalPieza').classList.remove('active'); }
     function cerrarModalPiezaFuera(e) { if (e.target.id === 'modalPieza') cerrarModalPieza(); }
 
-    function guardarNuevaPieza() {
+    function guardarOActualizarPieza() {
       const titulo = document.getElementById('input-titulo-pieza').value.trim();
       const autor = document.getElementById('input-autor-pieza').value.trim();
       const desc = document.getElementById('input-desc-pieza').value.trim();
-      if (!titulo) return;
+      const esObj = document.getElementById('input-pieza-es-obj').checked;
+      const fechaObj = document.getElementById('input-pieza-fecha-obj').value;
+      const editIndex = parseInt(document.getElementById('input-pieza-edit-index').value);
 
+      if (!titulo) return;
       const cat = repertorioCategorias.find(c => c.nombre === categoriaRepertorioActual);
       if (cat) {
-        cat.piezas.push({ titulo, autor, desc });
+        if (editIndex === -1) {
+          cat.piezas.push({ titulo, autor, desc, esObj, fechaObj });
+        } else {
+          cat.piezas[editIndex] = { titulo, autor, desc, esObj, fechaObj };
+        }
+
+        if (esObj) {
+          objetivosDiarios.push({ titulo: `Repertorio: ${titulo}`, fecha: fechaObj });
+          renderizarObjetivos();
+        }
+
         renderizarPiezasRepertorio();
         renderizarRepertorioCategorias();
       }
@@ -1505,25 +1122,26 @@
             </div>
             <h4 style="margin-top: 6px;">${t.titulo}</h4>
             ${t.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.desc}</p>` : ''}
-            <div class="footer-info" style="margin-top: 8px;" class="section-flex">
-              <span style="font-size: 11px; color: var(--text-muted);">📅 ${t.fecha}</span>
-              <div>
-                <button class="btn-accion-txt btn-editar" onclick="abrirModalTareaEditar(${idx})">Editar</button>
-                <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(${idx})">Eliminar</button>
-              </div>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">📅 Fecha límite: ${t.fecha || 'N/D'}</p>
+            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo diario sincronizado</p>` : ''}
+            <div class="footer-info" style="text-align: right; margin-top: 6px;">
+              <button class="btn-accion-txt btn-editar" onclick="abrirModalTareaEditar(${idx})">Editar</button>
+              <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(${idx})">Eliminar</button>
             </div>
           </div>
         `;
       });
+      sincronizarYRenderizarHorario();
     }
 
     function abrirModalTareaParaCrear() {
       document.getElementById('modal-tarea-titulo').textContent = 'Nueva Tarea Pendiente';
       document.getElementById('input-edit-index-tarea').value = '-1';
       document.getElementById('input-titulo-tarea').value = '';
-      document.getElementById('input-fecha-tarea').value = 'Mañana';
+      document.getElementById('input-fecha-tarea').value = new Date().toISOString().split('T')[0];
       document.getElementById('input-desc-tarea').value = '';
-      
+      document.getElementById('input-tarea-es-obj').checked = false;
+
       const sel = document.getElementById('input-asignatura-tarea');
       sel.innerHTML = '';
       centrosEstudios.forEach(c => {
@@ -1540,8 +1158,9 @@
       document.getElementById('input-edit-index-tarea').value = idx;
       document.getElementById('input-titulo-tarea').value = t.titulo;
       document.getElementById('input-prioridad-tarea').value = t.prioridad;
-      document.getElementById('input-fecha-tarea').value = t.fecha;
+      document.getElementById('input-fecha-tarea').value = t.fecha || new Date().toISOString().split('T')[0];
       document.getElementById('input-desc-tarea').value = t.desc || '';
+      document.getElementById('input-tarea-es-obj').checked = t.esObj || false;
 
       const sel = document.getElementById('input-asignatura-tarea');
       sel.innerHTML = '';
@@ -1560,16 +1179,22 @@
       const titulo = document.getElementById('input-titulo-tarea').value.trim();
       const asignatura = document.getElementById('input-asignatura-tarea').value;
       const prioridad = document.getElementById('input-prioridad-tarea').value;
-      const fecha = document.getElementById('input-fecha-tarea').value.trim() || 'Pronto';
+      const fecha = document.getElementById('input-fecha-tarea').value;
       const desc = document.getElementById('input-desc-tarea').value.trim();
+      const esObj = document.getElementById('input-tarea-es-obj').checked;
       const editIndex = parseInt(document.getElementById('input-edit-index-tarea').value);
 
       if (!titulo) return;
 
       if (editIndex === -1) {
-        tareasPendientes.push({ titulo, asignatura, prioridad, fecha, desc });
+        tareasPendientes.push({ titulo, asignatura, prioridad, fecha, desc, esObj });
       } else {
-        tareasPendientes[editIndex] = { titulo, asignatura, prioridad, fecha, desc };
+        tareasPendientes[editIndex] = { titulo, asignatura, prioridad, fecha, desc, esObj };
+      }
+
+      if (esObj) {
+        objetivosDiarios.push({ titulo: `Tarea: ${titulo}`, fecha: fecha });
+        renderizarObjetivos();
       }
 
       renderizarTareas();
@@ -1585,145 +1210,6 @@
       }
     }
 
-    // --- NOTAS Y ASISTENCIA ---
-    function renderizarNotasCentros() {
-      const contenedor = document.getElementById('lista-notas-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirNotasDetalle('${c.nombre}')">
-            <div class="section-flex">
-              <span style="font-size: 24px;">📊</span>
-              <span class="link-txt">Ver calificaciones ›</span>
-            </div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${c.notas.length} notas registradas</p>
-          </div>
-        `;
-      });
-    }
-
-    function abrirNotasDetalle(nombreCentro) {
-      centroActivo = nombreCentro;
-      document.getElementById('titulo-notas-centro').textContent = nombreCentro;
-      renderizarCalificacionesCentro();
-      cambiarVista('notas-detalle');
-    }
-
-    function renderizarCalificacionesCentro() {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const contenedor = document.getElementById('lista-calificaciones-container');
-      contenedor.innerHTML = '';
-      if (!centro || centro.notas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay calificaciones registradas.</p>`;
-        return;
-      }
-      centro.notas.forEach((n, idx) => {
-        contenedor.innerHTML += `
-          <div class="card">
-            <div class="section-flex">
-              <span class="badge">${n.asig}</span>
-              <span style="font-size: 16px; font-weight: bold; color: var(--success);">${n.valor}</span>
-            </div>
-            <h4 style="margin-top: 4px;">${n.tipo}</h4>
-            ${n.obs ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Obs: ${n.obs}</p>` : ''}
-            <div class="footer-info" style="text-align: right; margin-top: 6px;">
-              <button class="btn-accion-txt btn-eliminar" onclick="eliminarNota(${idx})">Eliminar</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function abrirModalNota() {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const sel = document.getElementById('input-nota-asig');
-      sel.innerHTML = '';
-      if (centro && centro.asignaturas.length > 0) {
-        centro.asignaturas.forEach(a => { sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`; });
-      } else {
-        sel.innerHTML = `<option value="General">General</option>`;
-      }
-      document.getElementById('input-nota-tipo').value = '';
-      document.getElementById('input-nota-valor').value = '';
-      document.getElementById('input-nota-obs').value = '';
-      document.getElementById('modalNota').classList.add('active');
-    }
-
-    function cerrarModalNota() { document.getElementById('modalNota').classList.remove('active'); }
-    function cerrarModalNotaFuera(e) { if (e.target.id === 'modalNota') cerrarModalNota(); }
-
-    function guardarNuevaNota() {
-      const asig = document.getElementById('input-nota-asig').value;
-      const tipo = document.getElementById('input-nota-tipo').value.trim() || 'Examen';
-      const valor = document.getElementById('input-nota-valor').value.trim() || 'N/A';
-      const obs = document.getElementById('input-nota-obs').value.trim();
-
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) centro.notas.push({ asig, tipo, valor, obs });
-      renderizarCalificacionesCentro();
-      cerrarModalNota();
-    }
-
-    function eliminarNota(idx) {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) {
-        centro.notas.splice(idx, 1);
-        renderizarCalificacionesCentro();
-      }
-    }
-
-    function renderizarAsistenciaCentros() {
-      const contenedor = document.getElementById('lista-asistencia-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirAsistenciaDetalle('${c.nombre}')">
-            <div class="section-flex">
-              <span style="font-size: 24px;">📋</span>
-              <span class="link-txt">Pasar lista ›</span>
-            </div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${c.asignaturas.length} asignaturas sincronizadas</p>
-          </div>
-        `;
-      });
-    }
-
-    function abrirAsistenciaDetalle(nombreCentro) {
-      centroActivo = nombreCentro;
-      document.getElementById('titulo-asistencia-centro').textContent = nombreCentro;
-      renderizarControlAsistenciaCentro();
-      cambiarVista('asistencia-detalle');
-    }
-
-    function renderizarControlAsistenciaCentro() {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const contenedor = document.getElementById('lista-control-asistencia-container');
-      contenedor.innerHTML = '';
-      if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas sincronizadas.</p>`;
-        return;
-      }
-      centro.asignaturas.forEach((asig) => {
-        contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${asig.color};">
-            <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
-              <span style="font-size: 11px; color: var(--text-muted);">Aula: ${asig.aula}</span>
-            </div>
-            <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #10B981;" onclick="alert('Asistencia registrada: Asistió')">✅ Asistió</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #EF4444;" onclick="alert('Asistencia registrada: Falta')">❌ Falta</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #F59E0B;" onclick="alert('Asistencia registrada: Retraso')">⏱️ Retraso</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 11px; background: #64748B;" onclick="alert('Asistencia registrada: No hubo clase')">🚫 No clase</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
     // --- SINCRONIZACIÓN DE HORARIO ---
     function sincronizarYRenderizarHorario() {
       let todasLasAsignaturas = [];
@@ -1731,8 +1217,8 @@
 
       const contDiaria = document.getElementById('container-diaria-dinamico');
       contDiaria.innerHTML = '';
-      if(todasLasAsignaturas.length === 0) {
-        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px;">No hay clases programadas.</p>`;
+      if(todasLasAsignaturas.length === 0 && tareasPendientes.length === 0) {
+        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px;">No hay eventos ni tareas programadas.</p>`;
       }
       todasLasAsignaturas.forEach(a => {
         contDiaria.innerHTML += `
@@ -1743,6 +1229,18 @@
             </div>
             <h4>${a.nombre}</h4>
             <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">📍 ${a.aula} • 👤 ${a.docente}</p>
+          </div>
+        `;
+      });
+      tareasPendientes.forEach(t => {
+        contDiaria.innerHTML += `
+          <div class="card" style="border-left: 4px solid var(--primary);">
+            <div class="section-flex">
+              <span class="badge">${t.asignatura}</span>
+              <span class="badge-warn">📅 ${t.fecha || 'Hoy'}</span>
+            </div>
+            <h4>📝 Tarea: ${t.titulo}</h4>
+            ${t.desc ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${t.desc}</p>` : ''}
           </div>
         `;
       });
@@ -1760,6 +1258,34 @@
           </div>
         `;
       });
+      tareasPendientes.forEach(t => {
+        contSemanal.innerHTML += `
+          <div class="card" style="border-left: 4px solid var(--primary);">
+            <div class="section-flex">
+              <h4>📝 ${t.titulo}</h4>
+              <span class="badge">${t.fecha || 'Esta semana'}</span>
+            </div>
+            <p style="font-size: 13px; margin-top: 4px; color: var(--text-muted);">Asignatura: ${t.asignatura}</p>
+          </div>
+        `;
+      });
+
+      const contMensual = document.getElementById('container-mensual-dinamico');
+      contMensual.innerHTML = `
+        <div class="card">
+          <h4 style="margin-bottom: 6px; color: var(--primary);">📅 Septiembre / Octubre 2026</h4>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Compromisos y entregas programadas:</p>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+      `;
+      tareasPendientes.forEach(t => {
+        contMensual.innerHTML += `
+          <div class="section-flex" style="background: var(--bg-main); padding: 8px; border-radius: 8px;">
+            <span>${t.fecha || 'Pronto'} - ${t.titulo}</span>
+            <span class="badge">${t.asignatura}</span>
+          </div>
+        `;
+      });
+      contMensual.innerHTML += `</div></div>`;
 
       const tbody = document.getElementById('tbody-horario-sincronizado');
       tbody.innerHTML = '';
@@ -1801,6 +1327,204 @@
         });
         tbody.appendChild(tr);
       });
+    }
+
+    // --- MÉTODOS AUXILIARES ---
+    function actualizarSelectorPomodoroItems() {
+      const sel = document.getElementById('pomodoro-item');
+      sel.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        c.asignaturas.forEach(a => { sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 Asignatura: ${a.nombre}</option>`; });
+      });
+      tareasPendientes.forEach(t => {
+        sel.innerHTML += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo}</option>`;
+      });
+      if (sel.options.length === 0) sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
+    }
+
+    let pomodoroActivo = false, pomodoroIntervalo = null, segundosRestantes = 25 * 60;
+    function togglePomodoro() {
+      const btn = document.getElementById('btn-pomodoro-accion');
+      const duracionSel = document.getElementById('pomodoro-duracion');
+      const display = document.getElementById('pomodoro-display');
+
+      if (!pomodoroActivo) {
+        pomodoroActivo = true;
+        duracionSel.disabled = true;
+        btn.textContent = "Pausar / Finalizar";
+        btn.style.background = "#EF4444";
+        let minutosElegidos = parseInt(duracionSel.value);
+        segundosRestantes = minutosElegidos * 60;
+
+        pomodoroIntervalo = setInterval(() => {
+          if (segundosRestantes > 0) {
+            segundosRestantes--;
+            let m = Math.floor(segundosRestantes / 60), s = segundosRestantes % 60;
+            display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+          } else {
+            clearInterval(pomodoroIntervalo);
+            pomodoroActivo = false;
+            duracionSel.disabled = false;
+            btn.textContent = "Iniciar Pomodoro";
+            btn.style.background = "var(--primary)";
+            let minsAgregados = parseInt(duracionSel.value);
+            const minsElem = document.getElementById('num-minutos');
+            if (minsElem) minsElem.textContent = parseInt(minsElem.textContent || 0) + minsAgregados;
+            alert(`¡Pomodoro completado! Se han sumado ${minsAgregados} minutos.`);
+          }
+        }, 1000);
+      } else {
+        clearInterval(pomodoroIntervalo);
+        pomodoroActivo = false;
+        duracionSel.disabled = false;
+        btn.textContent = "Iniciar Pomodoro";
+        btn.style.background = "var(--primary)";
+      }
+    }
+
+    function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
+    function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
+    function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
+    function guardarNuevoCentro() {
+      const nombre = document.getElementById('input-nombre-centro').value.trim();
+      if (!nombre) return;
+      centrosEstudios.push({ nombre, asignaturas: [], notas: [], asistencia: [] });
+      renderizarCentros();
+      cerrarModalCentro();
+    }
+    function renderizarCentros() {
+      const contenedor = document.getElementById('lista-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirDetalleCentro('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">🏫</span><span class="link-txt">Ver ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+          </div>
+        `;
+      });
+    }
+    function abrirDetalleCentro(nombre) {
+      centroActivo = nombre;
+      document.getElementById('titulo-centro-activo').textContent = nombre;
+      renderizarAsignaturasCentro();
+      cambiarVista('centro-detalle');
+    }
+    function renderizarAsignaturasCentro() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const contenedor = document.getElementById('lista-asignaturas-container');
+      contenedor.innerHTML = '';
+      centro.asignaturas.forEach((a, idx) => {
+        contenedor.innerHTML += `
+          <div class="card" style="border-left: 4px solid ${a.color};">
+            <div class="section-flex"><span class="badge">${a.dia} • ${a.inicio}</span><button class="btn-accion-txt btn-eliminar" onclick="eliminarAsig(${idx})">Eliminar</button></div>
+            <h4>${a.nombre}</h4>
+          </div>
+        `;
+      });
+    }
+    function abrirModalAsignaturaCrear() { document.getElementById('modalAsignatura').classList.add('active'); }
+    function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
+    function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
+    function guardarOActualizarAsignatura() {
+      const nombre = document.getElementById('input-asig-nombre').value.trim();
+      const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
+      const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
+      const dia = document.getElementById('input-asig-dia').value;
+      const inicio = document.getElementById('input-asig-inicio').value;
+      const fin = document.getElementById('input-asig-fin').value;
+      if (!nombre) return;
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
+      renderizarAsignaturasCentro();
+      sincronizarYRenderizarHorario();
+      actualizarSelectorPomodoroItems();
+      cerrarModalAsignatura();
+    }
+    function eliminarAsig(idx) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      centro.asignaturas.splice(idx, 1);
+      renderizarAsignaturasCentro();
+      sincronizarYRenderizarHorario();
+    }
+
+    function renderizarNotasCentros() {
+      const contenedor = document.getElementById('lista-notas-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirNotasDetalle('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">📊</span><span class="link-txt">Ver ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+          </div>
+        `;
+      });
+    }
+    function abrirNotasDetalle(nombre) {
+      centroActivo = nombre;
+      document.getElementById('titulo-notas-centro').textContent = nombre;
+      renderizarCalificacionesCentro();
+      cambiarVista('notas-detalle');
+    }
+    function abrirModalNota() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const sel = document.getElementById('input-nota-asig');
+      sel.innerHTML = '';
+      centro.asignaturas.forEach(a => { sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`; });
+      document.getElementById('modalNota').classList.add('active');
+    }
+    function cerrarModalNota() { document.getElementById('modalNota').classList.remove('active'); }
+    function cerrarModalNotaFuera(e) { if (e.target.id === 'modalNota') cerrarModalNota(); }
+    function guardarNuevaNota() {
+      const asig = document.getElementById('input-nota-asig').value;
+      const tipo = document.getElementById('input-nota-tipo').value.trim() || 'Examen';
+      const valor = parseFloat(document.getElementById('input-nota-valor').value) || 0;
+      const obs = document.getElementById('input-nota-obs').value.trim();
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      centro.notas.push({ asig, tipo, valor, obs });
+      renderizarCalificacionesCentro();
+      cerrarModalNota();
+    }
+    function eliminarNota(idx) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      centro.notas.splice(idx, 1);
+      renderizarCalificacionesCentro();
+    }
+
+    function renderizarAsistenciaCentros() {
+      const contenedor = document.getElementById('lista-asistencia-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirAsistenciaDetalle('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">📋</span><span class="link-txt">Pasar lista ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+          </div>
+        `;
+      });
+    }
+    function abrirAsistenciaDetalle(nombre) {
+      centroActivo = nombre;
+      document.getElementById('titulo-asistencia-centro').textContent = nombre;
+      const cont = document.getElementById('lista-control-asistencia-container');
+      cont.innerHTML = '';
+      const centro = centrosEstudios.find(c => c.nombre === nombre);
+      centro.asignaturas.forEach(a => {
+        cont.innerHTML += `<div class="card"><h4>${a.nombre}</h4><button class="btn-main" style="padding:6px; font-size:11px;" onclick="alert('Asistencia guardada')">Marcar Asistido</button></div>`;
+      });
+      cambiarVista('asistencia-detalle');
+    }
+
+    function abrirModalCategoria() { document.getElementById('modalCategoria').classList.add('active'); }
+    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
+    function cerrarModalCategoriaFuera(e) { if (e.target.id === 'modalCategoria') cerrarModalCategoria(); }
+    function guardarNuevaCategoria() {
+      const emoji = document.getElementById('input-emoji-cat').value.trim() || '🎵';
+      const nombre = document.getElementById('input-nombre-cat').value.trim();
+      if (!nombre) return;
+      repertorioCategorias.push({ nombre, emoji, piezas: [] });
+      renderizarRepertorioCategorias();
+      cerrarModalCategoria();
     }
   </script>
 </body>
