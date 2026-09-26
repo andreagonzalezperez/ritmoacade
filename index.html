@@ -55,6 +55,7 @@
     .grid { display: flex; flex-direction: column; gap: 14px; }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+    /* Barra de navegación de días / semanas */
     .day-navigator {
       display: flex;
       justify-content: space-between;
@@ -63,7 +64,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 8px 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .day-nav-btn {
       background: var(--bg-main);
@@ -93,19 +94,9 @@
     .card.interactive { cursor: pointer; }
     .card.interactive:active { transform: scale(0.98); }
 
-    .card-gap {
-      background: rgba(45, 55, 72, 0.4);
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      padding: 10px 16px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
     .stat-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
     .num { font-size: 22px; font-weight: bold; }
-    .link-txt { font-size: 11px; color: var(--primary); font-weight: bold; cursor: pointer; }
+    .link-txt { font-size: 11px; color: var(--primary); font-weight: bold; }
     .label { font-size: 12px; color: var(--text-muted); }
 
     .badge { font-size: 10px; color: var(--primary); background: rgba(99,102,241,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
@@ -116,63 +107,29 @@
     .rep-preview { display: flex; gap: 8px; }
     .pill-rep { font-size: 12px; background: var(--bg-main); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-    .horario-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
-    .horario-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
-    .horario-tab.active { background: var(--primary); color: white; }
+    /* Pestañas Horario / Asistencia / Racha */
+    .horario-tabs, .streak-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
+    .horario-tab, .streak-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
+    .horario-tab.active, .streak-tab.active { background: var(--primary); color: white; }
     .horario-tab.tab-calendar { color: var(--calendar-accent); }
     .horario-tab.tab-calendar.active { background: var(--calendar-accent); color: white; }
+    .streak-tab.active { background: var(--streak-color); color: white; }
 
-    .horario-subview { display: none !important; flex-direction: column; gap: 14px; }
-    .horario-subview.active { display: flex !important; }
+    .horario-subview, .streak-subview { display: none !important; flex-direction: column; gap: 14px; }
+    .horario-subview.active, .streak-subview.active { display: flex !important; }
 
-    .monthly-calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .cal-day-header {
-      text-align: center;
-      font-size: 11px;
-      font-weight: bold;
-      color: var(--text-muted);
-      padding: 4px 0;
-    }
-    .cal-cell {
-      background: var(--bg-main);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      aspect-ratio: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 12px;
-      position: relative;
-    }
-    .cal-cell.has-events {
-      border-color: var(--primary);
-      background: rgba(99, 102, 241, 0.1);
-      font-weight: bold;
-    }
-    .cal-cell.selected {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-    .cal-cell-dot {
-      width: 4px; height: 4px;
-      background: var(--calendar-accent);
-      border-radius: 50%;
-      margin-top: 2px;
-    }
-
+    /* Tabla Excel y Calendario Mensual */
     .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
     .calendar-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 10px; }
     .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 4px; text-align: center; height: 26px; }
     .calendar-table th { background: var(--bg-main); color: var(--text-muted); font-weight: 600; position: sticky; top: 0; z-index: 2; }
 
+    .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .month-day { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; position: relative; }
+    .month-day.has-events { border-color: var(--primary); background: rgba(99,102,241,0.1); font-weight: bold; }
+    .month-day.selected { border-color: var(--calendar-accent); background: rgba(236,72,153,0.15); }
+
+    /* Estilos Racha y Logros */
     .streak-header-card { background: linear-gradient(135deg, #1E1B4B, #311042); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
     .streak-fire-big { font-size: 64px; display: inline-block; }
     .streak-days-row { display: flex; justify-content: space-between; margin-top: 16px; gap: 6px; }
@@ -226,6 +183,7 @@
 
     <div class="fecha" id="home-fecha-actual">Sábado, 26 de septiembre de 2026</div>
 
+    <!-- Navegador de Días -->
     <div class="day-navigator">
       <button class="day-nav-btn" onclick="cambiarDiaHome(-1)">‹</button>
       <div class="day-nav-title" id="home-nav-titulo-dia">Hoy (26 Sep)</div>
@@ -328,7 +286,7 @@
     <header>
       <div class="titulo">Horarios y Planificación</div>
     </header>
-    <p class="fecha">Organización avanzada con huecos libres y sincronización semanal.</p>
+    <p class="fecha">Organiza tus clases, ensayos y tareas por fecha exacta.</p>
     
     <div class="horario-tabs">
       <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
@@ -337,65 +295,57 @@
       <div class="horario-tab tab-calendar" onclick="cambiarHorarioTab('calendario', this)">📅 Cuadrante</div>
     </div>
 
-    <!-- Pestaña Diaria con Navegador y Huecos Libres -->
+    <!-- Subvista Diaria -->
     <div id="subview-diaria" class="horario-subview active">
       <div class="day-navigator">
-        <button class="day-nav-btn" onclick="cambiarDiaHorarioDiario(-1)">‹</button>
-        <div class="day-nav-title" id="horario-diario-titulo-fecha">Hoy (26 Sep)</div>
-        <button class="day-nav-btn" onclick="cambiarDiaHorarioDiario(1)">›</button>
+        <button class="day-nav-btn" onclick="cambiarDiaHorario(-1)">‹</button>
+        <div class="day-nav-title" id="horario-nav-titulo-dia">Hoy</div>
+        <button class="day-nav-btn" onclick="cambiarDiaHorario(1)">›</button>
       </div>
-      <div id="container-diaria-con-huecos" class="grid"></div>
+      <div id="container-diaria-huecos" class="grid"></div>
     </div>
 
-    <!-- Pestaña Semanal por Fechas Concretas -->
+    <!-- Subvista Semanal con Navegador -->
     <div id="subview-semanal" class="horario-subview">
-      <div class="section-flex">
-        <h4 style="color: var(--primary);" id="titulo-rango-semana">Semana actual</h4>
-        <div style="display: flex; gap: 4px;">
-          <button class="day-nav-btn" style="width:28px; height:28px; font-size:12px;" onclick="cambiarSemanaOffset(-1)">‹</button>
-          <button class="day-nav-btn" style="width:28px; height:28px; font-size:12px;" onclick="cambiarSemanaOffset(1)">›</button>
-        </div>
+      <div class="day-navigator">
+        <button class="day-nav-btn" onclick="cambiarSemanaHorario(-1)">‹</button>
+        <div class="day-nav-title" id="horario-nav-titulo-semana">Semana actual</div>
+        <button class="day-nav-btn" onclick="cambiarSemanaHorario(1)">›</button>
       </div>
-      <div id="container-semanal-por-fechas" class="grid"></div>
+      <div id="container-semanal-dinamico" class="grid"></div>
     </div>
 
-    <!-- Pestaña Mensual Interactiva -->
+    <!-- Subvista Mensual Interactiva -->
     <div id="subview-mensual" class="horario-subview">
-      <div class="card">
-        <div class="section-flex">
-          <h4 style="color: var(--calendar-accent);" id="mes-calendario-titulo">Septiembre 2026</h4>
-          <div style="display: flex; gap: 4px;">
-            <button class="day-nav-btn" style="width:28px; height:28px; font-size:12px;" onclick="cambiarMesOffset(-1)">‹</button>
-            <button class="day-nav-btn" style="width:28px; height:28px; font-size:12px;" onclick="cambiarMesOffset(1)">›</button>
-          </div>
-        </div>
-        <div class="monthly-calendar-grid" id="monthly-calendar-grid"></div>
+      <div class="day-navigator">
+        <button class="day-nav-btn" onclick="cambiarMesHorario(-1)">‹</button>
+        <div class="day-nav-title" id="horario-nav-titulo-mes">Septiembre 2026</div>
+        <button class="day-nav-btn" onclick="cambiarMesHorario(1)">›</button>
       </div>
-
-      <div class="card">
-        <h4 id="mensual-detalle-fecha-titulo" style="margin-bottom: 8px; color: var(--primary);">Eventos del día seleccionado</h4>
-        <div id="container-mensual-detalle-dia" class="grid" style="gap: 8px;"></div>
+      <div class="card" style="padding: 12px;">
+        <div class="month-grid" id="grid-calendario-mensual"></div>
       </div>
+      <h4 style="margin-top: 10px;" id="titulo-eventos-dia-mes">Eventos del día seleccionado:</h4>
+      <div id="container-eventos-dia-mes" class="grid"></div>
     </div>
 
-    <!-- Pestaña Cuadrante Actualizado Cada Lunes -->
+    <!-- Subvista Cuadrante Semanal con Navegador de Semanas -->
     <div id="subview-calendario" class="horario-subview">
+      <div class="day-navigator">
+        <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(-1)">‹</button>
+        <div class="day-nav-title" id="cuadrante-nav-titulo-semana">Semana actual</div>
+        <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(1)">›</button>
+      </div>
       <div class="card" style="padding: 10px;">
         <div class="section-flex" style="margin-bottom: 8px;">
-          <h4 style="color: var(--calendar-accent); font-size: 14px;" id="titulo-cuadrante-lunes">📊 Cuadrante Actualizado (Semana en curso)</h4>
+          <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal</h4>
         </div>
         <div class="calendar-grid-container">
           <table class="calendar-table">
             <thead>
-              <tr>
+              <tr id="thead-cuadrante-fechas">
                 <th style="width: 42px;">Hora</th>
-                <th id="th-lun">Lun</th>
-                <th id="th-mar">Mar</th>
-                <th id="th-mie">Mié</th>
-                <th id="th-jue">Jue</th>
-                <th id="th-vie">Vie</th>
-                <th id="th-sab">Sáb</th>
-                <th id="th-dom">Dom</th>
+                <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
               </tr>
             </thead>
             <tbody id="tbody-horario-sincronizado"></tbody>
@@ -481,9 +431,23 @@
     <header>
       <div class="titulo">Ajustes y Perfil</div>
     </header>
-    <p class="fecha">Preferencias y herramientas de la aplicación.</p>
+    <p class="fecha">Preferencias, copias de seguridad y herramientas.</p>
 
     <div class="grid">
+      <!-- Copia de seguridad -->
+      <div class="card" style="background: linear-gradient(135deg, #161E2E, #1E1B4B);">
+        <div class="section-flex">
+          <h4>💾 Copia de Seguridad</h4>
+          <span class="badge">Datos Seguros</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 12px 0;">Exporta tus datos o restaura una copia de seguridad en cualquier momento.</p>
+        <div class="row-2">
+          <button class="btn-main" style="margin-top:0; padding: 10px; font-size: 12px; background: var(--success);" onclick="exportarCopiaSeguridad()">Exportar datos</button>
+          <button class="btn-main" style="margin-top:0; padding: 10px; font-size: 12px; background: var(--primary);" onclick="document.getElementById('input-archivo-importar').click()">Restaurar datos</button>
+          <input type="file" id="input-archivo-importar" style="display:none" accept=".json" onchange="importarCopiaSeguridad(event)">
+        </div>
+      </div>
+
       <div class="card interactive" onclick="cambiarVista('centros-estudio')">
         <div class="section-flex">
           <h4>🏛️ Asignaturas y Centros</h4>
@@ -897,7 +861,7 @@
   <div id="modalObjetivo" class="modal" onclick="cerrarModalObjetivoFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3 id="modal-obj-titulo">Nuevo Objetivo Diario</h3>
+        <h3>Nuevo Objetivo Diario</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalObjetivo()">✕</span>
       </div>
       <input type="hidden" id="input-edit-index-obj" value="-1">
@@ -919,14 +883,13 @@
     </div>
   </div>
 
-  <!-- ================= SCRIPT COMPLETO CON CONTROL DE VISTAS ================= -->
   <script>
+    // --- PERSISTENCIA CON LOCALSTORAGE ---
     let centrosEstudios = JSON.parse(localStorage.getItem('ritmo_centros')) || [
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" },
-          { nombre: "Armonía Aplicada", docente: "Prof. Gómez", aula: "Aula 2", dia: "Lun", inicio: "12:00", fin: "13:30", color: "#3B82F6", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Sin registrar" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -958,14 +921,62 @@
       localStorage.setItem('ritmo_mins_estudio', minutosEstudiadosTotal);
     }
 
+    // --- COPIA DE SEGURIDAD ---
+    function exportarCopiaSeguridad() {
+      let datosBackup = {
+        centros: centrosEstudios,
+        repertorio: repertorioCategorias,
+        tareas: tareasPendientes,
+        objetivos: objetivosDiarios,
+        racha: rachaActual,
+        minutos: minutosEstudiadosTotal,
+        fechaExportacion: new Date().toISOString()
+      };
+      let blob = new Blob([JSON.stringify(datosBackup, null, 2)], { type: 'application/json' });
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = `RitmoAcade_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importarCopiaSeguridad(event) {
+      let archivo = event.target.files[0];
+      if (!archivo) return;
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          let datos = JSON.parse(e.target.result);
+          if (datos.centros && datos.repertorio) {
+            centrosEstudios = datos.centros;
+            repertorioCategorias = datos.repertorio;
+            tareasPendientes = datos.tareas || [];
+            objetivosDiarios = datos.objetivos || [];
+            rachaActual = datos.racha || 0;
+            minutosEstudiadosTotal = datos.minutos || 0;
+            guardarDatos();
+            alert('¡Copia de seguridad restaurada con éxito!');
+            location.reload();
+          } else {
+            alert('El archivo no tiene un formato válido de RitmoAcade.');
+          }
+        } catch (err) {
+          alert('Error al leer el archivo JSON.');
+        }
+      };
+      reader.readAsText(archivo);
+    }
+
     let centroActivo = "";
     let categoriaRepertorioActual = "";
     let colorSeleccionadoHex = "#6366F1";
     let fechaHomeActual = new Date("2026-09-26");
-    let fechaHorarioDiarioActual = new Date("2026-09-26");
-    let fechaSemanaActual = new Date("2026-09-26");
-    let fechaMesActual = new Date("2026-09-26");
-    let fechaSeleccionadaMensual = "2026-09-26";
+    let fechaHorarioDiario = new Date("2026-09-26");
+    let fechaHorarioSemana = new Date("2026-09-26");
+    let fechaHorarioCuadrante = new Date("2026-09-26");
+    let fechaHorarioMes = new Date("2026-09-26");
+    let fechaSeleccionadaMes = new Date("2026-09-26");
 
     const horasDisponibles = [];
     for (let h = 8; h <= 22; h++) {
@@ -981,57 +992,6 @@
       "#BE185D", "#047857", "#B45309", "#1E40AF", "#475569", "#7C3AED"
     ];
 
-    function cambiarVista(vistaId) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      let target = document.getElementById('vista-' + vistaId);
-      if (target) {
-        target.classList.add('active');
-      }
-
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      let navMap = {
-        'hoy': 'nav-hoy',
-        'racha-panel': 'nav-hoy',
-        'horario': 'nav-horario',
-        'estudio': 'nav-estudio',
-        'repertorio': 'nav-repertorio',
-        'repertorio-detalle': 'nav-repertorio',
-        'objetivos': 'nav-hoy',
-        'mas': 'nav-mas',
-        'centros-estudio': 'nav-mas',
-        'centro-detalle': 'nav-mas',
-        'notas-centros': 'nav-mas',
-        'notas-detalle': 'nav-mas',
-        'asistencia-centros': 'nav-mas',
-        'asistencia-detalle': 'nav-mas',
-        'tareas': 'nav-mas'
-      };
-
-      let activeNavId = navMap[vistaId];
-      if (activeNavId) {
-        let navElem = document.getElementById(activeNavId);
-        if (navElem) navElem.classList.add('active');
-      }
-      window.scrollTo(0, 0);
-    }
-
-    function cambiarHorarioTab(tabId, el) {
-      document.querySelectorAll('.horario-subview').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
-      let targetSubview = document.getElementById('subview-' + tabId);
-      if(targetSubview) targetSubview.classList.add('active');
-      if(el) el.classList.add('active');
-    }
-
-    function cambiarAsistenciaTab(tabId, el) {
-      document.querySelectorAll('#vista-asistencia-detalle .horario-subview').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('#vista-asistencia-detalle .horario-tab').forEach(t => t.classList.remove('active'));
-      let targetSubview = document.getElementById('subview-asistencia-' + tabId);
-      if(targetSubview) targetSubview.classList.add('active');
-      if(el) el.classList.add('active');
-      if(tabId === 'estadisticas') renderizarEstadisticasAsistenciaCentro();
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       inicializarSelectoresHora();
       inicializarPaletaColores();
@@ -1041,62 +1001,35 @@
       renderizarRepertorioCategorias();
       renderizarTareas();
       renderizarObjetivos();
-      
-      actualizarHomePorFecha();
-      renderizarHorarioDiarioConHuecos();
-      renderizarHorarioSemanalPorFechas();
-      renderizarCalendarioMensual();
-      sincronizarYRenderizarCuadranteActualizado();
-      
+      renderizarHorarioAvanzado();
       actualizarSelectorPomodoroItems();
+      actualizarHomePorFecha();
       actualizarPanelRachaEInsignias();
     });
-
-    function inicializarSelectoresHora() {
-      const sels = ['input-asig-inicio', 'input-asig-fin', 'input-asig-inicio2', 'input-asig-fin2'];
-      sels.forEach(id => {
-        const sel = document.getElementById(id);
-        if(sel) {
-          sel.innerHTML = '';
-          horasDisponibles.forEach(hora => {
-            sel.innerHTML += `<option value="${hora}">${hora}</option>`;
-          });
-        }
-      });
-      if(document.getElementById('input-asig-fin')) document.getElementById('input-asig-fin').value = "10:00";
-      if(document.getElementById('input-asig-fin2')) document.getElementById('input-asig-fin2').value = "11:00";
-    }
-
-    function toggleSegundaSesionInputs() {
-      const activo = document.getElementById('input-tiene-segunda-sesion').checked;
-      const bloque = document.getElementById('bloque-segunda-sesion');
-      bloque.style.display = activo ? 'flex' : 'none';
-    }
-
-    function inicializarPaletaColores() {
-      const contenedor = document.getElementById('paleta-colores');
-      contenedor.innerHTML = '';
-      paleta20Colores.forEach((hex, idx) => {
-        const div = document.createElement('div');
-        div.className = `color-option ${idx === 0 ? 'selected' : ''}`;
-        div.style.backgroundColor = hex;
-        div.onclick = () => {
-          document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
-          div.classList.add('selected');
-          colorSeleccionadoHex = hex;
-        };
-        contenedor.appendChild(div);
-      });
-    }
 
     function cambiarDiaHome(dias) {
       fechaHomeActual.setDate(fechaHomeActual.getDate() + dias);
       actualizarHomePorFecha();
     }
 
-    function cambiarDiaHorarioDiario(dias) {
-      fechaHorarioDiarioActual.setDate(fechaHorarioDiarioActual.getDate() + dias);
-      renderizarHorarioDiarioConHuecos();
+    function cambiarDiaHorario(dias) {
+      fechaHorarioDiario.setDate(fechaHorarioDiario.getDate() + dias);
+      renderizarHorarioAvanzado();
+    }
+
+    function cambiarSemanaHorario(semanas) {
+      fechaHorarioSemana.setDate(fechaHorarioSemana.getDate() + (semanas * 7));
+      renderizarHorarioAvanzado();
+    }
+
+    function cambiarSemanaCuadrante(semanas) {
+      fechaHorarioCuadrante.setDate(fechaHorarioCuadrante.getDate() + (semanas * 7));
+      renderizarCuadranteSemanal();
+    }
+
+    function cambiarMesHorario(meses) {
+      fechaHorarioMes.setMonth(fechaHorarioMes.getMonth() + meses);
+      renderizarHorarioAvanzado();
     }
 
     function calcularFechasPeriodo(periodo) {
@@ -1153,337 +1086,227 @@
       }
     }
 
-    // --- HORARIO DIARIO CON HUECOS LIBRES ---
-    function renderizarHorarioDiarioConHuecos() {
-      let yyyy = fechaHorarioDiarioActual.getFullYear();
-      let mm = String(fechaHorarioDiarioActual.getMonth() + 1).padStart(2, '0');
-      let dd = String(fechaHorarioDiarioActual.getDate()).padStart(2, '0');
-      let fechaIso = `${yyyy}-${mm}-${dd}`;
-
-      let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      let fechaFormateada = fechaHorarioDiarioActual.toLocaleDateString('es-ES', options);
-      document.getElementById('horario-diario-titulo-fecha').textContent = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+    function renderizarHorarioAvanzado() {
+      // 1. Vista Diaria con Huecos Libres
+      let yyyy = fechaHorarioDiario.getFullYear();
+      let mm = String(fechaHorarioDiario.getMonth() + 1).padStart(2, '0');
+      let dd = String(fechaHorarioDiario.getDate()).padStart(2, '0');
+      let fechaIsoDiaria = `${yyyy}-${mm}-${dd}`;
+      let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHorarioDiario.getDay()];
+      
+      document.getElementById('horario-nav-titulo-dia').textContent = `${fechaHorarioDiario.getDate()} ${fechaHorarioDiario.toLocaleString('es-ES', { month: 'short' })} (${yyyy})`;
 
       let todasAsig = [];
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
-          let enRango = fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin;
-          if (enRango) {
-            let diaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHorarioDiarioActual.getDay()];
-            if (a.dia === diaStr) todasAsig.push({ ...a, sesionNombre: 'Sesión 1' });
-            if (a.tieneSegunda && a.dia2 === diaStr) todasAsig.push({ ...a, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin, sesionNombre: 'Sesión 2' });
+          todasAsig.push(a);
+          if (a.tieneSegunda && a.dia2) {
+            todasAsig.push({ ...a, dia: a.dia2, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
           }
         });
       });
 
-      let tareasDia = tareasPendientes.filter(t => t.fecha === fechaIso);
-      todasAsig.sort((a, b) => a.inicio.localeCompare(b.inicio));
+      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
+      let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
 
-      const contenedor = document.getElementById('container-diaria-con-huecos');
-      contenedor.innerHTML = '';
+      // Ordenar por hora de inicio
+      eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
 
-      if (todasAsig.length === 0 && tareasDia.length === 0) {
-        contenedor.innerHTML = `<div class="card"><p style="text-align:center; color: var(--text-muted);">Sin eventos programados para este día. ¡Todo es hueco libre!</p></div>`;
-        return;
-      }
-
-      tareasDia.forEach(t => {
-        contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid var(--warning);">
-            <div class="section-flex">
-              <span class="badge-warn">📝 Tarea Pendiente</span>
-              <span class="badge">${t.asignatura}</span>
-            </div>
-            <h4>${t.titulo}</h4>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${t.desc || ''}</p>
-          </div>
-        `;
-      });
-
-      let horaAnteriorFin = "08:00";
-      todasAsig.forEach((a) => {
-        if (a.inicio > horaAnteriorFin) {
-          contenedor.innerHTML += `
-            <div class="card-gap">
-              ☕ Hueco libre (${horaAnteriorFin} - ${a.inicio}) • ¡Momento ideal para estudio autónomo o descanso!
-            </div>
-          `;
-        }
-
-        contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${a.color};">
-            <div class="section-flex">
-              <span style="color: ${a.color}; font-weight: bold;">${a.inicio} - ${a.fin}</span>
-              <span class="badge" style="background: ${a.color}25; color: ${a.color};">${a.sesionNombre}</span>
-            </div>
-            <h4>${a.nombre}</h4>
-            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">📍 ${a.aula} • 👤 ${a.docente}</p>
-          </div>
-        `;
-        horaAnteriorFin = a.fin;
-      });
-
-      if (horaAnteriorFin < "22:00" && todasAsig.length > 0) {
-        contenedor.innerHTML += `
-          <div class="card-gap">
-            🌙 Hueco libre final de jornada (${horaAnteriorFin} en adelante)
-          </div>
-        `;
-      }
-    }
-
-    // --- HORARIO SEMANAL POR FECHAS CONCRETAS ---
-    function cambiarSemanaOffset(offset) {
-      fechaSemanaActual.setDate(fechaSemanaActual.getDate() + (offset * 7));
-      renderizarHorarioSemanalPorFechas();
-    }
-
-    function renderizarHorarioSemanalPorFechas() {
-      let d = new Date(fechaSemanaActual);
-      let day = d.getDay();
-      let diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      let lunes = new Date(d.setDate(diff));
-
-      let fechasSemana = [];
-      let nombresDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-      let diasAbrev = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-
-      for (let i = 0; i < 7; i++) {
-        let f = new Date(lunes);
-        f.setDate(lunes.getDate() + i);
-        let yyyy = f.getFullYear();
-        let mm = String(f.getMonth() + 1).padStart(2, '0');
-        let dd = String(f.getDate()).padStart(2, '0');
-        fechasSemana.push({
-          nombre: nombresDias[i],
-          abrev: diasAbrev[i],
-          iso: `${yyyy}-${mm}-${dd}`,
-          formato: `${f.getDate()} ${f.toLocaleString('es-ES', { month: 'short' })}`
-        });
-      }
-
-      document.getElementById('titulo-rango-semana').textContent = `Semana: ${fechasSemana[0].formato} - ${fechasSemana[6].formato}`;
-
-      const contenedor = document.getElementById('container-semanal-por-fechas');
-      contenedor.innerHTML = '';
-
-      fechasSemana.forEach(diaInfo => {
-        let asigDelDia = [];
-        centrosEstudios.forEach(c => {
-          c.asignaturas.forEach(a => {
-            let enRango = diaInfo.iso >= a.fechaInicio && diaInfo.iso <= a.fechaFin;
-            if (enRango) {
-              if (a.dia === diaInfo.abrev) asigDelDia.push({ ...a, sesion: 'Sesión 1' });
-              if (a.tieneSegunda && a.dia2 === diaInfo.abrev) asigDelDia.push({ ...a, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin, sesion: 'Sesión 2' });
-            }
-          });
-        });
-
-        let tareasDelDia = tareasPendientes.filter(t => t.fecha === diaInfo.iso);
-        asigDelDia.sort((a, b) => a.inicio.localeCompare(b.inicio));
-
-        let htmlAsig = '';
-        if (asigDelDia.length === 0 && tareasDelDia.length === 0) {
-          htmlAsig = `<p style="font-size: 12px; color: var(--text-muted); font-style: italic;">Sin actividad programada.</p>`;
-        } else {
-          tareasDelDia.forEach(t => {
-            htmlAsig += `<div style="background: rgba(245,158,11,0.1); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 12px;">📝 <strong>${t.titulo}</strong> (${t.asignatura})</div>`;
-          });
-          asigDelDia.forEach(a => {
-            htmlAsig += `
-              <div style="background: ${a.color}15; border-left: 3px solid ${a.color}; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 12px;">
-                <div style="display: flex; justify-content: space-between; font-weight: bold;">
-                  <span style="color: ${a.color};">${a.nombre}</span>
-                  <span>${a.inicio} - ${a.fin}</span>
-                </div>
-                <div style="color: var(--text-muted); font-size: 11px; margin-top: 2px;">📍 ${a.aula} • ${a.docente}</div>
+      const contDiaria = document.getElementById('container-diaria-huecos');
+      contDiaria.innerHTML = '';
+      if (eventosHoy.length === 0 && tareasHoy.length === 0) {
+        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases para este día.</p>`;
+      } else {
+        let ultimaHoraFin = "08:00";
+        eventosHoy.forEach((ev, idx) => {
+          // Detectar hueco libre previo si hay distancia de tiempo
+          if (idx > 0 && ev.inicio > ultimaHoraFin) {
+            contDiaria.innerHTML += `
+              <div style="background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--success); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: var(--success); text-align: center;">
+                ✨ Hueco libre (${ultimaHoraFin} - ${ev.inicio}) • Ideal para estudio autónomo o práctica instrumental
               </div>
             `;
-          });
-        }
-
-        contenedor.innerHTML += `
-          <div class="card">
-            <div class="section-flex" style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 8px;">
-              <h4 style="color: var(--primary);">${diaInfo.nombre}</h4>
-              <span class="badge">${diaInfo.formato}</span>
+          }
+          contDiaria.innerHTML += `
+            <div class="card" style="border-left: 4px solid ${ev.color};">
+              <div class="section-flex">
+                <span style="color: ${ev.color}; font-weight: bold;">${ev.inicio} - ${ev.fin}</span>
+                <span class="badge" style="background: ${ev.color}25; color: ${ev.color};">${ev.dia}</span>
+              </div>
+              <h4>${ev.nombre}</h4>
+              <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">📍 ${ev.aula} • 👤 ${ev.docente}</p>
             </div>
-            ${htmlAsig}
-          </div>
-        `;
-      });
-    }
-
-    // --- HORARIO MENSUAL CON CALENDARIO INTERACTIVO ---
-    function cambiarMesOffset(offset) {
-      fechaMesActual.setMonth(fechaMesActual.getMonth() + offset);
-      renderizarCalendarioMensual();
-    }
-
-    function renderizarCalendarioMensual() {
-      let anio = fechaMesActual.getFullYear();
-      let mes = fechaMesActual.getMonth();
-
-      let nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-      document.getElementById('mes-calendario-titulo').textContent = `${nombresMeses[mes]} ${anio}`;
-
-      let primerDiaMes = new Date(anio, mes, 1);
-      let ultimoDiaMes = new Date(anio, mes + 1, 0);
-      let diasEnMes = ultimoDiaMes.getDate();
-      let diaInicioSemana = primerDiaMes.getDay();
-      diaInicioSemana = diaInicioSemana === 0 ? 6 : diaInicioSemana - 1;
-
-      let diasConEventosMap = {};
-      centrosEstudios.forEach(c => {
-        c.asignaturas.forEach(a => {
-          let curr = new Date(a.fechaInicio);
-          let fin = new Date(a.fechaFin);
-          while (curr <= fin) {
-            let y = curr.getFullYear(), m = curr.getMonth(), d = curr.getDate();
-            if (y === anio && m === mes) {
-              let dayOfWeek = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][curr.getDay()];
-              if (a.dia === dayOfWeek || (a.tieneSegunda && a.dia2 === dayOfWeek)) {
-                let isoStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                diasConEventosMap[isoStr] = true;
-              }
-            }
-            curr.setDate(curr.getDate() + 1);
-          }
+          `;
+          ultimaHoraFin = ev.fin;
         });
-      });
 
-      tareasPendientes.forEach(t => {
-        if (t.fecha) {
-          let partes = t.fecha.split('-');
-          if (parseInt(partes[0]) === anio && parseInt(partes[1]) === mes + 1) {
-            diasConEventosMap[t.fecha] = true;
-          }
-        }
-      });
-
-      const grid = document.getElementById('monthly-calendar-grid');
-      grid.innerHTML = `
-        <div class="cal-day-header">Lun</div>
-        <div class="cal-day-header">Mar</div>
-        <div class="cal-day-header">Mié</div>
-        <div class="cal-day-header">Jue</div>
-        <div class="cal-day-header">Vie</div>
-        <div class="cal-day-header">Sáb</div>
-        <div class="cal-day-header">Dom</div>
-      `;
-
-      for (let i = 0; i < diaInicioSemana; i++) {
-        grid.innerHTML += `<div></div>`;
+        tareasHoy.forEach(t => {
+          contDiaria.innerHTML += `
+            <div class="card" style="border-left: 4px solid var(--primary);">
+              <div class="section-flex">
+                <span class="badge">${t.asignatura}</span>
+                <span class="badge-warn">📅 Tarea</span>
+              </div>
+              <h4>📝 ${t.titulo}</h4>
+              ${t.desc ? `<p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">${t.desc}</p>` : ''}
+            </div>
+          `;
+        });
       }
 
-      for (let d = 1; d <= diasEnMes; d++) {
-        let mmStr = String(mes + 1).padStart(2, '0');
-        let ddStr = String(d).padStart(2, '0');
-        let isoStr = `${anio}-${mmStr}-${ddStr}`;
-        let hasEvent = diasConEventosMap[isoStr] ? 'has-events' : '';
-        let isSelected = isoStr === fechaSeleccionadaMensual ? 'selected' : '';
+      // 2. Vista Semanal por Fechas Concretas
+      let dSemana = new Date(fechaHorarioSemana);
+      let day = dSemana.getDay();
+      let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
+      let lunesSemana = new Date(dSemana.setDate(diffToMonday));
+      
+      let domingoSemana = new Date(lunesSemana);
+      domingoSemana.setDate(domingoSemana.getDate() + 6);
+      document.getElementById('horario-nav-titulo-semana').textContent = `${lunesSemana.getDate()} ${lunesSemana.toLocaleString('es-ES', { month: 'short' })} - ${domingoSemana.getDate()} ${domingoSemana.toLocaleString('es-ES', { month: 'short' })}`;
 
-        grid.innerHTML += `
-          <div class="cal-cell ${hasEvent} ${isSelected}" onclick="seleccionarDiaMensual('${isoStr}')">
-            <span>${d}</span>
-            ${diasConEventosMap[isoStr] ? '<div class="cal-cell-dot"></div>' : ''}
+      const contSemana = document.getElementById('container-semanal-dinamico');
+      contSemana.innerHTML = '';
+      
+      let diasNombres = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+      diasNombres.forEach((dNombre, idx) => {
+        let diaActual = new Date(lunesSemana);
+        diaActual.setDate(lunesSemana.getDate() + idx);
+        let isoStr = diaActual.toISOString().split('T')[0];
+        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+        asigsDelDia.sort((a,b) => a.inicio.localeCompare(b.inicio));
+
+        contSemana.innerHTML += `
+          <div class="card" style="background: var(--bg-main);">
+            <div class="section-flex" style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 8px;">
+              <h4 style="color: var(--primary);">${dNombre} (${diaActual.getDate()} ${diaActual.toLocaleString('es-ES', { month: 'short' })})</h4>
+              <span class="badge">${asigsDelDia.length} eventos</span>
+            </div>
+            ${asigsDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin clases programadas.</p>` : ''}
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              ${asigsDelDia.map(a => `
+                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color};">
+                  <strong style="font-size: 12px;">${a.nombre}</strong>
+                  <div style="font-size: 11px; color: var(--text-muted);">${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
+      });
+
+      // 3. Vista Mensual Interactiva
+      let mesIdx = fechaHorarioMes.getMonth();
+      let anioIdx = fechaHorarioMes.getFullYear();
+      document.getElementById('horario-nav-titulo-mes').textContent = `${fechaHorarioMes.toLocaleString('es-ES', { month: 'long' })} ${anioIdx}`;
+
+      let primerDiaMes = new Date(anioIdx, mesIdx, 1);
+      let ultimoDiaMes = new Date(anioIdx, mesIdx + 1, 0);
+      let startDayIndex = primerDiaMes.getDay() === 0 ? 6 : primerDiaMes.getDay() - 1; // Lunes start
+
+      const gridMes = document.getElementById('grid-calendario-mensual');
+      gridMes.innerHTML = '';
+      ["L", "M", "X", "J", "V", "S", "D"].forEach(d => {
+        gridMes.innerHTML += `<div style="text-align: center; font-size: 10px; font-weight: bold; color: var(--text-muted); padding-bottom: 4px;">${d}</div>`;
+      });
+
+      for (let i = 0; i < startDayIndex; i++) {
+        gridMes.innerHTML += `<div></div>`;
       }
 
-      renderizarDetalleDiaMensual();
+      for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
+        let dFecha = new Date(anioIdx, mesIdx, dia);
+        let isoD = `${anioIdx}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+        let dSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dFecha.getDay()];
+        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || tareasPendientes.some(t => t.fecha === isoD);
+        let esSel = fechaSeleccionadaMes.toISOString().split('T')[0] === isoD;
+
+        let divD = document.createElement('div');
+        divD.className = `month-day ${tieneEv ? 'has-events' : ''} ${esSel ? 'selected' : ''}`;
+        divD.textContent = dia;
+        divD.onclick = () => {
+          fechaSeleccionadaMes = dFecha;
+          renderizarHorarioAvanzado();
+        };
+        gridMes.appendChild(divD);
+      }
+
+      renderizarEventosDiaSeleccionadoMes();
+      renderizarCuadranteSemanal();
     }
 
-    function seleccionarDiaMensual(isoStr) {
-      fechaSeleccionadaMensual = isoStr;
-      renderizarCalendarioMensual();
-    }
+    function renderizarEventosDiaSeleccionadoMes() {
+      let yyyy = fechaSeleccionadaMes.getFullYear();
+      let mm = String(fechaSeleccionadaMes.getMonth() + 1).padStart(2, '0');
+      let dd = String(fechaSeleccionadaMes.getDate()).padStart(2, '0');
+      let isoStr = `${yyyy}-${mm}-${dd}`;
+      let diaSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaSeleccionadaMes.getDay()];
 
-    function renderizarDetalleDiaMensual() {
-      document.getElementById('mensual-detalle-fecha-titulo').textContent = `Eventos del ${fechaSeleccionadaMensual}`;
-      let partes = fechaSeleccionadaMensual.split('-');
-      let fObj = new Date(partes[0], partes[1] - 1, partes[2]);
-      let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fObj.getDay()];
+      document.getElementById('titulo-eventos-dia-mes').textContent = `Eventos del ${fechaSeleccionadaMes.getDate()} de ${fechaSeleccionadaMes.toLocaleString('es-ES', { month: 'long' })} (${yyyy}):`;
 
       let todasAsig = [];
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
-          let enRango = fechaSeleccionadaMensual >= a.fechaInicio && fechaSeleccionadaMensual <= a.fechaFin;
-          if (enRango) {
-            if (a.dia === diaSemanaStr) todasAsig.push({ ...a, sesion: 'Sesión 1' });
-            if (a.tieneSegunda && a.dia2 === diaSemanaStr) todasAsig.push({ ...a, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin, sesion: 'Sesión 2' });
-          }
+          todasAsig.push(a);
+          if (a.tieneSegunda && a.dia2) todasAsig.push({ ...a, dia: a.dia2, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
         });
       });
 
-      let tareasDia = tareasPendientes.filter(t => t.fecha === fechaSeleccionadaMensual);
-      todasAsig.sort((a, b) => a.inicio.localeCompare(b.inicio));
+      let eventos = todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+      let tareas = tareasPendientes.filter(t => t.fecha === isoStr);
 
-      const contenedor = document.getElementById('container-mensual-detalle-dia');
-      contenedor.innerHTML = '';
-
-      if (todasAsig.length === 0 && tareasDia.length === 0) {
-        contenedor.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); text-align: center;">No hay eventos registrados en esta fecha.</p>`;
+      const cont = document.getElementById('container-eventos-dia-mes');
+      cont.innerHTML = '';
+      if (eventos.length === 0 && tareas.length === 0) {
+        cont.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">Ningún evento programado para este día.</p>`;
         return;
       }
 
-      tareasDia.forEach(t => {
-        contenedor.innerHTML += `<div style="background: rgba(245,158,11,0.1); padding: 8px; border-radius: 6px; font-size: 12px;">📝 <strong>${t.titulo}</strong> (${t.asignatura})</div>`;
+      eventos.forEach(ev => {
+        cont.innerHTML += `
+          <div class="card" style="border-left: 4px solid ${ev.color};">
+            <strong style="font-size: 13px;">${ev.nombre}</strong>
+            <div style="font-size: 12px; color: var(--text-muted);">${ev.inicio} - ${ev.fin} • 📍 ${ev.aula}</div>
+          </div>
+        `;
       });
-
-      todasAsig.forEach(a => {
-        contenedor.innerHTML += `
-          <div style="background: ${a.color}15; border-left: 3px solid ${a.color}; padding: 8px; border-radius: 6px; font-size: 12px;">
-            <div style="display: flex; justify-content: space-between; font-weight: bold;">
-              <span style="color: ${a.color};">${a.nombre}</span>
-              <span>${a.inicio} - ${a.fin}</span>
-            </div>
-            <div style="color: var(--text-muted); font-size: 11px; margin-top: 2px;">📍 ${a.aula} • ${a.docente}</div>
+      tareas.forEach(t => {
+        cont.innerHTML += `
+          <div class="card" style="border-left: 4px solid var(--primary);">
+            <strong style="font-size: 13px;">📝 Tarea: ${t.titulo}</strong>
+            <div style="font-size: 12px; color: var(--text-muted);">Asignatura: ${t.asignatura} • Prioridad: ${t.prioridad}</div>
           </div>
         `;
       });
     }
 
-    // --- CUADRANTE ACTUALIZADO CADA LUNES ---
-    function sincronizarYRenderizarCuadranteActualizado() {
-      let d = new Date();
-      let day = d.getDay();
-      let diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      let lunesActual = new Date(d.setDate(diff));
-      let domingoActual = new Date(lunesActual);
-      domingoActual.setDate(lunesActual.getDate() + 6);
+    function renderizarCuadranteSemanal() {
+      let dSemana = new Date(fechaHorarioCuadrante);
+      let day = dSemana.getDay();
+      let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
+      let lunesSemana = new Date(dSemana.setDate(diffToMonday));
 
-      let formatFechaHeader = (fecha) => `${fecha.getDate()} ${fecha.toLocaleString('es-ES', { month: 'short' })}`;
-      document.getElementById('titulo-cuadrante-lunes').textContent = `📊 Cuadrante Actualizado (${formatFechaHeader(lunesActual)} - ${formatFechaHeader(domingoActual)})`;
-
-      let fechasCuadrante = [];
-      let diasAbrev = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-      for(let i=0; i<7; i++){
-        let f = new Date(lunesActual);
-        f.setDate(lunesActual.getDate() + i);
-        let yyyy = f.getFullYear();
-        let mm = String(f.getMonth() + 1).padStart(2, '0');
-        let dd = String(f.getDate()).padStart(2, '0');
-        let iso = `${yyyy}-${mm}-${dd}`;
-        fechasCuadrante.push({ abrev: diasAbrev[i], iso: iso, label: `${diasAbrev[i]} ${f.getDate()}` });
-      }
-
-      fechasCuadrante.forEach((dInfo, idx) => {
-        let thId = ['th-lun', 'th-mar', 'th-mie', 'th-jue', 'th-vie', 'th-sab', 'th-dom'][idx];
-        document.getElementById(thId).textContent = dInfo.label;
-      });
+      let domingoSemana = new Date(lunesSemana);
+      domingoSemana.setDate(domingoSemana.getDate() + 6);
+      document.getElementById('cuadrante-nav-titulo-semana').textContent = `${lunesSemana.getDate()} ${lunesSemana.toLocaleString('es-ES', { month: 'short' })} - ${domingoSemana.getDate()} ${domingoSemana.toLocaleString('es-ES', { month: 'short' })}`;
 
       let todasLasAsignaturas = [];
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
-          fechasCuadrante.forEach(dInfo => {
-            let enRango = dInfo.iso >= a.fechaInicio && dInfo.iso <= a.fechaFin;
-            if (enRango) {
-              if (a.dia === dInfo.abrev) todasLasAsignaturas.push({ ...a, diaTabla: dInfo.abrev });
-              if (a.tieneSegunda && a.dia2 === dInfo.abrev) todasLasAsignaturas.push({ ...a, diaTabla: dInfo.abrev, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
-            }
-          });
+          todasLasAsignaturas.push(a);
+          if (a.tieneSegunda && a.dia2) {
+            todasLasAsignaturas.push({ ...a, dia: a.dia2, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
+          }
         });
+      });
+
+      // Actualizar cabecera con fechas exactas del cuadrante
+      let diasCortos = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+      let trHead = document.getElementById('thead-cuadrante-fechas');
+      trHead.innerHTML = `<th style="width: 42px;">Hora</th>`;
+      diasCortos.forEach((dStr, idx) => {
+        let dActual = new Date(lunesSemana);
+        dActual.setDate(lunesSemana.getDate() + idx);
+        trHead.innerHTML += `<th>${dStr} ${dActual.getDate()}/${dActual.getMonth()+1}</th>`;
       });
 
       const tbody = document.getElementById('tbody-horario-sincronizado');
@@ -1497,9 +1320,13 @@
         tdHora.textContent = hora;
         tr.appendChild(tdHora);
 
-        diasSemana.forEach(dia => {
+        diasSemana.forEach((dia, dIdx) => {
+          let dActual = new Date(lunesSemana);
+          dActual.setDate(lunesSemana.getDate() + dIdx);
+          let isoStr = dActual.toISOString().split('T')[0];
+
           let td = document.createElement('td');
-          let asigEncontrada = todasLasAsignaturas.find(a => a.diaTabla === dia && a.inicio === hora);
+          let asigEncontrada = todasLasAsignaturas.find(a => a.dia === dia && a.inicio === hora && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
 
           if (asigEncontrada) {
             let idxInicio = horasDisponibles.indexOf(asigEncontrada.inicio);
@@ -1519,7 +1346,7 @@
               let idxIni = horasDisponibles.indexOf(a.inicio);
               let idxF = horasDisponibles.indexOf(a.fin);
               let idxAct = horasDisponibles.indexOf(hora);
-              return a.diaTabla === dia && idxAct > idxIni && idxAct < idxF;
+              return a.dia === dia && idxAct > idxIni && idxAct < idxF && isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
             });
             if (!cubierta) tr.appendChild(td);
           }
@@ -1528,7 +1355,69 @@
       });
     }
 
-    // --- SISTEMA DE INSIGNIAS Y PREMIOS ---
+    function inicializarSelectoresHora() {
+      const sels = ['input-asig-inicio', 'input-asig-fin', 'input-asig-inicio2', 'input-asig-fin2'];
+      sels.forEach(id => {
+        const sel = document.getElementById(id);
+        if(sel) {
+          sel.innerHTML = '';
+          horasDisponibles.forEach(hora => { sel.innerHTML += `<option value="${hora}">${hora}</option>`; });
+        }
+      });
+      if(document.getElementById('input-asig-fin')) document.getElementById('input-asig-fin').value = "10:00";
+      if(document.getElementById('input-asig-fin2')) document.getElementById('input-asig-fin2').value = "11:00";
+    }
+
+    function toggleSegundaSesionInputs() {
+      let activo = document.getElementById('input-tiene-segunda-sesion').checked;
+      document.getElementById('bloque-segunda-sesion').style.display = activo ? 'flex' : 'none';
+    }
+
+    function inicializarPaletaColores() {
+      const contenedor = document.getElementById('paleta-colores');
+      contenedor.innerHTML = '';
+      paleta20Colores.forEach((hex, idx) => {
+        const div = document.createElement('div');
+        div.className = `color-option ${idx === 0 ? 'selected' : ''}`;
+        div.style.backgroundColor = hex;
+        div.onclick = () => {
+          document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+          div.classList.add('selected');
+          colorSeleccionadoHex = hex;
+        };
+        contenedor.appendChild(div);
+      });
+    }
+
+    function cambiarVista(idVista) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const destino = document.getElementById('vista-' + idVista);
+      if (destino) destino.classList.add('active');
+
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      const navBtn = document.getElementById('nav-' + idVista);
+      if (navBtn) navBtn.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cambiarHorarioTab(tipo, tabElem) {
+      document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
+      tabElem.classList.add('active');
+      document.querySelectorAll('.horario-subview').forEach(sub => sub.classList.remove('active'));
+      const sub = document.getElementById('subview-' + tipo);
+      if (sub) sub.classList.add('active');
+    }
+
+    function cambiarAsistenciaTab(tipo, tabElem) {
+      document.querySelectorAll('#vista-asistencia-detalle .horario-tab').forEach(t => t.classList.remove('active'));
+      tabElem.classList.add('active');
+      document.querySelectorAll('#vista-asistencia-detalle .horario-subview').forEach(sub => sub.classList.remove('active'));
+      const sub = document.getElementById('subview-asistencia-' + tipo);
+      if (sub) sub.classList.add('active');
+      if (tipo === 'estadisticas') renderizarEstadisticasAsistenciaCentro();
+    }
+
     function actualizarPanelRachaEInsignias() {
       document.getElementById('home-racha-num').textContent = `🔥 ${rachaActual}`;
       document.getElementById('panel-racha-dias').textContent = `${rachaActual} DÍAS`;
@@ -1562,7 +1451,6 @@
       });
     }
 
-    // --- NOTAS Y CALIFICACIONES ---
     function getColorNota(val) {
       let num = parseFloat(val);
       if (isNaN(num)) return "var(--text-main)";
@@ -1597,7 +1485,6 @@
       });
     }
 
-    // --- OBJETIVOS DIARIOS ---
     function renderizarObjetivos() {
       const contenedor = document.getElementById('lista-objetivos-container');
       contenedor.innerHTML = '';
@@ -1672,7 +1559,6 @@
       }
     }
 
-    // --- REPERTORIO ---
     function renderizarRepertorioCategorias() {
       const contenedor = document.getElementById('lista-categorias-container');
       contenedor.innerHTML = '';
@@ -1719,7 +1605,7 @@
             </div>
             <h4>${p.titulo}</h4>
             ${p.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</p>` : ''}
-            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al ${p.fechaFin})</p>` : ''}
+            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al${p.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 8px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalPiezaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar</button>
@@ -1752,7 +1638,7 @@
       document.getElementById('input-desc-pieza').value = p.desc || '';
       document.getElementById('input-pieza-es-obj').checked = p.esObj || false;
       document.getElementById('input-pieza-fecha-inicio').value = p.fechaInicio || new Date().toISOString().split('T')[0];
-      document.getElementById('input-pieza-fecha-fin').value = p.fechaFin || p.fechaInicio || new Date().toISOString().split('T')[0];
+      document.getElementById('input-pieza-fecha-fin').value = p.fechaFin || new Date().toISOString().split('T')[0];
       document.getElementById('modalPieza').classList.add('active');
     }
 
@@ -1799,7 +1685,6 @@
       }
     }
 
-    // --- TAREAS PENDIENTES ---
     function renderizarTareas() {
       const contenedor = document.getElementById('lista-tareas-container');
       contenedor.innerHTML = '';
@@ -1825,7 +1710,7 @@
             <h4 style="margin-top: 6px;">${t.titulo}</h4>
             ${t.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.desc}</p>` : ''}
             <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">📅 Fecha límite: ${t.fecha || 'N/D'}</p>
-            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo (${t.fechaInicio} al ${t.fechaFin})</p>` : ''}
+            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo (${t.fechaInicio} al${t.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 6px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalTareaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(${idx})">Eliminar</button>
@@ -1833,11 +1718,8 @@
           </div>
         `;
       });
+      renderizarHorarioAvanzado();
       actualizarPanelRachaEInsignias();
-      renderizarHorarioDiarioConHuecos();
-      renderizarHorarioSemanalPorFechas();
-      renderizarCalendarioMensual();
-      sincronizarYRenderizarCuadranteActualizado();
     }
 
     function abrirModalTareaParaCrear() {
@@ -1925,7 +1807,6 @@
       }
     }
 
-    // --- CENTROS Y ASIGNATURAS ---
     function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
     function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
     function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
@@ -2083,12 +1964,7 @@
       }
       guardarDatos();
       renderizarAsignaturasCentro();
-      
-      renderizarHorarioDiarioConHuecos();
-      renderizarHorarioSemanalPorFechas();
-      renderizarCalendarioMensual();
-      sincronizarYRenderizarCuadranteActualizado();
-
+      renderizarHorarioAvanzado();
       actualizarSelectorPomodoroItems();
       cerrarModalAsignatura();
     }
@@ -2100,18 +1976,12 @@
           centro.asignaturas.splice(index, 1);
           guardarDatos();
           renderizarAsignaturasCentro();
-          
-          renderizarHorarioDiarioConHuecos();
-          renderizarHorarioSemanalPorFechas();
-          renderizarCalendarioMensual();
-          sincronizarYRenderizarCuadranteActualizado();
-
+          renderizarHorarioAvanzado();
           actualizarSelectorPomodoroItems();
         }
       }
     }
 
-    // --- REGISTRO DE NOTAS ---
     function renderizarNotasCentros() {
       const contenedor = document.getElementById('lista-notas-centros-container');
       contenedor.innerHTML = '';
@@ -2175,7 +2045,6 @@
       }
     }
 
-    // --- CONTROL Y ESTADÍSTICAS DE ASISTENCIA ---
     function obtenerFechaDeDiaSemana(diaStr) {
       let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
       let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
@@ -2328,7 +2197,7 @@
       });
     }
 
-    // --- MÉTODOS AUXILIARES Y POMODORO ---
+    // --- MÉTODOS AUXILIARES ---
     function actualizarSelectorPomodoroItems() {
       const sel = document.getElementById('pomodoro-item');
       sel.innerHTML = '';
