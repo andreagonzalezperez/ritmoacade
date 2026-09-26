@@ -15,7 +15,7 @@
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
-      --calendar-accent: #EC4899; /* Color distintivo para la vista de Calendario/Horario visual */
+      --calendar-accent: #EC4899;
     }
 
     * {
@@ -215,7 +215,7 @@
       border: 1px solid var(--border);
     }
 
-    /* Selector de pestañas para el Horario (4 opciones ahora) */
+    /* Selector de pestañas para el Horario */
     .horario-tabs {
       display: flex;
       background: var(--bg-card);
@@ -228,8 +228,8 @@
     .horario-tab {
       flex: 1;
       text-align: center;
-      padding: 8px 4px;
-      font-size: 11px;
+      padding: 8px 2px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
@@ -240,7 +240,6 @@
       background: var(--primary);
       color: white;
     }
-    /* Estilo especial para la pestaña de Calendario/Horario visual */
     .horario-tab.tab-calendar {
       color: var(--calendar-accent);
     }
@@ -258,38 +257,43 @@
       gap: 14px;
     }
 
-    /* Estilos para el Calendario Visual tipo Excel / Calendar */
+    /* Estilos para el Calendario Visual extendido (8:00 a 22:00, L-D) */
     .calendar-grid-container {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 12px;
+      padding: 8px;
       overflow-x: auto;
+      max-height: 450px;
+      overflow-y: auto;
     }
     .calendar-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 420px;
-      font-size: 11px;
+      min-width: 540px;
+      font-size: 10px;
     }
     .calendar-table th, .calendar-table td {
       border: 1px solid var(--border);
-      padding: 8px 4px;
+      padding: 6px 3px;
       text-align: center;
+      height: 28px;
     }
     .calendar-table th {
       background: var(--bg-main);
       color: var(--text-muted);
       font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
     .calendar-slot {
-      background: rgba(236, 72, 153, 0.1);
+      background: rgba(236, 72, 153, 0.15);
       color: #F472B6;
       font-weight: bold;
-      border-radius: 4px;
-      padding: 4px;
-      margin: 2px 0;
-      font-size: 10px;
+      border-radius: 3px;
+      padding: 2px;
+      font-size: 9px;
     }
 
     /* BARRA INFERIOR FIJA MÁS ANCHA Y CÓMODA */
@@ -472,14 +476,14 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 2: HORARIO (DIARIA, SEMANAL, MENSUAL Y CALENDARIO TIPO EXCEL) ================= -->
+  <!-- ================= VISTA 2: HORARIO ================= -->
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
     </header>
     <p class="fecha">Organiza tus clases y ensayos.</p>
     
-    <!-- Selector de pestañas Horario (Con la nueva opción "Horario" en tono distinto) -->
+    <!-- Selector de pestañas Horario -->
     <div class="horario-tabs">
       <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
       <div class="horario-tab" onclick="cambiarHorarioTab('semanal', this)">Semanal</div>
@@ -525,7 +529,7 @@
       </div>
       <div class="card">
         <div class="section-flex">
-          <h4 style="color: var(--primary);">Viernes</h4>
+          <h4 style="color: var(--primary);">Viernes / Sábado</h4>
           <span class="badge">11:00 - 13:00</span>
         </div>
         <p style="font-size: 14px; margin-top: 4px;">Ensayos de Conjunto y Orquesta</p>
@@ -554,54 +558,61 @@
       </div>
     </div>
 
-    <!-- Subvista Horario Visual / Calendario tipo Excel -->
+    <!-- Subvista Horario Visual (8am a 22pm, L-D, en punto y media) -->
     <div id="subview-calendario" class="horario-subview">
-      <div class="card" style="padding: 12px;">
-        <div class="section-flex" style="margin-bottom: 10px;">
-          <h4 style="color: var(--calendar-accent);">📊 Cuadrante Semanal</h4>
-          <span style="font-size: 11px; color: var(--text-muted);">Vista de clases</span>
+      <div class="card" style="padding: 10px;">
+        <div class="section-flex" style="margin-bottom: 8px;">
+          <h4 style="color: var(--calendar-accent); font-size: 15px;">📊 Cuadrante 8:00 - 22:00</h4>
+          <span style="font-size: 10px; color: var(--text-muted);">Desliza horizontal ➔</span>
         </div>
         <div class="calendar-grid-container">
           <table class="calendar-table">
             <thead>
               <tr>
-                <th>Hora</th>
+                <th style="width: 45px;">Hora</th>
                 <th>Lun</th>
                 <th>Mar</th>
                 <th>Mié</th>
                 <th>Jue</th>
                 <th>Vie</th>
+                <th>Sáb</th>
+                <th>Dom</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style="color: var(--text-muted); font-weight: bold;">09:00</td>
-                <td><div class="calendar-slot">Saxofón</div></td>
-                <td>-</td>
-                <td><div class="calendar-slot">Saxofón</div></td>
-                <td>-</td>
-                <td><div class="calendar-slot">Orquesta</div></td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-muted); font-weight: bold;">11:00</td>
-                <td>-</td>
-                <td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td>
-                <td>-</td>
-                <td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td>
-                <td>-</td>
-              </tr>
-              <tr>
-                <td style="color: var(--text-muted); font-weight: bold;">16:00</td>
-                <td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Armonía</div></td>
-                <td>-</td>
-                <td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Armonía</div></td>
-                <td>-</td>
-                <td>-</td>
-              </tr>
+              <!-- 08:00 a 22:00 (en punto y media) -->
+              <tr><td style="color: var(--text-muted);">08:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">08:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">09:00</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">09:30</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">10:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Orquesta</div></td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">10:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Orquesta</div></td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">11:00</td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">11:30</td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">12:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">12:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">13:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">13:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">14:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">14:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">15:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">15:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">16:00</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">16:30</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">17:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">17:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">18:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">18:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">19:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">19:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">20:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">20:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">21:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">21:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+              <tr><td style="color: var(--text-muted);">22:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
             </tbody>
           </table>
         </div>
-        <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center;">Cuadrante visual interactivo de asignaturas</p>
       </div>
     </div>
 
@@ -662,7 +673,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v3.7 - Horario visual tipo Calendar integrado.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v3.8 - Horario ampliado (L-D, 8h a 22h).')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -845,7 +856,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- CAMBIAR PESTAÑAS DE HORARIO (DIARIA, SEMANAL, MENSUAL, CALENDARIO) ---
+    // --- CAMBIAR PESTAÑAS DE HORARIO ---
     function cambiarHorarioTab(tipo, tabElem) {
       document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
       tabElem.classList.add('active');
