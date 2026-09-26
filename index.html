@@ -590,7 +590,7 @@
       </div>
       <div class="row-2">
         <div class="form-group">
-          <label>Día de la semana</label>
+          <label>1ª Sesión (Día)</label>
           <select id="input-asig-dia" class="form-control">
             <option value="Lun">Lunes</option>
             <option value="Mar">Martes</option>
@@ -614,15 +614,46 @@
       </div>
       <div class="row-2">
         <div class="form-group">
-          <label>Hora de inicio</label>
+          <label>Hora Inicio (1ª Sesión)</label>
           <select id="input-asig-inicio" class="form-control"></select>
         </div>
         <div class="form-group">
-          <label>Hora de fin</label>
+          <label>Hora Fin (1ª Sesión)</label>
           <select id="input-asig-fin" class="form-control"></select>
         </div>
       </div>
+      <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;">
       <div class="form-group">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="input-tiene-segunda-sesion" style="width: 18px; height: 18px;" onchange="toggleSegundaSesionInputs()">
+          <label for="input-tiene-segunda-sesion" style="margin-bottom:0; cursor:pointer; font-weight: bold; color: var(--primary);">Añadir segunda sesión semanal</label>
+        </div>
+      </div>
+      <div id="bloque-segunda-sesion" style="display: none; flex-direction: column; gap: 12px; background: var(--bg-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>2ª Sesión (Día)</label>
+          <select id="input-asig-dia2" class="form-control">
+            <option value="Lun">Lunes</option>
+            <option value="Mar" selected>Martes</option>
+            <option value="Mié">Miércoles</option>
+            <option value="Jue">Jueves</option>
+            <option value="Vie">Viernes</option>
+            <option value="Sáb">Sábado</option>
+            <option value="Dom">Domingo</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Hora Inicio (2ª Sesión)</label>
+            <select id="input-asig-inicio2" class="form-control"></select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Hora Fin (2ª Sesión)</label>
+            <select id="input-asig-fin2" class="form-control"></select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 12px;">
         <label>Color distintivo</label>
         <div class="color-picker-grid" id="paleta-colores"></div>
       </div>
@@ -799,7 +830,7 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió", fechaSesion: "2026-09-26" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -892,10 +923,23 @@
       document.getElementById('home-nav-titulo-dia').textContent = `${fechaHomeActual.getDate()} ${fechaHomeActual.toLocaleString('es-ES', { month: 'short' })} (${yyyy})`;
 
       let todasAsig = [];
-      centrosEstudios.forEach(c => todasAsig = todasAsig.concat(c.asignaturas));
+      centrosEstudios.forEach(c => {
+        c.asignaturas.forEach(a => {
+          // Expandir si tiene segunda sesión semanal
+          todasAsig.push(a);
+          if (a.tieneSegunda && a.dia2) {
+            todasAsig.push({
+              ...a,
+              dia: a.dia2,
+              inicio: a.inicio2 || a.inicio,
+              fin: a.fin2 || a.fin
+            });
+          }
+        });
+      });
 
+      let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
       let asigHoy = todasAsig.find(a => {
-        let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
         let enRangoFechas = fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin;
         return a.dia === diaSemanaStr && enRangoFechas;
       });
@@ -918,15 +962,26 @@
     }
 
     function inicializarSelectoresHora() {
-      const selInicio = document.getElementById('input-asig-inicio');
-      const selFin = document.getElementById('input-asig-fin');
-      selInicio.innerHTML = '';
-      selFin.innerHTML = '';
-      horasDisponibles.forEach(hora => {
-        selInicio.innerHTML += `<option value="${hora}">${hora}</option>`;
-        selFin.innerHTML += `<option value="${hora}">${hora}</option>`;
+      const sels = ['input-asig-inicio', 'input-asig-fin', 'input-asig-inicio2', 'input-asig-fin2'];
+      sels.forEach(id => {
+        const sel = document.getElementById(id);
+        if(sel) {
+          sel.innerHTML = '';
+          horasDisponibles.forEach(hora => {
+            sel.innerHTML += `<option value="${hora}">${hora}</option>`;
+          });
+        }
       });
-      selFin.value = "10:00";
+      const fin1 = document.getElementById('input-asig-fin');
+      if(fin1) fin1.value = "10:00";
+      const fin2 = document.getElementById('input-asig-fin2');
+      if(fin2) fin2.value = "11:00";
+    }
+
+    function toggleSegundaSesionInputs() {
+      const activo = document.getElementById('input-tiene-segunda-sesion').checked;
+      const bloque = document.getElementById('bloque-segunda-sesion');
+      bloque.style.display = activo ? 'flex' : 'none';
     }
 
     function inicializarPaletaColores() {
@@ -1384,10 +1439,15 @@
         else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (28 Nov - 5 Mar)";
         else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (5 Mar - 22 Jun)";
 
+        let infoSesiones = `1ª Sesión: ${asig.dia} (${asig.inicio} - ${asig.fin})`;
+        if (asig.tieneSegunda && asig.dia2) {
+          infoSesiones += `<br>2ª Sesión: ${asig.dia2} (${asig.inicio2} - ${asig.fin2})`;
+        }
+
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio} - ${asig.fin}</span>
+              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
               <div>
                 <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
                 <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
@@ -1395,7 +1455,8 @@
             </div>
             <h4 style="margin-top: 6px;">${asig.nombre}</h4>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
-            <p style="font-size: 11px; color: var(--primary); margin-top: 4px;">📅 ${textoPeriodo}</p>
+            <p style="font-size: 11px; color: var(--text-main); margin-top: 4px;">📅 ${infoSesiones}</p>
+            <p style="font-size: 11px; color: var(--primary); margin-top: 2px;">Lectivo: ${textoPeriodo}</p>
           </div>
         `;
       });
@@ -1408,6 +1469,8 @@
       document.getElementById('input-asig-docente').value = '';
       document.getElementById('input-asig-aula').value = '';
       document.getElementById('input-asig-periodo').value = '1_cuatri';
+      document.getElementById('input-tiene-segunda-sesion').checked = false;
+      document.getElementById('bloque-segunda-sesion').style.display = 'none';
       document.getElementById('modalAsignatura').classList.add('active');
     }
 
@@ -1423,6 +1486,16 @@
       document.getElementById('input-asig-inicio').value = asig.inicio;
       document.getElementById('input-asig-fin').value = asig.fin;
       document.getElementById('input-asig-periodo').value = asig.periodo || '1_cuatri';
+      
+      let tieneSeg = asig.tieneSegunda || false;
+      document.getElementById('input-tiene-segunda-sesion').checked = tieneSeg;
+      document.getElementById('bloque-segunda-sesion').style.display = tieneSeg ? 'flex' : 'none';
+      if (tieneSeg) {
+        document.getElementById('input-asig-dia2').value = asig.dia2 || 'Mar';
+        document.getElementById('input-asig-inicio2').value = asig.inicio2 || '10:00';
+        document.getElementById('input-asig-fin2').value = asig.fin2 || '11:00';
+      }
+
       colorSeleccionadoHex = asig.color;
       document.getElementById('modalAsignatura').classList.add('active');
     }
@@ -1438,6 +1511,12 @@
       const inicio = document.getElementById('input-asig-inicio').value;
       const fin = document.getElementById('input-asig-fin').value;
       const periodo = document.getElementById('input-asig-periodo').value;
+      
+      const tieneSegunda = document.getElementById('input-tiene-segunda-sesion').checked;
+      const dia2 = tieneSegunda ? document.getElementById('input-asig-dia2').value : '';
+      const inicio2 = tieneSegunda ? document.getElementById('input-asig-inicio2').value : '';
+      const fin2 = tieneSegunda ? document.getElementById('input-asig-fin2').value : '';
+
       const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
 
       if (!nombre) return;
@@ -1448,20 +1527,18 @@
         if (editIndex === -1) {
           centro.asignaturas.push({
             nombre, docente, aula, dia, inicio, fin, periodo,
+            tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
-            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar'
+            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar', estadoAsistencia2: 'Sin registrar'
           });
         } else {
-          centro.asignaturas[editIndex].nombre = nombre;
-          centro.asignaturas[editIndex].docente = docente;
-          centro.asignaturas[editIndex].aula = aula;
-          centro.asignaturas[editIndex].dia = dia;
-          centro.asignaturas[editIndex].inicio = inicio;
-          centro.asignaturas[editIndex].fin = fin;
-          centro.asignaturas[editIndex].periodo = periodo;
-          centro.asignaturas[editIndex].fechaInicio = fechasRango.inicio;
-          centro.asignaturas[editIndex].fechaFin = fechasRango.fin;
-          centro.asignaturas[editIndex].color = colorSeleccionadoHex;
+          centro.asignaturas[editIndex] = {
+            ...centro.asignaturas[editIndex],
+            nombre, docente, aula, dia, inicio, fin, periodo,
+            tieneSegunda, dia2, inicio2, fin2,
+            fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
+            color: colorSeleccionadoHex
+          };
         }
       }
       guardarDatos();
@@ -1546,7 +1623,21 @@
       }
     }
 
-    // --- CONTROL Y ESTADÍSTICAS DE ASISTENCIA ---
+    // --- CONTROL Y ESTADÍSTICAS DE ASISTENCIA CON FECHA EXACTA ---
+    function obtenerFechaDeDiaSemana(diaStr) {
+      // Calcula la fecha de la sesión correspondiente en la semana actual de fechaHomeActual
+      let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
+      let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
+      let d = new Date(fechaHomeActual);
+      let currentDay = d.getDay();
+      let distance = targetDay - currentDay;
+      d.setDate(d.getDate() + distance);
+      let yyyy = d.getFullYear();
+      let mm = String(d.getMonth() + 1).padStart(2, '0');
+      let dd = String(d.getDate()).padStart(2, '0');
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
     function renderizarAsistenciaCentros() {
       const contenedor = document.getElementById('lista-asistencia-centros-container');
       contenedor.innerHTML = '';
@@ -1568,10 +1659,14 @@
       cambiarVista('asistencia-detalle');
     }
 
-    function registrarAsistencia(asigIdx, estado) {
+    function registrarAsistencia(asigIdx, estado, sesionNum = 1) {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro && centro.asignaturas[asigIdx]) {
-        centro.asignaturas[asigIdx].estadoAsistencia = estado;
+        if (sesionNum === 2) {
+          centro.asignaturas[asigIdx].estadoAsistencia2 = estado;
+        } else {
+          centro.asignaturas[asigIdx].estadoAsistencia = estado;
+        }
         guardarDatos();
         renderizarControlAsistenciaCentro();
       }
@@ -1585,32 +1680,63 @@
         contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas en este centro.</p>`;
         return;
       }
+      
       centro.asignaturas.forEach((asig, idx) => {
-        let estadoActual = asig.estadoAsistencia || 'Sin registrar';
-        let badgeEstadoColor = 'var(--text-muted)';
-        if (estadoActual === 'Asistió') badgeEstadoColor = '#10B981';
-        else if (estadoActual === 'Falta') badgeEstadoColor = '#EF4444';
-        else if (estadoActual === 'Retraso') badgeEstadoColor = '#F59E0B';
-        else if (estadoActual === 'Justificada') badgeEstadoColor = '#3B82F6';
-        else if (estadoActual === 'No hubo clase') badgeEstadoColor = '#64748B';
+        let fechaSesion1 = obtenerFechaDeDiaSemana(asig.dia);
+        let estadoActual1 = asig.estadoAsistencia || 'Sin registrar';
+        let badgeColor1 = obtenerColorEstadoAsistencia(estadoActual1);
 
+        // Tarjeta para Sesión 1
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
-              <span class="badge" style="background: ${badgeEstadoColor}25; color: ${badgeEstadoColor};">${estadoActual}</span>
+              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 1: ${fechaSesion1} (${asig.dia} ${asig.inicio})</span>
+              <span class="badge" style="background: ${badgeColor1}25; color: ${badgeColor1};">${estadoActual1}</span>
             </div>
             <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
             <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió')">Asistió</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta')">Falta</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso')">Retraso</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada')">Justificada</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase')">No clase</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 1)">Asistió</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 1)">Falta</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso', 1)">Retraso</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada', 1)">Justificada</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase', 1)">No clase</button>
             </div>
           </div>
         `;
+
+        // Si tiene segunda sesión semanal, renderizar tarjeta independiente para la 2ª sesión
+        if (asig.tieneSegunda && asig.dia2) {
+          let fechaSesion2 = obtenerFechaDeDiaSemana(asig.dia2);
+          let estadoActual2 = asig.estadoAsistencia2 || 'Sin registrar';
+          let badgeColor2 = obtenerColorEstadoAsistencia(estadoActual2);
+
+          contenedor.innerHTML += `
+            <div class="card" style="border-left: 4px solid ${asig.color};">
+              <div class="section-flex">
+                <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 2: ${fechaSesion2} (${asig.dia2} ${asig.inicio2})</span>
+                <span class="badge" style="background: ${badgeColor2}25; color: ${badgeColor2};">${estadoActual2}</span>
+              </div>
+              <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre} (2ª Sesión)</h4>
+              <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 2)">Asistió</button>
+                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 2)">Falta</button>
+                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso', 2)">Retraso</button>
+                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada', 2)">Justificada</button>
+                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase', 2)">No clase</button>
+              </div>
+            </div>
+          `;
+        }
       });
+    }
+
+    function obtenerColorEstadoAsistencia(estado) {
+      if (estado === 'Asistió') return '#10B981';
+      if (estado === 'Falta') return '#EF4444';
+      if (estado === 'Retraso') return '#F59E0B';
+      if (estado === 'Justificada') return '#3B82F6';
+      if (estado === 'No hubo clase') return '#64748B';
+      return '#9CA3AF';
     }
 
     function renderizarEstadisticasAsistenciaCentro() {
@@ -1623,30 +1749,51 @@
       }
 
       centro.asignaturas.forEach((asig) => {
-        let estado = asig.estadoAsistencia || 'Sin registrar';
-        let colorEstado = '#9CA3AF';
-        if (estado === 'Asistió') colorEstado = '#10B981';
-        else if (estado === 'Falta') colorEstado = '#EF4444';
-        else if (estado === 'Retraso') colorEstado = '#F59E0B';
-        else if (estado === 'Justificada') colorEstado = '#3B82F6';
+        let estado1 = asig.estadoAsistencia || 'Sin registrar';
+        let color1 = obtenerColorEstadoAsistencia(estado1);
 
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
-              <h4>${asig.nombre}</h4>
-              <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${estado}</span>
+              <h4>${asig.nombre} (Sesión 1 - ${asig.dia})</h4>
+              <span class="badge" style="background: ${color1}25; color: ${color1};">${estado1}</span>
             </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Centro: ${centro.nombre}</p>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
           </div>
         `;
+
+        if (asig.tieneSegunda && asig.dia2) {
+          let estado2 = asig.estadoAsistencia2 || 'Sin registrar';
+          let color2 = obtenerColorEstadoAsistencia(estado2);
+          contenedor.innerHTML += `
+            <div class="card" style="border-left: 4px solid ${asig.color};">
+              <div class="section-flex">
+                <h4>${asig.nombre} (Sesión 2 - ${asig.dia2})</h4>
+                <span class="badge" style="background: ${color2}25; color: ${color2};">${estado2}</span>
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
+            </div>
+          `;
+        }
       });
     }
 
     // --- SINCRONIZACIÓN DE HORARIO ---
     function sincronizarYRenderizarHorario() {
       let todasLasAsignaturas = [];
-      centrosEstudios.forEach(c => { todasLasAsignaturas = todasLasAsignaturas.concat(c.asignaturas); });
+      centrosEstudios.forEach(c => {
+        c.asignaturas.forEach(a => {
+          todasLasAsignaturas.push(a);
+          if (a.tieneSegunda && a.dia2) {
+            todasLasAsignaturas.push({
+              ...a,
+              dia: a.dia2,
+              inicio: a.inicio2 || a.inicio,
+              fin: a.fin2 || a.fin
+            });
+          }
+        });
+      });
 
       const contDiaria = document.getElementById('container-diaria-dinamico');
       contDiaria.innerHTML = '';
