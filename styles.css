@@ -26,26 +26,18 @@ body {
   overflow-x: hidden;
 }
 
-/* Contenedor principal con espacio inferior exacto para que la barra no pise nada */
 .app-container {
   padding: 16px;
-  padding-bottom: 110px;
+  padding-bottom: 120px;
   position: relative;
-  z-index: 10;
+  z-index: 1;
 }
 
-/* Sistema de Vistas */
 .view {
   display: none;
 }
 .view.active-view {
   display: block;
-  animation: fadeIn 0.15s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 header {
@@ -148,7 +140,7 @@ header {
   padding: 18px;
   transition: transform 0.1s ease, border-color 0.2s ease;
   position: relative;
-  z-index: 5;
+  z-index: 2;
 }
 
 .interactive-card {
@@ -267,9 +259,6 @@ header {
 .racha-card-click {
   cursor: pointer;
 }
-.racha-card-click:active {
-  transform: scale(0.98);
-}
 
 .ver-detalle-txt {
   font-size: 11px;
@@ -278,7 +267,6 @@ header {
   font-weight: 500;
 }
 
-/* Tarjeta Exámenes */
 .card-examen {
   border-left: 4px solid var(--primary);
 }
@@ -306,7 +294,6 @@ header {
   color: var(--text-muted);
 }
 
-/* Horarios y Tareas */
 .horario-controles-bar {
   display: flex;
   gap: 10px;
@@ -376,7 +363,6 @@ header {
   pointer-events: auto;
 }
 
-/* Botón de estudio */
 .btn-estudio {
   background-color: var(--primary);
   color: #FFFFFF;
@@ -411,7 +397,6 @@ header {
   pointer-events: auto;
 }
 
-/* Repertorio */
 .repertorio-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -462,7 +447,6 @@ header {
   margin-bottom: 4px;
 }
 
-/* Ajustes Items */
 .card-ajuste-item {
   display: flex;
   align-items: center;
@@ -490,7 +474,7 @@ header {
   color: var(--text-muted);
 }
 
-/* BARRA DE NAVEGACIÓN INFERIOR (Z-index superior garantizado y eventos activos) */
+/* BARRA DE NAVEGACIÓN INFERIOR (Z-index máximo y prioridad táctil absoluta) */
 .nav-bar {
   position: fixed;
   bottom: 0;
@@ -504,7 +488,7 @@ header {
   display: flex;
   justify-content: space-around;
   padding: 8px 0;
-  z-index: 9999;
+  z-index: 99999;
   pointer-events: auto;
 }
 .nav-item {
@@ -547,7 +531,7 @@ header {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 10000;
+  z-index: 100000;
   pointer-events: none;
 }
 .bottom-sheet-overlay.active {
