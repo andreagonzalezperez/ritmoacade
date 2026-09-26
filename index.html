@@ -77,7 +77,7 @@
     .rep-preview { display: flex; gap: 8px; }
     .pill-rep { font-size: 12px; background: var(--bg-main); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-    /* Pestañas Horario / Racha */
+    /* Pestañas Horario / Asistencia / Racha */
     .horario-tabs, .streak-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
     .horario-tab, .streak-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
     .horario-tab.active, .streak-tab.active { background: var(--primary); color: white; }
@@ -102,10 +102,6 @@
     .streak-day-bubble.active { background: var(--streak-bg); border-color: var(--streak-color); }
     .streak-day-bubble span { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
     .streak-day-bubble strong { font-size: 14px; }
-
-    .reward-step { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
-    .reward-step.unlocked { border-color: var(--success); background: rgba(16, 185, 129, 0.08); }
-    .reward-icon { font-size: 28px; background: var(--bg-main); padding: 10px; border-radius: 10px; border: 1px solid var(--border); }
 
     .color-picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 6px; }
     .color-option { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; }
@@ -226,42 +222,6 @@
           <div class="streak-day-bubble"><span>V</span><strong>·</strong></div>
           <div class="streak-day-bubble"><span>S</span><strong>🔥</strong></div>
           <div class="streak-day-bubble"><span>D</span><strong>·</strong></div>
-        </div>
-      </div>
-
-      <div class="streak-tabs">
-        <div class="streak-tab active" onclick="cambiarStreakTab('diario', this)">Diario</div>
-        <div class="streak-tab" onclick="cambiarStreakTab('semanal', this)">Semanal</div>
-        <div class="streak-tab" onclick="cambiarStreakTab('mensual', this)">Mensual</div>
-      </div>
-
-      <div id="streak-sub-diario" class="streak-subview active">
-        <div class="card">
-          <div class="section-flex">
-            <h4>Análisis de Hoy</h4>
-            <span class="badge" style="background: var(--streak-bg); color: var(--streak-color);">Completado</span>
-          </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has practicado 25 minutos hoy con tu Pomodoro musical.</p>
-        </div>
-      </div>
-
-      <div id="streak-sub-semanal" class="streak-subview">
-        <div class="card">
-          <div class="section-flex">
-            <h4>Resumen Semanal</h4>
-            <span class="badge">3.5 hrs total</span>
-          </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Constancia alta de lunes a miércoles.</p>
-        </div>
-      </div>
-
-      <div id="streak-sub-mensual" class="streak-subview">
-        <div class="card">
-          <div class="section-flex">
-            <h4 style="color: var(--streak-color);">📅 Septiembre 2026</h4>
-            <span class="badge-warn">18 días activos</span>
-          </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">14 horas acumuladas este mes.</p>
         </div>
       </div>
     </div>
@@ -489,7 +449,7 @@
       <div class="titulo">Control de Asistencia</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-    <p class="fecha">Elige tu centro sincronizado para pasar lista.</p>
+    <p class="fecha">Elige tu centro sincronizado para pasar lista y ver estadísticas.</p>
     <div class="grid" id="lista-asistencia-centros-container"></div>
   </div>
 
@@ -504,8 +464,19 @@
       </div>
       <button class="btn-config" onclick="cambiarVista('asistencia-centros')">‹</button>
     </header>
-    <p class="fecha">Registro completo de clases.</p>
-    <div class="grid" id="lista-control-asistencia-container"></div>
+
+    <div class="horario-tabs">
+      <div class="horario-tab active" onclick="cambiarAsistenciaTab('control', this)">Control de Pase</div>
+      <div class="horario-tab" onclick="cambiarAsistenciaTab('estadisticas', this)">Estadísticas</div>
+    </div>
+
+    <div id="subview-asistencia-control" class="horario-subview active">
+      <div class="grid" id="lista-control-asistencia-container"></div>
+    </div>
+
+    <div id="subview-asistencia-estadisticas" class="horario-subview">
+      <div class="grid" id="lista-estadisticas-asistencia-container"></div>
+    </div>
   </div>
 
   <div id="vista-tareas" class="view">
@@ -734,6 +705,16 @@
           <label for="input-tarea-es-obj" style="margin-bottom:0; cursor:pointer;">Establecer como objetivo diario</label>
         </div>
       </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Objetivo Desde</label>
+          <input type="date" id="input-tarea-fecha-inicio" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Objetivo Hasta</label>
+          <input type="date" id="input-tarea-fecha-fin" class="form-control">
+        </div>
+      </div>
       <button class="btn-main" onclick="guardarOActualizarTarea()">Guardar tarea</button>
     </div>
   </div>
@@ -768,12 +749,11 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", estadoAsistencia: "Asistió" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
-        ],
-        asistencia: []
+        ]
       }
     ];
 
@@ -782,7 +762,7 @@
     ];
 
     let tareasPendientes = [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-26", desc: "Pasaje rápido.", esObj: true }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-26", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-26", fechaFin: "2026-09-26" }
     ];
 
     let objetivosDiarios = [
@@ -868,6 +848,15 @@
       if (sub) sub.classList.add('active');
     }
 
+    function cambiarAsistenciaTab(tipo, tabElem) {
+      document.querySelectorAll('#vista-asistencia-detalle .horario-tab').forEach(t => t.classList.remove('active'));
+      tabElem.classList.add('active');
+      document.querySelectorAll('#vista-asistencia-detalle .horario-subview').forEach(sub => sub.classList.remove('active'));
+      const sub = document.getElementById('subview-asistencia-' + tipo);
+      if (sub) sub.classList.add('active');
+      if (tipo === 'estadisticas') renderizarEstadisticasAsistenciaCentro();
+    }
+
     function cambiarStreakTab(tipo, tabElem) {
       document.querySelectorAll('.streak-tab').forEach(t => t.classList.remove('active'));
       tabElem.classList.add('active');
@@ -880,9 +869,9 @@
     function getColorNota(val) {
       let num = parseFloat(val);
       if (isNaN(num)) return "var(--text-main)";
-      if (num <= 4.99) return "var(--danger)"; // Rojo
-      if (num <= 7.5) return "var(--warning)";  // Amarillo / Ámbar
-      return "var(--success)";                  // Verde
+      if (num <= 4.99) return "var(--danger)";
+      if (num <= 7.5) return "var(--warning)";
+      return "var(--success)";
     }
 
     function renderizarCalificacionesCentro() {
@@ -911,7 +900,7 @@
       });
     }
 
-    // --- OBJETIVOS DIARIOS (RANGO DE FECHAS) ---
+    // --- OBJETIVOS DIARIOS ---
     function renderizarObjetivos() {
       const contenedor = document.getElementById('lista-objetivos-container');
       contenedor.innerHTML = '';
@@ -1133,7 +1122,7 @@
             <h4 style="margin-top: 6px;">${t.titulo}</h4>
             ${t.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.desc}</p>` : ''}
             <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">📅 Fecha límite: ${t.fecha || 'N/D'}</p>
-            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo diario sincronizado</p>` : ''}
+            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo (${t.fechaInicio} al${t.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 6px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalTareaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(${idx})">Eliminar</button>
@@ -1148,9 +1137,12 @@
       document.getElementById('modal-tarea-titulo').textContent = 'Nueva Tarea Pendiente';
       document.getElementById('input-edit-index-tarea').value = '-1';
       document.getElementById('input-titulo-tarea').value = '';
-      document.getElementById('input-fecha-tarea').value = new Date().toISOString().split('T')[0];
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-fecha-tarea').value = hoyStr;
       document.getElementById('input-desc-tarea').value = '';
       document.getElementById('input-tarea-es-obj').checked = false;
+      document.getElementById('input-tarea-fecha-inicio').value = hoyStr;
+      document.getElementById('input-tarea-fecha-fin').value = hoyStr;
 
       const sel = document.getElementById('input-asignatura-tarea');
       sel.innerHTML = '';
@@ -1171,6 +1163,8 @@
       document.getElementById('input-fecha-tarea').value = t.fecha || new Date().toISOString().split('T')[0];
       document.getElementById('input-desc-tarea').value = t.desc || '';
       document.getElementById('input-tarea-es-obj').checked = t.esObj || false;
+      document.getElementById('input-tarea-fecha-inicio').value = t.fechaInicio || new Date().toISOString().split('T')[0];
+      document.getElementById('input-tarea-fecha-fin').value = t.fechaFin || new Date().toISOString().split('T')[0];
 
       const sel = document.getElementById('input-asignatura-tarea');
       sel.innerHTML = '';
@@ -1192,18 +1186,20 @@
       const fecha = document.getElementById('input-fecha-tarea').value;
       const desc = document.getElementById('input-desc-tarea').value.trim();
       const esObj = document.getElementById('input-tarea-es-obj').checked;
+      const fechaInicio = document.getElementById('input-tarea-fecha-inicio').value;
+      const fechaFin = document.getElementById('input-tarea-fecha-fin').value;
       const editIndex = parseInt(document.getElementById('input-edit-index-tarea').value);
 
       if (!titulo) return;
 
       if (editIndex === -1) {
-        tareasPendientes.push({ titulo, asignatura, prioridad, fecha, desc, esObj });
+        tareasPendientes.push({ titulo, asignatura, prioridad, fecha, desc, esObj, fechaInicio, fechaFin });
       } else {
-        tareasPendientes[editIndex] = { titulo, asignatura, prioridad, fecha, desc, esObj };
+        tareasPendientes[editIndex] = { titulo, asignatura, prioridad, fecha, desc, esObj, fechaInicio, fechaFin };
       }
 
       if (esObj) {
-        objetivosDiarios.push({ titulo: `Tarea: ${titulo}`, fechaInicio: fecha, fechaFin: fecha });
+        objetivosDiarios.push({ titulo: `Tarea: ${titulo}`, fechaInicio, fechaFin });
         renderizarObjetivos();
       }
 
@@ -1220,7 +1216,7 @@
       }
     }
 
-    // --- CENTROS Y EDICIÓN DE ASIGNATURAS ---
+    // --- CENTROS Y ASIGNATURAS ---
     function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
     function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
     function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
@@ -1228,7 +1224,7 @@
     function guardarNuevoCentro() {
       const nombre = document.getElementById('input-nombre-centro').value.trim();
       if (!nombre) return;
-      centrosEstudios.push({ nombre, asignaturas: [], notas: [], asistencia: [] });
+      centrosEstudios.push({ nombre, asignaturas: [], notas: [] });
       renderizarCentros();
       renderizarNotasCentros();
       renderizarAsistenciaCentros();
@@ -1321,9 +1317,15 @@
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro) {
         if (editIndex === -1) {
-          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
+          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar' });
         } else {
-          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex };
+          centro.asignaturas[editIndex].nombre = nombre;
+          centro.asignaturas[editIndex].docente = docente;
+          centro.asignaturas[editIndex].aula = aula;
+          centro.asignaturas[editIndex].dia = dia;
+          centro.asignaturas[editIndex].inicio = inicio;
+          centro.asignaturas[editIndex].fin = fin;
+          centro.asignaturas[editIndex].color = colorSeleccionadoHex;
         }
       }
       renderizarAsignaturasCentro();
@@ -1344,7 +1346,7 @@
       }
     }
 
-    // --- REGISTRO DE NOTAS (SINCRONIZADO CON CENTROS) ---
+    // --- REGISTRO DE NOTAS ---
     function renderizarNotasCentros() {
       const contenedor = document.getElementById('lista-notas-centros-container');
       contenedor.innerHTML = '';
@@ -1404,7 +1406,7 @@
       }
     }
 
-    // --- CONTROL DE ASISTENCIA (SINCRONIZADO Y OPCIONES COMPLETAS) ---
+    // --- CONTROL Y ESTADÍSTICAS DE ASISTENCIA ---
     function renderizarAsistenciaCentros() {
       const contenedor = document.getElementById('lista-asistencia-centros-container');
       contenedor.innerHTML = '';
@@ -1426,6 +1428,14 @@
       cambiarVista('asistencia-detalle');
     }
 
+    function registrarAsistencia(asigIdx, estado) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      if (centro && centro.asignaturas[asigIdx]) {
+        centro.asignaturas[asigIdx].estadoAsistencia = estado;
+        renderizarControlAsistenciaCentro();
+      }
+    }
+
     function renderizarControlAsistenciaCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-control-asistencia-container');
@@ -1434,21 +1444,59 @@
         contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas en este centro.</p>`;
         return;
       }
-      centro.asignaturas.forEach((asig) => {
+      centro.asignaturas.forEach((asig, idx) => {
+        let estadoActual = asig.estadoAsistencia || 'Sin registrar';
+        let badgeEstadoColor = 'var(--text-muted)';
+        if (estadoActual === 'Asistió') badgeEstadoColor = '#10B981';
+        else if (estadoActual === 'Falta') badgeEstadoColor = '#EF4444';
+        else if (estadoActual === 'Retraso') badgeEstadoColor = '#F59E0B';
+        else if (estadoActual === 'Justificada') badgeEstadoColor = '#3B82F6';
+        else if (estadoActual === 'No hubo clase') badgeEstadoColor = '#64748B';
+
         contenedor.innerHTML += `
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
               <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
-              <span style="font-size: 11px; color: var(--text-muted);">Aula: ${asig.aula}</span>
+              <span class="badge" style="background: ${badgeEstadoColor}25; color: ${badgeEstadoColor};">${estadoActual}</span>
             </div>
             <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
             <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="alert('✅ Asistencia registrada: Asistió')">Asistió</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="alert('❌ Asistencia registrada: Falta')">Falta</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="alert('⚠️ Asistencia registrada: Retraso')">Retraso</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="alert('📝 Asistencia registrada: Falta Justificada')">Justificada</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="alert('🚫 Asistencia registrada: No hubo clase')">No hubo clase</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió')">Asistió</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta')">Falta</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso')">Retraso</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada')">Justificada</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase')">No clase</button>
             </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderizarEstadisticasAsistenciaCentro() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const contenedor = document.getElementById('lista-estadisticas-asistencia-container');
+      contenedor.innerHTML = '';
+      if (!centro || centro.asignaturas.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay datos estadísticos disponibles.</p>`;
+        return;
+      }
+
+      centro.asignaturas.forEach((asig) => {
+        let estado = asig.estadoAsistencia || 'Sin registrar';
+        let colorEstado = '#9CA3AF';
+        if (estado === 'Asistió') colorEstado = '#10B981';
+        else if (estado === 'Falta') colorEstado = '#EF4444';
+        else if (estado === 'Retraso') colorEstado = '#F59E0B';
+        else if (estado === 'Justificada') colorEstado = '#3B82F6';
+
+        contenedor.innerHTML += `
+          <div class="card" style="border-left: 4px solid ${asig.color};">
+            <div class="section-flex">
+              <h4>${asig.nombre}</h4>
+              <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${estado}</span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Centro: ${centro.nombre}</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
           </div>
         `;
       });
