@@ -257,43 +257,44 @@
       gap: 14px;
     }
 
-    /* Estilos para el Calendario Visual extendido (8:00 a 22:00, L-D) */
-    .calendar-grid-container {
+    /* Estilo Calendario Profesional unificado por bloques */
+    .calendar-wrapper {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 8px;
-      overflow-x: auto;
-      max-height: 450px;
-      overflow-y: auto;
+      padding: 14px;
     }
-    .calendar-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 540px;
-      font-size: 10px;
-    }
-    .calendar-table th, .calendar-table td {
-      border: 1px solid var(--border);
-      padding: 6px 3px;
-      text-align: center;
-      height: 28px;
-    }
-    .calendar-table th {
-      background: var(--bg-main);
-      color: var(--text-muted);
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    .calendar-slot {
-      background: rgba(236, 72, 153, 0.15);
-      color: #F472B6;
+    .day-column-title {
+      font-size: 13px;
       font-weight: bold;
-      border-radius: 3px;
-      padding: 2px;
-      font-size: 9px;
+      color: var(--calendar-accent);
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .bloque-clase-unificado {
+      background: rgba(236, 72, 153, 0.12);
+      border-left: 4px solid var(--calendar-accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .bloque-clase-unificado.piano {
+      background: rgba(99, 102, 241, 0.15);
+      border-left-color: var(--primary);
+      color: #818CF8;
+    }
+    .bloque-clase-unificado.armonia {
+      background: rgba(245, 158, 11, 0.15);
+      border-left-color: var(--warning);
+      color: #FBBF24;
+    }
+    .bloque-clase-unificado.orquesta {
+      background: rgba(16, 185, 129, 0.15);
+      border-left-color: var(--success);
+      color: #34D399;
     }
 
     /* BARRA INFERIOR FIJA MÁS ANCHA Y CÓMODA */
@@ -558,61 +559,81 @@
       </div>
     </div>
 
-    <!-- Subvista Horario Visual (8am a 22pm, L-D, en punto y media) -->
+    <!-- Subvista Horario Visual Unificado por Bloques (Estilo Google Calendar / Bloques limpios) -->
     <div id="subview-calendario" class="horario-subview">
-      <div class="card" style="padding: 10px;">
-        <div class="section-flex" style="margin-bottom: 8px;">
-          <h4 style="color: var(--calendar-accent); font-size: 15px;">📊 Cuadrante 8:00 - 22:00</h4>
-          <span style="font-size: 10px; color: var(--text-muted);">Desliza horizontal ➔</span>
+      <div class="calendar-wrapper">
+        <div class="section-flex" style="margin-bottom: 12px;">
+          <h4 style="color: var(--calendar-accent); font-size: 15px;">📊 Cuadrante Visual por Bloques</h4>
+          <span style="font-size: 10px; color: var(--text-muted);">8:00 - 22:00 (Lunes a Domingo)</span>
         </div>
-        <div class="calendar-grid-container">
-          <table class="calendar-table">
-            <thead>
-              <tr>
-                <th style="width: 45px;">Hora</th>
-                <th>Lun</th>
-                <th>Mar</th>
-                <th>Mié</th>
-                <th>Jue</th>
-                <th>Vie</th>
-                <th>Sáb</th>
-                <th>Dom</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 08:00 a 22:00 (en punto y media) -->
-              <tr><td style="color: var(--text-muted);">08:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">08:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">09:00</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">09:30</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td><div class="calendar-slot">Saxofón</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">10:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Orquesta</div></td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">10:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td><div class="calendar-slot" style="background: rgba(16,185,129,0.15); color: var(--success);">Orquesta</div></td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">11:00</td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">11:30</td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(99,102,241,0.15); color: var(--primary);">Piano</div></td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">12:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">12:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">13:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">13:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">14:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">14:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">15:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">15:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">16:00</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">16:30</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td><div class="calendar-slot" style="background: rgba(245,158,11,0.15); color: var(--warning);">Armonía</div></td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">17:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">17:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">18:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">18:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">19:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">19:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">20:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">20:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">21:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">21:30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-              <tr><td style="color: var(--text-muted);">22:00</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-            </tbody>
-          </table>
+
+        <!-- LUNES -->
+        <div class="day-column-title"><span>Lunes</span></div>
+        <div class="bloque-clase-unificado">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎷 Saxofón</span>
+            <span>09:00 - 10:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Técnica y escalas</p>
         </div>
+        <div class="bloque-clase-unificado armonia">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎶 Armonía</span>
+            <span>16:00 - 17:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Análisis de partituras</p>
+        </div>
+
+        <!-- MARTES -->
+        <div class="day-column-title" style="margin-top: 16px;"><span>Martes</span></div>
+        <div class="bloque-clase-unificado piano">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎹 Piano</span>
+            <span>11:00 - 12:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Repertorio armónico</p>
+        </div>
+
+        <!-- MIÉRCOLES -->
+        <div class="day-column-title" style="margin-top: 16px;"><span>Miércoles</span></div>
+        <div class="bloque-clase-unificado">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎷 Saxofón</span>
+            <span>09:00 - 10:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Práctica instrumental</p>
+        </div>
+        <div class="bloque-clase-unificado armonia">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎶 Armonía</span>
+            <span>16:00 - 17:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Ejercicios prácticos</p>
+        </div>
+
+        <!-- JUEVES -->
+        <div class="day-column-title" style="margin-top: 16px;"><span>Jueves</span></div>
+        <div class="bloque-clase-unificado piano">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎹 Piano</span>
+            <span>11:00 - 12:30</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Acompañamiento</p>
+        </div>
+
+        <!-- VIERNES -->
+        <div class="day-column-title" style="margin-top: 16px;"><span>Viernes</span></div>
+        <div class="bloque-clase-unificado orquesta">
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px;">
+            <span>🎼 Orquesta / Conjunto</span>
+            <span>10:00 - 12:00</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Ensayo general</p>
+        </div>
+
+        <!-- SÁBADO y DOMINGO -->
+        <div class="day-column-title" style="margin-top: 16px;"><span>Sábado / Domingo</span></div>
+        <div style="font-size: 11px; color: var(--text-muted); font-style: italic; padding: 4px 0;">Sin clases programadas. Fin de semana libre o estudio autónomo.</div>
       </div>
     </div>
 
@@ -673,7 +694,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v3.8 - Horario ampliado (L-D, 8h a 22h).')">
+      <div class="card interactive" onclick="alert('RitmoAcade v3.9 - Horario visual en bloques unificados.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -715,7 +736,7 @@
           <span class="badge asignatura-tag">Piano</span>
           <span class="badge-warn prioridad-tag">Normal</span>
         </div>
-        <h4 style="margin-top: 6px;" class="titulo-tag">Memorizar la sección B del Nocturno</h4>
+        <h4 style="margin-top: 6px;" class="titulo-tag">Memorizar la sección B</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">Práctica de manos separadas y unificación posterior.</p>
         <div class="footer-info">
           <span class="fecha-aviso-tag">📅 Fecha: 30 Septiembre • ⏰ Aviso activado</span>
