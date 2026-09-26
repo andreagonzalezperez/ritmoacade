@@ -273,3 +273,50 @@
     <script src="app.js"></script>
 </body>
 </html>
+
+<!-- Estructura HTML del Bottom Sheet -->
+<div id="modalRacha" class="bottom-sheet-overlay">
+  <div class="bottom-sheet-content">
+    <div class="drag-handle"></div>
+    <h3>Tu Racha y Progreso</h3>
+    <div class="racha-stats">
+      <div class="stat-card">
+        <span class="stat-number">12 días</span>
+        <span class="stat-label">Racha actual 🔥</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">14.5 hrs</span>
+        <span class="stat-label">Estudiadas esta semana</span>
+      </div>
+    </div>
+    <!-- Aquí iría el calendario mensual o gráfico -->
+    <button class="btn-cerrar" onclick="cerrarRacha()">Cerrar</button>
+  </div>
+</div>
+
+<div class="repertorio-grid">
+  <!-- Instrumento existente -->
+  <div class="card-instrumento">
+    <span class="icono">🎷</span>
+    <h4>Saxofón</h4>
+  </div>
+  <div class="card-instrumento">
+    <span class="icono">🎹</span>
+    <h4>Piano</h4>
+  </div>
+  
+  <!-- Botón para añadir uno nuevo -->
+  <div class="card-instrumento card-add" onclick="abrirModalNuevoInstrumento()">
+    <span class="icono-plus">+</span>
+    <h4>Añadir instrumento</h4>
+  </div>
+</div>
+
+<!-- Ejemplo de Estado Vacío para el Repertorio o Historial -->
+<div class="empty-state">
+  <div class="empty-icon">🎵</div>
+  <h3>Aún no tienes instrumentos aquí</h3>
+  <p>Añade tu primer instrumento para empezar a registrar tus prácticas y organizar tus repertorios.</p>
+  <button class="btn-estudio" onclick="abrirModalNuevoInstrumento()">Añadir instrumento</button>
+</div>
+
