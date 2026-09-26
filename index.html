@@ -214,6 +214,40 @@
       border: 1px solid var(--border);
     }
 
+    /* Selector de pestañas para el Horario */
+    .horario-tabs {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+    .horario-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .horario-tab.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .horario-subview {
+      display: none !important;
+    }
+    .horario-subview.active {
+      display: flex !important;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     /* BARRA INFERIOR FIJA MÁS ANCHA Y CÓMODA */
     .nav-bar {
       position: fixed;
@@ -394,14 +428,22 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 2: HORARIO ================= -->
+  <!-- ================= VISTA 2: HORARIO (CON VISTAS DIARIA, SEMANAL Y MENSUAL) ================= -->
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
     </header>
-    <p class="fecha">Organiza tus clases y ensayos diarios.</p>
+    <p class="fecha">Organiza tus clases y ensayos.</p>
     
-    <div class="grid">
+    <!-- Selector de pestañas Horario -->
+    <div class="horario-tabs">
+      <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
+      <div class="horario-tab" onclick="cambiarHorarioTab('semanal', this)">Semanal</div>
+      <div class="horario-tab" onclick="cambiarHorarioTab('mensual', this)">Mensual</div>
+    </div>
+
+    <!-- Subvista Diaria -->
+    <div id="subview-diaria" class="horario-subview active">
       <div class="card">
         <div class="section-flex">
           <span style="color: var(--primary); font-weight: bold;">10:00 - 11:30</span>
@@ -410,7 +452,63 @@
         <h4>Práctica de Saxofón</h4>
         <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Enfoque en sonoridad y afinación.</p>
       </div>
+      <div class="card">
+        <div class="section-flex">
+          <span style="color: var(--primary); font-weight: bold;">17:00 - 18:30</span>
+          <span class="badge-warn">Pendiente</span>
+        </div>
+        <h4>Clase de Piano y Repertorio</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Repaso de progresiones de acordes.</p>
+      </div>
     </div>
+
+    <!-- Subvista Semanal -->
+    <div id="subview-semanal" class="horario-subview">
+      <div class="card">
+        <div class="section-flex">
+          <h4 style="color: var(--primary);">Lunes / Miércoles</h4>
+          <span class="badge">09:30 - 11:00</span>
+        </div>
+        <p style="font-size: 14px; margin-top: 4px;">Técnica instrumental avanzada (Saxofón)</p>
+      </div>
+      <div class="card">
+        <div class="section-flex">
+          <h4 style="color: var(--primary);">Martes / Jueves</h4>
+          <span class="badge">16:00 - 17:30</span>
+        </div>
+        <p style="font-size: 14px; margin-top: 4px;">Armonía y Análisis (Piano)</p>
+      </div>
+      <div class="card">
+        <div class="section-flex">
+          <h4 style="color: var(--primary);">Viernes</h4>
+          <span class="badge">11:00 - 13:00</span>
+        </div>
+        <p style="font-size: 14px; margin-top: 4px;">Ensayos de Conjunto y Orquesta</p>
+      </div>
+    </div>
+
+    <!-- Subvista Mensual -->
+    <div id="subview-mensual" class="horario-subview">
+      <div class="card">
+        <h4 style="margin-bottom: 6px; color: var(--primary);">📅 Octubre 2026</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Resumen de compromisos clave del mes:</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+          <div class="section-flex" style="background: var(--bg-main); padding: 8px; border-radius: 8px;">
+            <span>15 Oct - Audición Trimestral</span>
+            <span class="badge-danger">Examen</span>
+          </div>
+          <div class="section-flex" style="background: var(--bg-main); padding: 8px; border-radius: 8px;">
+            <span>22 Oct - Masterclass de Jazz</span>
+            <span class="badge">Evento</span>
+          </div>
+          <div class="section-flex" style="background: var(--bg-main); padding: 8px; border-radius: 8px;">
+            <span>29 Oct - Entrega de Repertorio</span>
+            <span class="badge-warn">Plazo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ================= VISTA 3: ESTUDIO ================= -->
@@ -468,7 +566,7 @@
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
       </div>
       
-      <div class="card interactive" onclick="alert('RitmoAcade v3.5 - Edición de tareas y asignaturas.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v3.6 - Horario con vistas Diaria, Semanal y Mensual.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -577,7 +675,6 @@
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalTarea()">✕</span>
       </div>
 
-      <!-- Campo oculto para saber si estamos editando una tarea existente -->
       <input type="hidden" id="input-edit-index" value="-1">
 
       <div class="form-group">
@@ -652,6 +749,18 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // --- CAMBIAR PESTAÑAS DE HORARIO (DIARIA, SEMANAL, MENSUAL) ---
+    function cambiarHorarioTab(tipo, tabElem) {
+      document.querySelectorAll('.horario-tab').forEach(t => t.classList.remove('active'));
+      tabElem.classList.add('active');
+
+      document.querySelectorAll('.horario-subview').forEach(sub => sub.classList.remove('active'));
+      const subviewDestino = document.getElementById('subview-' + tipo);
+      if (subviewDestino) {
+        subviewDestino.classList.add('active');
+      }
+    }
+
     function abrirRacha() {
       const m = document.getElementById('modalRacha');
       if (m) m.classList.add('active');
@@ -672,19 +781,18 @@
         const nuevaAsig = prompt('Introduce el nombre de la nueva asignatura o instrumento:');
         if (nuevaAsig && nuevaAsig.trim() !== '') {
           const nombreLimpio = nuevaAsig.trim();
-          // Crear nueva opción antes de la opción de añadir
           const nuevaOp = document.createElement('option');
           nuevaOp.value = nombreLimpio;
           nuevaOp.textContent = '📚 ' + nombreLimpio;
           selectElem.insertBefore(nuevaOp, selectElem.lastElementChild);
           selectElem.value = nombreLimpio;
         } else {
-          selectElem.value = 'Saxofón'; // por defecto si cancela
+          selectElem.value = 'Saxofón';
         }
       }
     }
 
-    // --- MODAL DE TAREAS (CREAR / EDITAR) ---
+    // --- MODAL DE TAREAS ---
     function abrirModalTareaParaCrear() {
       document.getElementById('modal-tarea-titulo').textContent = 'Nueva Tarea Musical';
       document.getElementById('input-edit-index').value = '-1';
@@ -709,7 +817,6 @@
       if (e.target.id === 'modalTarea') cerrarModalTarea();
     }
 
-    // Guardar nueva tarea o actualizar existente
     function guardarOActualizarTarea() {
       const titulo = document.getElementById('input-titulo-tarea').value.trim();
       const asignatura = document.getElementById('input-asignatura-tarea').value;
@@ -731,7 +838,6 @@
       const contenedor = document.getElementById('lista-tareas-container');
 
       if (editIndex === -1) {
-        // CREAR NUEVA TAREA
         const nuevaCard = document.createElement('div');
         nuevaCard.className = 'card';
         nuevaCard.innerHTML = `
@@ -751,14 +857,12 @@
         `;
         contenedor.insertBefore(nuevaCard, contenedor.firstChild);
 
-        // Actualizar contador del widget de inicio
         const contadorWidget = document.getElementById('contador-tareas-num');
         if (contadorWidget) {
           let total = parseInt(contadorWidget.textContent || 0) + 1;
           contadorWidget.textContent = total;
         }
       } else {
-        // EDITAR TAREA EXISTENTE
         const cards = contenedor.querySelectorAll('.card');
         const cardToEdit = cards[editIndex];
         if (cardToEdit) {
@@ -786,7 +890,6 @@
       cerrarModalTarea();
     }
 
-    // Cargar datos en el modal para editar
     function editarTarea(btn) {
       const card = btn.closest('.card');
       const contenedor = document.getElementById('lista-tareas-container');
@@ -799,12 +902,10 @@
       const descElem = card.querySelector('.desc-tag');
       const desc = descElem.style.display !== 'none' ? descElem.textContent : '';
 
-      // Rellenar modal
       document.getElementById('modal-tarea-titulo').textContent = 'Editar Tarea Musical';
       document.getElementById('input-edit-index').value = index;
       document.getElementById('input-titulo-tarea').value = titulo;
       
-      // Comprobar si la asignatura existe en el select, si no, crearla al vuelo
       const selectAsig = document.getElementById('input-asignatura-tarea');
       let encontrada = false;
       for (let opt of selectAsig.options) {
@@ -829,13 +930,11 @@
       if (m) m.classList.add('active');
     }
 
-    // Eliminar tarea
     function eliminarTarea(btn) {
       if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
         const card = btn.closest('.card');
         card.remove();
 
-        // Actualizar contador del widget de inicio
         const contadorWidget = document.getElementById('contador-tareas-num');
         if (contadorWidget) {
           let total = Math.max(0, parseInt(contadorWidget.textContent || 0) - 1);
