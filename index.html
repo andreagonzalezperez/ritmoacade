@@ -1,221 +1,524 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Funcional</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RitmoAcade - Aplicación Definitiva</title>
+<style>
+:root {
+--bg-main: #0B0F19;
+--bg-card: #161E2E;
+--text-main: #F3F4F6;
+--text-muted: #9CA3AF;
+--border: #2D3748;
+--primary: #6366F1;
+--primary-hover: #4F46E5;
+--success: #10B981;
+--warning: #F59E0B;
+}
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: system-ui, -apple-system, sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+body {
+background-color: var(--bg-main);
+color: var(--text-main);
+max-width: 480px;
+margin: 0 auto;
+padding: 16px;
+padding-bottom: 110px;
+}
+/* Sistema de Vistas */
+.view {
+display: none !important;
+}
+.view.active {
+display: block !important;
+animation: fadeIn 0.15s ease-in-out;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(4px); }
+to { opacity: 1; transform: translateY(0); }
+}
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 16px;
+}
+.header-user {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+.avatar {
+font-size: 24px;
+background: var(--bg-card);
+padding: 8px;
+border-radius: 10px;
+border: 1px solid var(--border);
+}
+.sub {
+font-size: 12px;
+color: var(--text-muted);
+}
+.titulo {
+font-size: 18px;
+font-weight: bold;
+}
+.fecha {
+font-size: 13px;
+color: var(--text-muted);
+margin-bottom: 16px;
+}
+.grid {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+.row-2 {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+}
+.card {
+background: var(--bg-card);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 16px;
+}
+.card.interactive {
+cursor: pointer;
+}
+.card.interactive:active {
+transform: scale(0.98);
+}
+.stat-top {
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+margin-bottom: 4px;
+}
+.num {
+font-size: 22px;
+font-weight: bold;
+}
+.link-txt {
+font-size: 11px;
+color: var(--primary);
+font-weight: bold;
+}
+.label {
+font-size: 12px;
+color: var(--text-muted);
+}
+.badge {
+font-size: 10px;
+color: var(--primary);
+background: rgba(99,102,241,0.15);
+padding: 2px 6px;
+border-radius: 4px;
+font-weight: bold;
+}
+.badge-warn {
+font-size: 10px;
+color: #F59E0B;
+background: rgba(245,158,11,0.15);
+padding: 2px 6px;
+border-radius: 4px;
+font-weight: bold;
+}
+.footer-info {
+font-size: 11px;
+color: var(--text-muted);
+margin-top: 10px;
+padding-top: 8px;
+border-top: 1px solid var(--border);
+}
+.progress {
+width: 100%;
+height: 6px;
+background: var(--bg-main);
+border-radius: 3px;
+margin-top: 8px;
+overflow: hidden;
+}
+.fill {
+height: 100%;
+background: var(--primary);
+}
+.section-flex {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+.rep-preview {
+display: flex;
+gap: 8px;
+}
+.pill-rep {
+font-size: 12px;
+background: var(--bg-main);
+padding: 6px 10px;
+border-radius: 8px;
+border: 1px solid var(--border);
+}
+/* Barra de navegación inferior fija */
+.nav-bar {
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+max-width: 480px;
+margin: 0 auto;
+background: #111827;
+border-top: 1px solid var(--border);
+display: flex;
+justify-content: space-around;
+padding: 8px 0;
+z-index: 9999;
+}
+.nav-item {
+text-align: center;
+color: var(--text-muted);
+cursor: pointer;
+flex: 1;
+padding: 4px 0;
+background: transparent;
+border: none;
+}
+.nav-item span {
+font-size: 18px;
+display: block;
+}
+.nav-item small {
+font-size: 10px;
+display: block;
+}
+.nav-item.active {
+color: var(--primary);
+}
+/* Modales */
+.modal {
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0,0,0,0.7);
+display: none;
+align-items: flex-end;
+z-index: 10000;
+}
+.modal.active {
+display: flex;
+}
+.modal-content {
+background: var(--bg-card);
+width: 100%;
+padding: 24px;
+border-radius: 20px 20px 0 0;
+border-top: 1px solid var(--border);
+}
+.btn-main {
+width: 100%;
+background: var(--primary);
+color: white;
+border: none;
+padding: 14px;
+border-radius: 10px;
+font-weight: bold;
+cursor: pointer;
+margin-top: 12px;
+}
+.btn-main:hover {
+background: var(--primary-hover);
+}
+.btn-config {
+background: var(--bg-card);
+border: 1px solid var(--border);
+color: var(--text-main);
+width: 40px; height: 40px;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+</style>
 </head>
 <body>
-
-  <!-- ================= VISTA 1: HOY ================= -->
-  <div id="vista-hoy" class="view active">
-    <header>
-      <div class="header-user">
-        <span class="avatar">🎵</span>
-        <div>
-          <div class="sub">Bienvenido de nuevo</div>
-          <div class="titulo">RitmoAcade</div>
-        </div>
-      </div>
-      <button class="btn-config" onclick="cambiarVista('mas')">⚙️</button>
-    </header>
-
-    <div class="fecha">Sábado, 26 de septiembre de 2026</div>
-    
-    <h2>Tu día, de un vistazo.</h2>
-
-    <div class="grid">
-      <div class="card interactive" onclick="cambiarVista('horario')">
-        <span class="badge">PRÓXIMO EVENTO</span>
-        <h3>Práctica magistral de Saxofón</h3>
-        <p>Estudio de escalas armónicas y articulación.</p>
-        <div class="footer-info">📍 Estudio Principal • ⏱️ 10:00 - 11:30 (Ver horario ›)</div>
-      </div>
-
-      <div class="row-2">
-        <div class="card interactive" onclick="cambiarVista('tareas')">
-          <div class="stat-top">
-            <span class="num">2</span>
-            <span class="link-txt">Ver listado ›</span>
-          </div>
-          <div class="label">tareas pendientes</div>
-        </div>
-
-        <div class="card interactive" onclick="cambiarVista('estudio')">
-          <div class="stat-top">
-            <span class="num" id="num-minutos">0</span>
-            <span class="unit">min</span>
-          </div>
-          <div class="label">min estudiados (Ir a cronómetro ›)</div>
-        </div>
-      </div>
-
-      <div class="row-2">
-        <div class="card interactive" onclick="cambiarVista('objetivos')">
-          <div class="stat-top">
-            <span class="num">65%</span>
-            <span class="link-txt">Ver metas ›</span>
-          </div>
-          <div class="label">objetivos diarios</div>
-          <div class="progress"><div class="fill" style="width: 65%;"></div></div>
-        </div>
-        
-        <div class="card interactive" onclick="abrirRacha()">
-          <div class="stat-top">
-            <span class="num">🔥 3</span>
-            <span class="badge-warn">Récord</span>
-          </div>
-          <div class="label">racha de práctica</div>
-          <div class="link-txt">Ver desglose ›</div>
-        </div>
-      </div>
-
-      <div class="card interactive" onclick="cambiarVista('repertorio')">
-        <div class="section-flex">
-          <h4>Repertorio Activo</h4>
-          <span class="link-txt">Ver todo ›</span>
-        </div>
-        <div class="rep-preview">
-          <div class="pill-rep">🎷 Saxofón (4 piezas)</div>
-          <div class="pill-rep">🎹 Piano (2 piezas)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VISTA 2: HORARIO ================= -->
-  <div id="vista-horario" class="view">
-    <header>
-      <div class="titulo">Horarios y Planificación</div>
-    </header>
-    <p class="fecha">Organiza tus clases y ensayos diarios.</p>
-    
-    <div class="grid">
-      <div class="card">
-        <div class="time-row">
-          <span class="hora">10:00 - 11:30</span>
-          <span class="state comp">Completado</span>
-        </div>
-        <h4>Práctica de Saxofón</h4>
-        <p>Enfoque en sonoridad y afinación.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VISTA 3: ESTUDIO ================= -->
-  <div id="vista-estudio" class="view">
-    <header>
-      <div class="titulo">Sesión de Estudio</div>
-    </header>
-    <p class="fecha">Cronometra tus avances en tiempo real.</p>
-
-    <div class="card" style="text-align: center; padding: 30px 16px;">
-      <div style="font-size: 48px; font-weight: bold; margin-bottom: 20px;" id="cronometro">00:00:00</div>
-      <button class="btn-main" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
-    </div>
-  </div>
-
-  <!-- ================= VISTA 4: REPERTORIO ================= -->
-  <div id="vista-repertorio" class="view">
-    <header>
-      <div class="titulo">Gestión de Repertorio</div>
-    </header>
-    <p class="fecha">Tus categorías y piezas organizadas.</p>
-
-    <div class="grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center;">
-        <span style="font-size: 32px;">🎷</span>
-        <h4>Saxofón</h4>
-        <p>4 piezas activas</p>
-      </div>
-      <div class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center;">
-        <span style="font-size: 32px;">🎹</span>
-        <h4>Piano</h4>
-        <p>2 piezas activas</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VISTA 5: MÁS ================= -->
-  <div id="vista-mas" class="view">
-    <header>
-      <div class="titulo">Ajustes y Perfil</div>
-    </header>
-    <p class="fecha">Preferencias de la aplicación.</p>
-
-    <div class="grid">
-      <div class="card interactive" onclick="alert('Datos sincronizados correctamente.')">
-        <h4>🔄 Sincronizar datos</h4>
-        <p>Guardar progreso en la nube</p>
-      </div>
-      <div class="card interactive" onclick="alert('RitmoAcade v3.2 - Funcionando.')">
-        <h4>ℹ️ Acerca de</h4>
-        <p>Versión definitiva operativa</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VISTAS SECUNDARIAS (TAREAS, OBJETIVOS) ================= -->
-  <div id="vista-tareas" class="view">
-    <header>
-      <div class="titulo">Tareas Pendientes</div>
-      <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
-    </header>
-    <div class="grid">
-      <div class="card">
-        <h4>Repasar articulación compases 30-45</h4>
-        <p>Saxofón • Urgente</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="vista-objetivos" class="view">
-    <header>
-      <div class="titulo">Objetivos Diarios</div>
-      <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
-    </header>
-    <div class="grid">
-      <div class="card">
-        <h4>Estudiar mínimo 45 minutos</h4>
-        <p>Completado hoy</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR (DIRECTA) ================= -->
-  <nav class="nav-bar">
-    <div class="nav-item active" id="nav-hoy" onclick="cambiarVista('hoy')">
-      <span>🏠</span>
-      <small>Hoy</small>
-    </div>
-    <div class="nav-item" id="nav-horario" onclick="cambiarVista('horario')">
-      <span>📅</span>
-      <small>Horario</small>
-    </div>
-    <div class="nav-item" id="nav-estudio" onclick="cambiarVista('estudio')">
-      <span>⏱️</span>
-      <small>Estudio</small>
-    </div>
-    <div class="nav-item" id="nav-repertorio" onclick="cambiarVista('repertorio')">
-      <span>🎵</span>
-      <small>Repertorio</small>
-    </div>
-    <div class="nav-item" id="nav-mas" onclick="cambiarVista('mas')">
-      <span>⋯</span>
-      <small>Más</small>
-    </div>
-  </nav>
-
-  <!-- ================= MODAL RACHA ================= -->
-  <div id="modalRacha" class="modal" onclick="cerrarRachaFuera(event)">
-    <div class="modal-content">
-      <h3>Tu Racha y Progreso</h3>
-      <p style="color: #9CA3AF; margin-bottom: 16px;">Racha actual: 3 días consecutivos 🔥</p>
-      <button class="btn-main" onclick="cerrarRacha()">Entendido</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+<!-- ================= VISTA 1: HOY (DASHBOARD) ================= -->
+<main id="vista-hoy" class="view active">
+<header>
+<div class="header-user">
+<span class="avatar">🎵</span>
+<div>
+<div class="sub">Bienvenido de nuevo</div>
+<div class="titulo">RitmoAcade</div>
+</div>
+</div>
+<button class="btn-config" onclick="cambiarVista('mas')">⚙️</button>
+</header>
+<div class="fecha">Sábado, 26 de septiembre de 2026</div>
+<h2>Tu día, de un vistazo.</h2>
+<div class="grid">
+<!-- Evento -> Horario -->
+<section class="card interactive" onclick="cambiarVista('horario')">
+<span class="badge">PRÓXIMO EVENTO</span>
+<h3>Práctica magistral de Saxofón</h3>
+<p>Estudio de escalas armónicas y articulación en registro alto.</p>
+<div class="footer-info">📍 Estudio Principal • ⏱️ 10:00 - 11:30 (Ver horario completo ›)</div>
+</section>
+<div class="row-2">
+<!-- Tareas -->
+<article class="card interactive" onclick="cambiarVista('tareas')">
+<div class="stat-top">
+<span class="num">2</span>
+<span class="link-txt">Ver listado ›</span>
+</div>
+<div class="label">tareas pendientes</div>
+</article>
+<!-- Estudio -> Cronómetro -->
+<article class="card interactive" onclick="cambiarVista('estudio')">
+<div class="stat-top">
+<span class="num" id="num-minutos">0</span>
+<span class="link-txt">min</span>
+</div>
+<div class="label">min estudiados hoy (Ir a cronómetro ›)</div>
+</article>
+</div>
+<div class="row-2">
+<!-- Objetivos -->
+<article class="card interactive" onclick="cambiarVista('objetivos')">
+<div class="stat-top">
+<span class="num">65%</span>
+<span class="link-txt">Ver metas ›</span>
+</div>
+<div class="label">objetivos diarios</div>
+<div class="progress"><div class="fill" style="width: 65%;"></div></div>
+</article>
+<!-- Racha -->
+<article class="card interactive" onclick="abrirRacha()">
+<div class="stat-top">
+<span class="num">🔥 3</span>
+<span class="badge-warn">Récord</span>
+</div>
+<div class="label">racha de práctica</div>
+<div class="link-txt">Ver desglose ›</div>
+</article>
+</div>
+<!-- Repertorio -->
+<section class="card interactive" onclick="cambiarVista('repertorio')">
+<div class="section-flex">
+<h4>Repertorio Activo</h4>
+<span class="link-txt">Ver todo ›</span>
+</div>
+<div class="rep-preview">
+<div class="pill-rep">🎷 Saxofón (4 piezas)</div>
+<div class="pill-rep">🎹 Piano (2 piezas)</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ================= VISTA 2: HORARIO ================= -->
+<main id="vista-horario" class="view">
+<header>
+<div class="titulo">Horarios y Planificación</div>
+</header>
+<p class="fecha">Organiza tus clases, ensayos y bloques de estudio diario.</p>
+<div class="grid">
+<article class="card">
+<div class="stat-top">
+<span class="badge" style="color:var(--primary);">10:00 - 11:30</span>
+<span class="badge" style="background:rgba(16,185,129,0.15); color:var(--success);">Completado</span>
+</div>
+<h4>Práctica de Saxofón</h4>
+<p style="color:var(--text-muted); font-size:13px; margin-top:4px;">Enfoque en sonoridad y afinación en registro agudo.</p>
+</article>
+</div>
+</main>
+<!-- ================= VISTA 3: ESTUDIO (CRONÓMETRO) ================= -->
+<main id="vista-estudio" class="view">
+<header>
+<div class="titulo">Sesión de Estudio</div>
+</header>
+<p class="fecha">Cronometra, registra y mide tus avances en tiempo real.</p>
+<section class="card" style="text-align: center; padding: 32px 16px;">
+<div style="font-size: 52px; font-weight: bold; margin-bottom: 24px; letter-spacing: 2px;" id="cronometro">00:00:00</div>
+<button class="btn-main" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
+</section>
+</main>
+<!-- ================= VISTA 4: REPERTORIO ================= -->
+<main id="vista-repertorio" class="view">
+<header>
+<div class="titulo">Gestión de Repertorio</div>
+</header>
+<p class="fecha">Tus categorías de instrumentos y piezas musicales organizadas.</p>
+<div class="row-2">
+<article class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center; padding: 24px 12px;">
+<span style="font-size: 36px; display:block; margin-bottom:8px;">🎷</span>
+<h4>Saxofón</h4>
+<p style="color:var(--text-muted); font-size:12px; margin-top:4px;">4 piezas activas</p>
+</article>
+<article class="card interactive" onclick="cambiarVista('tareas')" style="text-align: center; padding: 24px 12px;">
+<span style="font-size: 36px; display:block; margin-bottom:8px;">🎹</span>
+<h4>Piano</h4>
+<p style="color:var(--text-muted); font-size:12px; margin-top:4px;">2 piezas activas</p>
+</article>
+</div>
+</main>
+<!-- ================= VISTA 5: MÁS / AJUSTES ================= -->
+<main id="vista-mas" class="view">
+<header>
+<div class="titulo">Ajustes y Perfil</div>
+</header>
+<p class="fecha">Configuración general de la aplicación y preferencias.</p>
+<div class="grid">
+<article class="card interactive" onclick="alert('Sincronización completada.')">
+<h4>🔄 Sincronizar datos</h4>
+<p style="color:var(--text-muted); font-size:12px; margin-top:2px;">Guardar progreso en servidores seguros</p>
+</article>
+<article class="card interactive" onclick="alert('RitmoAcade v3.3 - Versión Única Autocontenida.')">
+<h4>ℹ️ Acerca de RitmoAcade</h4>
+<p style="color:var(--text-muted); font-size:12px; margin-top:2px;">Versión definitiva sin dependencias externas</p>
+</article>
+</div>
+</main>
+<!-- ================= VISTAS SECUNDARIAS ================= -->
+<main id="vista-tareas" class="view">
+<header>
+<div class="titulo">Tareas Pendientes</div>
+<button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
+</header>
+<div class="grid">
+<article class="card">
+<span class="badge" style="margin-bottom:6px; display:inline-block;">Saxofón • Urgente</span>
+<h4>Repasar articulación compases 30-45</h4>
+</article>
+</div>
+</main>
+<main id="vista-objetivos" class="view">
+<header>
+<div class="titulo">Objetivos Diarios</div>
+<button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
+</header>
+<div class="grid">
+<article class="card">
+<span class="badge" style="margin-bottom:6px; display:inline-block; background:rgba(16,185,129,0.15); color:var(--success);">Completado</span>
+<h4>Estudiar mínimo 45 minutos</h4>
+</article>
+</div>
+</main>
+<!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
+<nav class="nav-bar">
+<button class="nav-item active" id="nav-hoy" onclick="cambiarVista('hoy')">
+<span>🏠</span>
+<small>Hoy</small>
+</button>
+<button class="nav-item" id="nav-horario" onclick="cambiarVista('horario')">
+<span>📅</span>
+<small>Horario</small>
+</button>
+<button class="nav-item" id="nav-estudio" onclick="cambiarVista('estudio')">
+<span>⏱️</span>
+<small>Estudio</small>
+</button>
+<button class="nav-item" id="nav-repertorio" onclick="cambiarVista('repertorio')">
+<span>🎵</span>
+<small>Repertorio</small>
+</button>
+<button class="nav-item" id="nav-mas" onclick="cambiarVista('mas')">
+<span>⋯</span>
+<small>Más</small>
+</button>
+</nav>
+<!-- ================= MODAL RACHA ================= -->
+<div id="modalRacha" class="modal" onclick="cerrarRachaFuera(event)">
+<div class="modal-content">
+<h3>Tu Racha y Progreso</h3>
+<p style="color: var(--text-muted); font-size: 14px; margin: 8px 0 16px 0;">Racha actual: 3 días consecutivos de práctica 🔥</p>
+<button class="btn-main" onclick="cerrarRacha()">Entendido</button>
+</div>
+</div>
+<script>
+// --- LÓGICA DE NAVEGACIÓN GLOBAL DIRECTA ---
+function cambiarVista(idVista) {
+// 1. Ocultar todas las vistas
+document.querySelectorAll('.view').forEach(function(vista) {
+vista.classList.remove('active');
+});
+// 2. Mostrar la vista seleccionada
+var destino = document.getElementById('vista-' + idVista);
+if (destino) {
+destino.classList.add('active');
+}
+// 3. Actualizar pestaña activa en la barra inferior
+document.querySelectorAll('.nav-item').forEach(function(item) {
+item.classList.remove('active');
+});
+var navBtn = document.getElementById('nav-' + idVista);
+if (navBtn) {
+navBtn.classList.add('active');
+}
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// --- MODAL DE RACHA ---
+function abrirRacha() {
+var modal = document.getElementById('modalRacha');
+if (modal) modal.classList.add('active');
+}
+function cerrarRacha() {
+var modal = document.getElementById('modalRacha');
+if (modal) modal.classList.remove('active');
+}
+function cerrarRachaFuera(e) {
+if (e.target.id === 'modalRacha') {
+cerrarRacha();
+}
+}
+// --- CRONÓMETRO DE ESTUDIO ---
+var cronoActivo = false;
+var segundosEstudio = 0;
+var intervaloCrono = null;
+function iniciarSesionEstudio() {
+var btn = document.querySelector('#vista-estudio .btn-main');
+var display = document.getElementById('cronometro');
+if (!cronoActivo) {
+cronoActivo = true;
+if (btn) {
+btn.textContent = "Finalizar sesión";
+btn.style.backgroundColor = "#EF4444";
+}
+intervaloCrono = setInterval(function() {
+segundosEstudio++;
+var h = Math.floor(segundosEstudio / 3600);
+var m = Math.floor((segundosEstudio % 3600) / 60);
+var s = segundosEstudio % 60;
+if (display) {
+display.textContent =
+String(h).padStart(2, '0') + ":" +
+String(m).padStart(2, '0') + ":" +
+String(s).padStart(2, '0');
+}
+}, 1000);
+} else {
+clearInterval(intervaloCrono);
+cronoActivo = false;
+if (btn) {
+btn.textContent = "Empezar sesión de estudio";
+btn.style.backgroundColor = "var(--primary)";
+}
+var minsElem = document.getElementById('num-minutos');
+if (minsElem) {
+var actual = parseInt(minsElem.textContent) || 0;
+minsElem.textContent = actual + Math.max(1, Math.floor(segundosEstudio / 60));
+}
+segundosEstudio = 0;
+if (display) display.textContent = "00:00:00";
+}
+}
+</script>
 </body>
 </html>
