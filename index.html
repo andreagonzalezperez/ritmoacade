@@ -2,342 +2,345 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Versión Definitiva</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RitmoAcade - Táctil Corregido</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- ================= VISTA 1: HOY (DASHBOARD) ================= -->
-  <main id="vista-hoy" class="view active-view">
-    <header>
-      <div class="header-user-info">
-        <span class="avatar-icon">🎵</span>
-        <div>
-          <div class="saludo-text">Bienvenido de nuevo</div>
-          <div class="header-title">RitmoAcade</div>
+  <!-- Contenedor principal de la aplicación -->
+  <div class="app-container">
+
+    <!-- ================= VISTA 1: HOY (DASHBOARD) ================= -->
+    <main id="vista-hoy" class="view active-view">
+      <header>
+        <div class="header-user-info">
+          <span class="avatar-icon">🎵</span>
+          <div>
+            <div class="saludo-text">Bienvenido de nuevo</div>
+            <div class="header-title">RitmoAcade</div>
+          </div>
+        </div>
+        <div class="config-btn" onclick="cambiarVista('mas', document.querySelectorAll('.nav-item')[4])" title="Ajustes">⚙️</div>
+      </header>
+
+      <div class="fecha" id="fecha-actual-label">Sábado, 26 de septiembre de 2026</div>
+      
+      <h2 class="titulo-seccion">Tu día, de un vistazo.</h2>
+
+      <div class="dashboard-grid">
+        <!-- Próximo evento -->
+        <section class="card card-proximo interactive-card" onclick="cambiarVista('horario', document.querySelectorAll('.nav-item')[1])">
+          <div class="card-tag-wrapper">
+            <span class="card-tag">PRÓXIMO EVENTO</span>
+            <span class="badge-tiempo">En 2 horas</span>
+          </div>
+          <h3 class="card-title">Práctica magistral de Saxofón</h3>
+          <p class="card-sub">Estudio de escalas armónicas y articulación en registro alto.</p>
+          <div class="card-footer-info">📍 Estudio Principal • ⏱️ 10:00 - 11:30 (Ver horario completo ›)</div>
+        </section>
+
+        <!-- Widgets de estadísticas 1 -->
+        <div class="stats-grid-2">
+          <article class="card stat-card interactive-card" onclick="cambiarVista('tareas', null)">
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="num-tareas-pendientes">2</span>
+              <span class="stat-trend positive">Ver listado ›</span>
+            </div>
+            <div class="stat-label">tareas pendientes</div>
+          </article>
+
+          <article class="card stat-card interactive-card" onclick="cambiarVista('estudio', document.querySelectorAll('.nav-item')[2])">
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="num-minutos">0</span>
+              <span class="stat-unit">min</span>
+            </div>
+            <div class="stat-label">min estudiados hoy (Ir a cronómetro ›)</div>
+          </article>
+        </div>
+
+        <!-- Widgets de estadísticas 2 -->
+        <div class="stats-grid-2">
+          <article class="card stat-card interactive-card" onclick="cambiarVista('objetivos', null)">
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="porcentaje-objetivo">65%</span>
+              <span class="stat-trend positive">Ver metas ›</span>
+            </div>
+            <div class="stat-label">objetivos diarios</div>
+            <div class="progress-bar-mini">
+              <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+          </article>
+          
+          <!-- Widget Racha -->
+          <article class="card stat-card racha-card-click interactive-card" onclick="abrirRacha()">
+            <div class="stat-number-wrapper">
+              <span class="stat-number" id="racha-dias-count">🔥 3</span>
+              <span class="badge-streak">Récord</span>
+            </div>
+            <div class="stat-label">racha de práctica</div>
+            <div class="ver-detalle-txt">Tocar para ver desglose ›</div>
+          </article>
+        </div>
+
+        <!-- Sección Exámenes -->
+        <div class="seccion-bloque">
+          <div class="titulo-seccion-chico">Próximos Exámenes / Audiciones</div>
+          <div class="card card-examen interactive-card" onclick="cambiarVista('examenes', null)">
+            <div class="examen-header">
+              <span class="examen-badge">Conservatorio</span>
+              <span class="examen-fecha">15 Octubre</span>
+            </div>
+            <div class="examen-titulo">Audición Trimestral de Instrumento</div>
+            <div class="examen-desc">Preparación de repertorio clásico y lectura a primera vista. (Ver detalle ›)</div>
+          </div>
+        </div>
+
+        <!-- Sección Repertorio -->
+        <div class="seccion-bloque">
+          <div class="seccion-header-flex">
+            <div class="titulo-seccion-chico" style="margin-bottom:0;">Repertorio Activo</div>
+            <span class="ver-todo-link" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">Ver todo ›</span>
+          </div>
+          <div class="repertorio-grid" id="grid-instrumentos-home" style="margin-top: 10px;">
+            <article class="card-instrumento interactive-card" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+              <span class="icono">🎷</span>
+              <h4>Saxofón</h4>
+              <span class="card-sub-instrumento">4 piezas</span>
+            </article>
+            <article class="card-instrumento interactive-card" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+              <span class="icono">🎹</span>
+              <h4>Piano</h4>
+              <span class="card-sub-instrumento">2 piezas</span>
+            </article>
+            <article class="card-instrumento card-add interactive-card" onclick="abrirModalInstrumento()">
+              <span class="icono-plus">+</span>
+              <h4>Añadir</h4>
+            </article>
+          </div>
         </div>
       </div>
-      <div class="config-btn" onclick="cambiarVista('mas', document.querySelectorAll('.nav-item')[4])" title="Ajustes">⚙️</div>
-    </header>
+    </main>
 
-    <div class="fecha" id="fecha-actual-label">Sábado, 26 de septiembre de 2026</div>
-    
-    <h2 class="titulo-seccion">Tu día, de un vistazo.</h2>
-
-    <div class="dashboard-grid">
-      <!-- Próximo evento (Lleva directo a Horarios) -->
-      <section class="card card-proximo interactive-card" onclick="cambiarVista('horario', document.querySelectorAll('.nav-item')[1])">
-        <div class="card-tag-wrapper">
-          <span class="card-tag">PRÓXIMO EVENTO</span>
-          <span class="badge-tiempo">En 2 horas</span>
+    <!-- ================= VISTA 2: HORARIO ================= -->
+    <main id="vista-horario" class="view">
+      <header>
+        <div class="header-title">Horarios y Planificación</div>
+      </header>
+      <p class="fecha">Organiza tus clases, ensayos y bloques de estudio diario.</p>
+      
+      <div class="horario-controles-bar">
+        <div class="horario-opciones" style="flex: 1;">
+          <select id="filtro-horario" onchange="cambiarFiltroHorario(this)">
+            <option value="semana">Vista Semanal Completa</option>
+            <option value="hoy">Eventos de Hoy</option>
+            <option value="pendientes">Bloques Pendientes</option>
+          </select>
         </div>
-        <h3 class="card-title">Práctica magistral de Saxofón</h3>
-        <p class="card-sub">Estudio de escalas armónicas y articulación en registro alto.</p>
-        <div class="card-footer-info">📍 Estudio Principal • ⏱️ 10:00 - 11:30 (Ver horario completo ›)</div>
-      </section>
-
-      <!-- Fila de widgets estadísticos 1 (Tareas y Minutos) -->
-      <div class="stats-grid-2">
-        <article class="card stat-card interactive-card" onclick="cambiarVista('tareas', null)">
-          <div class="stat-number-wrapper">
-            <span class="stat-number" id="num-tareas-pendientes">2</span>
-            <span class="stat-trend positive">Ver listado ›</span>
-          </div>
-          <div class="stat-label">tareas pendientes</div>
-        </article>
-
-        <article class="card stat-card interactive-card" onclick="cambiarVista('estudio', document.querySelectorAll('.nav-item')[2])">
-          <div class="stat-number-wrapper">
-            <span class="stat-number" id="num-minutos">0</span>
-            <span class="stat-unit">min</span>
-          </div>
-          <div class="stat-label">min estudiados hoy (Ir a cronómetro ›)</div>
-        </article>
+        <button class="btn-secundario-peque interactive-card" onclick="alert('Función de nuevo bloque')">+ Bloque</button>
       </div>
 
-      <!-- Fila de widgets estadísticos 2 (Objetivos y Racha) -->
-      <div class="stats-grid-2">
-        <article class="card stat-card interactive-card" onclick="cambiarVista('objetivos', null)">
-          <div class="stat-number-wrapper">
-            <span class="stat-number" id="porcentaje-objetivo">65%</span>
-            <span class="stat-trend positive">Ver metas ›</span>
+      <div class="dashboard-grid" style="margin-top: 16px;">
+        <article class="horario-item">
+          <div class="horario-header-row">
+            <span class="horario-hora">10:00 - 11:30</span>
+            <span class="horario-tag-state completado">Completado</span>
           </div>
-          <div class="stat-label">objetivos diarios</div>
-          <div class="progress-bar-mini">
-            <div class="progress-fill" style="width: 65%;"></div>
-          </div>
+          <div class="horario-titulo">Práctica de Saxofón (Escalas y Técnica)</div>
+          <div class="horario-detalles">Enfoque en sonoridad y afinación en registro agudo.</div>
         </article>
+
+        <article class="horario-item">
+          <div class="horario-header-row">
+            <span class="horario-hora">17:00 - 18:30</span>
+            <span class="horario-tag-state pendiente">Pendiente</span>
+          </div>
+          <div class="horario-titulo">Clase de Piano y Repertorio Armónico</div>
+          <div class="horario-detalles">Repaso de progresiones de acordes y acompañamiento.</div>
+        </article>
+      </div>
+    </main>
+
+    <!-- ================= VISTA 3: ESTUDIO (CRONÓMETRO) ================= -->
+    <main id="vista-estudio" class="view">
+      <header>
+        <div class="header-title">Sesión de Estudio</div>
+      </header>
+      <p class="fecha">Cronometra, registra y mide tus avances en tiempo real.</p>
+
+      <section class="card crono-card-main" style="text-align: center; padding: 36px 20px;">
+        <div class="selector-instrumento-sesion" style="margin-bottom: 20px;">
+          <label for="select-inst-activo" style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Instrumento de la sesión:</label>
+          <select id="select-inst-activo" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 15px; width: 100%; max-width: 280px;">
+            <option value="Saxofón">🎷 Saxofón</option>
+            <option value="Piano">🎹 Piano</option>
+          </select>
+        </div>
+
+        <div class="cronometro-display-box" style="font-size: 56px; font-weight: 800; margin-bottom: 24px; letter-spacing: 3px; font-variant-numeric: tabular-nums;" id="cronometro">00:00:00</div>
         
-        <!-- Widget Racha: Abre el Bottom Sheet detallado por debajo -->
-        <article class="card stat-card racha-card-click" onclick="abrirRacha()">
-          <div class="stat-number-wrapper">
-            <span class="stat-number" id="racha-dias-count">🔥 3</span>
-            <span class="badge-streak">Récord</span>
-          </div>
-          <div class="stat-label">racha de práctica</div>
-          <div class="ver-detalle-txt">Tocar para ver desglose ›</div>
-        </article>
-      </div>
+        <button class="btn-estudio" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
 
-      <!-- Sección de Próximos Exámenes -->
-      <div class="seccion-bloque">
-        <div class="titulo-seccion-chico">Próximos Exámenes / Audiciones</div>
-        <div class="card card-examen interactive-card" onclick="cambiarVista('examenes', null)">
-          <div class="examen-header">
-            <span class="examen-badge">Conservatorio</span>
-            <span class="examen-fecha">15 Octubre</span>
+        <div class="metronomo-mini-box" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+          <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Metrónomo de Apoyo (BPM)</div>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 12px;">
+            <button class="btn-metronomo-control" onclick="ajustarBPM(-5)">-5</button>
+            <span id="bpm-display" style="font-size: 18px; font-weight: bold; width: 60px;">120 BPM</span>
+            <button class="btn-metronomo-control" onclick="ajustarBPM(5)">+5</button>
           </div>
-          <div class="examen-titulo">Audición Trimestral de Instrumento</div>
-          <div class="examen-desc">Preparación de repertorio clásico y lectura a primera vista. (Ver detalle ›)</div>
         </div>
-      </div>
+      </section>
+    </main>
 
-      <!-- Sección de Repertorio en el Dashboard -->
-      <div class="seccion-bloque">
-        <div class="seccion-header-flex">
-          <div class="titulo-seccion-chico" style="margin-bottom:0;">Repertorio Activo</div>
-          <span class="ver-todo-link" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">Ver todo ›</span>
-        </div>
-        <div class="repertorio-grid" id="grid-instrumentos-home" style="margin-top: 10px;">
-          <article class="card-instrumento" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+    <!-- ================= VISTA 4: REPERTORIO ================= -->
+    <main id="vista-repertorio" class="view">
+      <header>
+        <div class="header-title">Gestión de Repertorio</div>
+        <button class="config-btn" onclick="abrirModalInstrumento()" title="Añadir instrumento">+</button>
+      </header>
+      <p class="fecha">Tus categorías de instrumentos y piezas musicales organizadas.</p>
+
+      <div class="repertorio-container-completo">
+        <div class="repertorio-grid" id="grid-instrumentos-completo">
+          <article class="card-instrumento card-re repertorio-item-detalle interactive-card" onclick="cambiarVista('tareas', null)">
             <span class="icono">🎷</span>
             <h4>Saxofón</h4>
-            <span class="card-sub-instrumento">4 piezas</span>
+            <span class="card-sub-instrumento">4 piezas activas</span>
+            <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 80%;"></div></div>
           </article>
-          <article class="card-instrumento" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+
+          <article class="card-instrumento card-re repertorio-item-detalle interactive-card" onclick="cambiarVista('tareas', null)">
             <span class="icono">🎹</span>
             <h4>Piano</h4>
-            <span class="card-sub-instrumento">2 piezas</span>
+            <span class="card-sub-instrumento">2 piezas activas</span>
+            <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 45%;"></div></div>
           </article>
-          <article class="card-instrumento card-add" onclick="abrirModalInstrumento()">
+
+          <article class="card-instrumento card-add interactive-card" onclick="abrirModalInstrumento()">
             <span class="icono-plus">+</span>
-            <h4>Añadir</h4>
+            <h4>Añadir instrumento</h4>
+            <span class="card-sub-instrumento">Personalizar</span>
           </article>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <!-- ================= VISTA 2: HORARIO DETALLADO ================= -->
-  <main id="vista-horario" class="view">
-    <header>
-      <div class="header-title">Horarios y Planificación</div>
-    </header>
-    <p class="fecha">Organiza tus clases, ensayos y bloques de estudio diario.</p>
-    
-    <div class="horario-controles-bar">
-      <div class="horario-opciones" style="flex: 1;">
-        <select id="filtro-horario" onchange="cambiarFiltroHorario(this)">
-          <option value="semana">Vista Semanal Completa</option>
-          <option value="hoy">Eventos de Hoy</option>
-          <option value="pendientes">Bloques Pendientes</option>
-        </select>
-      </div>
-      <button class="btn-secundario-peque" onclick="abrirModalHorario()">+ Bloque</button>
-    </div>
+    <!-- ================= VISTA SECUNDARIA: TAREAS ================= -->
+    <main id="vista-tareas" class="view">
+      <header>
+        <div class="header-title">Tareas Pendientes</div>
+        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+      </header>
+      <p class="fecha">Listado detallado de tus pendientes musicales y revisiones.</p>
 
-    <div class="dashboard-grid" style="margin-top: 16px;">
-      <article class="horario-item">
-        <div class="horario-header-row">
-          <span class="horario-hora">10:00 - 11:30</span>
-          <span class="horario-tag-state completado">Completado</span>
-        </div>
-        <div class="horario-titulo">Práctica de Saxofón (Escalas y Técnica)</div>
-        <div class="horario-detalles">Enfoque en sonoridad y afinación en registro agudo.</div>
-      </article>
-
-      <article class="horario-item">
-        <div class="horario-header-row">
-          <span class="horario-hora">17:00 - 18:30</span>
-          <span class="horario-tag-state pendiente">Pendiente</span>
-        </div>
-        <div class="horario-titulo">Clase de Piano y Repertorio Armónico</div>
-        <div class="horario-detalles">Repaso de progresiones de acordes y acompañamiento.</div>
-      </article>
-    </div>
-  </main>
-
-  <!-- ================= VISTA 3: SESIÓN DE ESTUDIO (CRONÓMETRO) ================= -->
-  <main id="vista-estudio" class="view">
-    <header>
-      <div class="header-title">Sesión de Estudio</div>
-    </header>
-    <p class="fecha">Cronometra, registra y mide tus avances en tiempo real.</p>
-
-    <section class="card crono-card-main" style="text-align: center; padding: 36px 20px;">
-      <div class="selector-instrumento-sesion" style="margin-bottom: 20px;">
-        <label for="select-inst-activo" style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Instrumento de la sesión:</label>
-        <select id="select-inst-activo" style="padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 15px; width: 100%; max-width: 280px;">
-          <option value="Saxofón">🎷 Saxofón</option>
-          <option value="Piano">🎹 Piano</option>
-        </select>
-      </div>
-
-      <div class="cronometro-display-box" style="font-size: 56px; font-weight: 800; margin-bottom: 24px; letter-spacing: 3px; font-variant-numeric: tabular-nums;" id="cronometro">00:00:00</div>
-      
-      <!-- Botón con feedback interactivo inmediato y dinámico -->
-      <button class="btn-estudio" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
-
-      <div class="metronomo-mini-box" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-        <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Metrónomo de Apoyo (BPM)</div>
-        <div style="display: flex; justify-content: center; align-items: center; gap: 12px;">
-          <button class="btn-metronomo-control" onclick="ajustarBPM(-5)">-5</button>
-          <span id="bpm-display" style="font-size: 18px; font-weight: bold; width: 60px;">120 BPM</span>
-          <button class="btn-metronomo-control" onclick="ajustarBPM(5)">+5</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ================= VISTA 4: REPERTORIO COMPLETO ================= -->
-  <main id="vista-repertorio" class="view">
-    <header>
-      <div class="header-title">Gestión de Repertorio</div>
-      <button class="config-btn" onclick="abrirModalInstrumento()" title="Añadir instrumento">+</button>
-    </header>
-    <p class="fecha">Tus categorías de instrumentos y piezas musicales organizadas.</p>
-
-    <div class="repertorio-container-completo">
-      <div class="repertorio-grid" id="grid-instrumentos-completo">
-        <article class="card-instrumento card-re repertorio-item-detalle" onclick="cambiarVista('tareas', null)">
-          <span class="icono">🎷</span>
-          <h4>Saxofón</h4>
-          <span class="card-sub-instrumento">4 piezas activas</span>
-          <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 80%;"></div></div>
+      <div class="dashboard-grid">
+        <article class="card tarea-item-card">
+          <div class="tarea-header-row">
+            <span class="badge-tiempo">Saxofón</span>
+            <span class="horario-tag-state pendiente">Urgente</span>
+          </div>
+          <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Repasar articulación compases 30-45</h4>
+          <p class="card-sub">Estudio detallado del pasaje rápido en la sonata.</p>
         </article>
 
-        <article class="card-instrumento card-re repertorio-item-detalle" onclick="cambiarVista('tareas', null)">
-          <span class="icono">🎹</span>
-          <h4>Piano</h4>
-          <span class="card-sub-instrumento">2 piezas activas</span>
-          <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 45%;"></div></div>
-        </article>
-
-        <!-- Tarjeta para crear nuevos instrumentos directamente -->
-        <article class="card-instrumento card-add" onclick="abrirModalInstrumento()">
-          <span class="icono-plus">+</span>
-          <h4>Añadir instrumento</h4>
-          <span class="card-sub-instrumento">Personalizar</span>
+        <article class="card tarea-item-card">
+          <div class="tarea-header-row">
+            <span class="badge-tiempo">Piano</span>
+            <span class="horario-tag-state pendiente">Normal</span>
+          </div>
+          <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Memorizar la sección B del Nocturno</h4>
+          <p class="card-sub">Práctica de manos separadas y unificación posterior.</p>
         </article>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <!-- ================= VISTA SECUNDARIA: TAREAS PENDIENTES ================= -->
-  <main id="vista-tareas" class="view">
-    <header>
-      <div class="header-title">Tareas Pendientes</div>
-      <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
-    </header>
-    <p class="fecha">Listado detallado de tus pendientes musicales y revisiones.</p>
+    <!-- ================= VISTA SECUNDARIA: OBJETIVOS ================= -->
+    <main id="vista-objetivos" class="view">
+      <header>
+        <div class="header-title">Objetivos Diarios</div>
+        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+      </header>
+      <p class="fecha">Metas establecidas para mantener tu progresión constante.</p>
 
-    <div class="dashboard-grid">
-      <article class="card tarea-item-card">
-        <div class="tarea-header-row">
-          <span class="badge-tiempo">Saxofón</span>
-          <span class="horario-tag-state pendiente">Urgente</span>
-        </div>
-        <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Repasar articulación compases 30-45</h4>
-        <p class="card-sub">Estudio detallado del pasaje rápido en la sonata.</p>
-      </article>
+      <div class="dashboard-grid">
+        <article class="card">
+          <div class="horario-header-row">
+            <span class="horario-hora">Meta 1</span>
+            <span class="horario-tag-state completado">Completado</span>
+          </div>
+          <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Estudiar mínimo 45 minutos</h4>
+          <p class="card-sub">Completado hoy con sesión de saxofón.</p>
+        </article>
 
-      <article class="card tarea-item-card">
-        <div class="tarea-header-row">
-          <span class="badge-tiempo">Piano</span>
-          <span class="horario-tag-state pendiente">Normal</span>
-        </div>
-        <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Memorizar la sección B del Nocturno</h4>
-        <p class="card-sub">Práctica de manos separadas y unificación posterior.</p>
-      </article>
-    </div>
-  </main>
+        <article class="card">
+          <div class="horario-header-row">
+            <span class="horario-hora">Meta 2</span>
+            <span class="horario-tag-state pendiente">En progreso</span>
+          </div>
+          <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Revisar ejercicios de técnica</h4>
+          <p class="card-sub">Pendiente bloque de tarde en piano.</p>
+        </article>
+      </div>
+    </main>
 
-  <!-- ================= VISTA SECUNDARIA: OBJETIVOS DIARIOS ================= -->
-  <main id="vista-objetivos" class="view">
-    <header>
-      <div class="header-title">Objetivos Diarios</div>
-      <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
-    </header>
-    <p class="fecha">Metas establecidas para mantener tu progresión constante.</p>
+    <!-- ================= VISTA SECUNDARIA: EXÁMENES ================= -->
+    <main id="vista-examenes" class="view">
+      <header>
+        <div class="header-title">Exámenes y Audiciones</div>
+        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+      </header>
+      <p class="fecha">Tus próximas fechas clave y requisitos de repertorio.</p>
 
-    <div class="dashboard-grid">
-      <article class="card">
-        <div class="horario-header-row">
-          <span class="horario-hora">Meta 1</span>
-          <span class="horario-tag-state completado">Completado</span>
-        </div>
-        <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Estudiar mínimo 45 minutos</h4>
-        <p class="card-sub">Completado hoy con sesión de saxofón.</p>
-      </article>
+      <div class="dashboard-grid">
+        <article class="card card-examen">
+          <div class="examen-header">
+            <span class="examen-badge">Conservatorio Principal</span>
+            <span class="examen-fecha">15 Octubre 2026</span>
+          </div>
+          <div class="examen-titulo">Audición Trimestral de Instrumento</div>
+          <div class="examen-desc" style="margin-bottom: 10px;">Preparación obligatoria de repertorio clásico, escalas en todas las tonalidades y lectura a primera vista.</div>
+          <div class="card-footer-info">Estado: Preparación al 65% • Asignado a Saxofón</div>
+        </article>
+      </div>
+    </main>
 
-      <article class="card">
-        <div class="horario-header-row">
-          <span class="horario-hora">Meta 2</span>
-          <span class="horario-tag-state pendiente">En progreso</span>
-        </div>
-        <h4 class="card-title" style="font-size: 16px; margin-top: 6px;">Revisar ejercicios de técnica</h4>
-        <p class="card-sub">Pendiente bloque de tarde en piano.</p>
-      </article>
-    </div>
-  </main>
+    <!-- ================= VISTA 5: MÁS / AJUSTES ================= -->
+    <main id="vista-mas" class="view">
+      <header>
+        <div class="header-title">Ajustes y Perfil</div>
+      </header>
+      <p class="fecha">Configuración general de la aplicación y preferencias.</p>
 
-  <!-- ================= VISTA SECUNDARIA: EXÁMENES Y AUDICIONES ================= -->
-  <main id="vista-examenes" class="view">
-    <header>
-      <div class="header-title">Exámenes y Audiciones</div>
-      <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
-    </header>
-    <p class="fecha">Tus próximas fechas clave y requisitos de repertorio.</p>
+      <div class="dashboard-grid">
+        <article class="card card-ajuste-item interactive-card" onclick="alert('Sincronización con la nube completada con éxito.')">
+          <div class="ajuste-icon">🔄</div>
+          <div>
+            <div class="ajuste-titulo">Sincronizar datos</div>
+            <div class="ajuste-desc">Guardar progreso actual en servidores seguros</div>
+          </div>
+        </article>
 
-    <div class="dashboard-grid">
-      <article class="card card-examen">
-        <div class="examen-header">
-          <span class="examen-badge">Conservatorio Principal</span>
-          <span class="examen-fecha">15 Octubre 2026</span>
-        </div>
-        <div class="examen-titulo">Audición Trimestral de Instrumento</div>
-        <div class="examen-desc" style="margin-bottom: 10px;">Preparación obligatoria de repertorio clásico, escalas en todas las tonalidades y lectura a primera vista sin preparación previa.</div>
-        <div class="card-footer-info">Estado: Preparación al 65% • Asignado a Saxofón</div>
-      </article>
-    </div>
-  </main>
+        <article class="card card-ajuste-item interactive-card" onclick="alert('Modo Oscuro nativo activado permanentemente.')">
+          <div class="ajuste-icon">🌙</div>
+          <div>
+            <div class="ajuste-titulo">Modo Oscuro / Tema</div>
+            <div class="ajuste-desc">Optimizado para sesiones nocturnas</div>
+          </div>
+        </article>
 
-  <!-- ================= VISTA 5: MÁS / AJUSTES ================= -->
-  <main id="vista-mas" class="view">
-    <header>
-      <div class="header-title">Ajustes y Perfil</div>
-    </header>
-    <p class="fecha">Configuración general de la aplicación y preferencias.</p>
+        <article class="card card-ajuste-item interactive-card" onclick="alert('RitmoAcade v2.9 - Versión Táctil Optimizada.')">
+          <div class="ajuste-icon">ℹ️</div>
+          <div>
+            <div class="ajuste-titulo">Acerca de RitmoAcade</div>
+            <div class="ajuste-desc">Versión 2.9 Táctil Corregida</div>
+          </div>
+        </article>
+      </div>
+    </main>
 
-    <div class="dashboard-grid">
-      <article class="card card-ajuste-item" onclick="alert('Sincronización con la nube completada con éxito.')">
-        <div class="ajuste-icon">🔄</div>
-        <div>
-          <div class="ajuste-titulo">Sincronizar datos</div>
-          <div class="ajuste-desc">Guardar progreso actual en servidores seguros</div>
-        </div>
-      </article>
+  </div> <!-- Fin .app-container -->
 
-      <article class="card card-ajuste-item" onclick="alert('Modo Oscuro nativo activado permanentemente.')">
-        <div class="ajuste-icon">🌙</div>
-        <div>
-          <div class="ajuste-titulo">Modo Oscuro / Tema</div>
-          <div class="ajuste-desc">Optimizado para sesiones nocturnas</div>
-        </div>
-      </article>
-
-      <article class="card card-ajuste-item" onclick="alert('RitmoAcade v2.8 - Versión Definitiva.')">
-        <div class="ajuste-icon">ℹ️</div>
-        <div>
-          <div class="ajuste-titulo">Acerca de RitmoAcade</div>
-          <div class="ajuste-desc">Versión 2.8 Definitiva sin alertas</div>
-        </div>
-      </article>
-    </div>
-  </main>
-
-  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
+  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR (Z-index y eventos seguros) ================= -->
   <nav class="nav-bar">
     <div class="nav-item active" onclick="cambiarVista('hoy', this)">
       <span class="nav-icon">🏠</span>
@@ -361,7 +364,7 @@
     </div>
   </nav>
 
-  <!-- ================= BOTTOM SHEET 1: DESGLOSE DE RACHA ================= -->
+  <!-- ================= BOTTOM SHEET 1: RACHA ================= -->
   <div id="modalRacha" class="bottom-sheet-overlay" onclick="cerrarRachaFuera(event)">
     <div class="bottom-sheet-content">
       <div class="drag-handle"></div>
