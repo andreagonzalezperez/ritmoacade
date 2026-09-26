@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Sistema Definitivo Total</title>
+  <title>RitmoAcade - Sistema Total Sincronizado</title>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -264,17 +264,6 @@
           <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">14 horas acumuladas este mes.</p>
         </div>
       </div>
-
-      <div class="card">
-        <h4 style="margin-bottom: 12px; color: var(--streak-color);">🎁 Recompensas</h4>
-        <div class="reward-step unlocked">
-          <div class="reward-icon">🎁</div>
-          <div>
-            <div style="font-weight: bold; font-size: 13px; color: var(--success);">1 Semana Consecutiva</div>
-            <div style="font-size: 11px; color: var(--text-muted);">Tema neón desbloqueado.</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -388,10 +377,10 @@
   <!-- ================= VISTA 4.1: OBJETIVOS DIARIOS ================= -->
   <div id="vista-objetivos" class="view">
     <header>
-      <div class="titulo">Objetivos Diarios</div>
+      <div class="titulo">Objetivos Diarios y Planificación</div>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalObjetivoCrear()">+ Nuevo objetivo</button>
     </header>
-    <p class="fecha">Metas y tareas marcadas como objetivo diario.</p>
+    <p class="fecha">Metas establecidas para uno o varios días.</p>
     <div class="grid" id="lista-objetivos-container"></div>
   </div>
 
@@ -416,7 +405,7 @@
           <h4>📊 Registro de Notas</h4>
           <span class="link-txt">Ver notas ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones codificadas por colores</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Calificaciones con código de color automático</p>
       </div>
 
       <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
@@ -424,7 +413,7 @@
           <h4>📋 Control de Asistencia</h4>
           <span class="link-txt">Pasar lista ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Asistencias, faltas, retrasos y justificaciones</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Asistencias, faltas, retrasos, justificadas y no clases</p>
       </div>
 
       <div class="card interactive" onclick="cambiarVista('tareas')">
@@ -473,7 +462,7 @@
       <div class="titulo">Registro de Notas</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-    <p class="fecha">Elige un centro para consultar calificaciones con código de color.</p>
+    <p class="fecha">Elige un centro sincronizado para consultar calificaciones.</p>
     <div class="grid" id="lista-notas-centros-container"></div>
   </div>
 
@@ -500,7 +489,7 @@
       <div class="titulo">Control de Asistencia</div>
       <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
     </header>
-    <p class="fecha">Elige tu centro para pasar lista.</p>
+    <p class="fecha">Elige tu centro sincronizado para pasar lista.</p>
     <div class="grid" id="lista-asistencia-centros-container"></div>
   </div>
 
@@ -515,7 +504,7 @@
       </div>
       <button class="btn-config" onclick="cambiarVista('asistencia-centros')">‹</button>
     </header>
-    <p class="fecha">Registro de clases sincronizadas.</p>
+    <p class="fecha">Registro completo de clases.</p>
     <div class="grid" id="lista-control-asistencia-container"></div>
   </div>
 
@@ -692,9 +681,15 @@
           <label for="input-pieza-es-obj" style="margin-bottom:0; cursor:pointer;">Establecer como objetivo diario</label>
         </div>
       </div>
-      <div class="form-group">
-        <label>Fecha para objetivo diario</label>
-        <input type="date" id="input-pieza-fecha-obj" class="form-control">
+      <div class="row-2">
+        <div class="form-group">
+          <label>Desde fecha</label>
+          <input type="date" id="input-pieza-fecha-inicio" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Hasta fecha</label>
+          <input type="date" id="input-pieza-fecha-fin" class="form-control">
+        </div>
       </div>
       <button class="btn-main" onclick="guardarOActualizarPieza()">Guardar pieza</button>
     </div>
@@ -754,9 +749,15 @@
         <label>Título del objetivo</label>
         <input type="text" id="input-titulo-obj" class="form-control" placeholder="Ej. Estudiar escala cromática...">
       </div>
-      <div class="form-group">
-        <label>Fecha</label>
-        <input type="date" id="input-fecha-obj" class="form-control">
+      <div class="row-2">
+        <div class="form-group">
+          <label>Desde fecha</label>
+          <input type="date" id="input-obj-fecha-inicio" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Hasta fecha</label>
+          <input type="date" id="input-obj-fecha-fin" class="form-control">
+        </div>
       </div>
       <button class="btn-main" onclick="guardarOActualizarObjetivo()">Guardar objetivo</button>
     </div>
@@ -785,7 +786,7 @@
     ];
 
     let objetivosDiarios = [
-      { titulo: "Repasar articulación compases 30-45", fecha: "2026-09-26" }
+      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-26", fechaFin: "2026-09-26" }
     ];
 
     let centroActivo = "";
@@ -910,7 +911,7 @@
       });
     }
 
-    // --- OBJETIVOS DIARIOS ---
+    // --- OBJETIVOS DIARIOS (RANGO DE FECHAS) ---
     function renderizarObjetivos() {
       const contenedor = document.getElementById('lista-objetivos-container');
       contenedor.innerHTML = '';
@@ -920,11 +921,12 @@
         return;
       }
       objetivosDiarios.forEach((obj, idx) => {
+        let textoFechas = obj.fechaInicio === obj.fechaFin || !obj.fechaFin ? `📅 ${obj.fechaInicio}` : `📅 Del ${obj.fechaInicio} al ${obj.fechaFin}`;
         contenedor.innerHTML += `
           <div class="card">
             <div class="section-flex">
               <span class="badge">🎯 Meta</span>
-              <span style="font-size: 11px; color: var(--text-muted);">📅 ${obj.fecha || 'Sin fecha'}</span>
+              <span style="font-size: 11px; color: var(--text-muted);">${textoFechas}</span>
             </div>
             <h4 style="margin-top: 6px;">${obj.titulo}</h4>
             <div class="footer-info" style="text-align: right; margin-top: 6px;">
@@ -940,7 +942,9 @@
       document.getElementById('modal-obj-titulo').textContent = 'Nuevo Objetivo Diario';
       document.getElementById('input-edit-index-obj').value = '-1';
       document.getElementById('input-titulo-obj').value = '';
-      document.getElementById('input-fecha-obj').value = new Date().toISOString().split('T')[0];
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-obj-fecha-inicio').value = hoyStr;
+      document.getElementById('input-obj-fecha-fin').value = hoyStr;
       document.getElementById('modalObjetivo').classList.add('active');
     }
 
@@ -949,7 +953,8 @@
       document.getElementById('modal-obj-titulo').textContent = 'Editar Objetivo Diario';
       document.getElementById('input-edit-index-obj').value = idx;
       document.getElementById('input-titulo-obj').value = obj.titulo;
-      document.getElementById('input-fecha-obj').value = obj.fecha || '';
+      document.getElementById('input-obj-fecha-inicio').value = obj.fechaInicio || new Date().toISOString().split('T')[0];
+      document.getElementById('input-obj-fecha-fin').value = obj.fechaFin || obj.fechaInicio || new Date().toISOString().split('T')[0];
       document.getElementById('modalObjetivo').classList.add('active');
     }
 
@@ -958,14 +963,15 @@
 
     function guardarOActualizarObjetivo() {
       const titulo = document.getElementById('input-titulo-obj').value.trim();
-      const fecha = document.getElementById('input-fecha-obj').value;
+      const fechaInicio = document.getElementById('input-obj-fecha-inicio').value;
+      const fechaFin = document.getElementById('input-obj-fecha-fin').value;
       const editIndex = parseInt(document.getElementById('input-edit-index-obj').value);
 
       if (!titulo) return;
       if (editIndex === -1) {
-        objetivosDiarios.push({ titulo, fecha });
+        objetivosDiarios.push({ titulo, fechaInicio, fechaFin });
       } else {
-        objetivosDiarios[editIndex] = { titulo, fecha };
+        objetivosDiarios[editIndex] = { titulo, fechaInicio, fechaFin };
       }
       renderizarObjetivos();
       cerrarModalObjetivo();
@@ -1024,7 +1030,7 @@
             </div>
             <h4>${p.titulo}</h4>
             ${p.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</p>` : ''}
-            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo diario (${p.fechaObj || 'hoy'})</p>` : ''}
+            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al${p.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 8px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalPiezaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar</button>
@@ -1041,7 +1047,9 @@
       document.getElementById('input-autor-pieza').value = '';
       document.getElementById('input-desc-pieza').value = '';
       document.getElementById('input-pieza-es-obj').checked = false;
-      document.getElementById('input-pieza-fecha-obj').value = new Date().toISOString().split('T')[0];
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-pieza-fecha-inicio').value = hoyStr;
+      document.getElementById('input-pieza-fecha-fin').value = hoyStr;
       document.getElementById('modalPieza').classList.add('active');
     }
 
@@ -1054,7 +1062,8 @@
       document.getElementById('input-autor-pieza').value = p.autor || '';
       document.getElementById('input-desc-pieza').value = p.desc || '';
       document.getElementById('input-pieza-es-obj').checked = p.esObj || false;
-      document.getElementById('input-pieza-fecha-obj').value = p.fechaObj || new Date().toISOString().split('T')[0];
+      document.getElementById('input-pieza-fecha-inicio').value = p.fechaInicio || new Date().toISOString().split('T')[0];
+      document.getElementById('input-pieza-fecha-fin').value = p.fechaFin || new Date().toISOString().split('T')[0];
       document.getElementById('modalPieza').classList.add('active');
     }
 
@@ -1066,20 +1075,21 @@
       const autor = document.getElementById('input-autor-pieza').value.trim();
       const desc = document.getElementById('input-desc-pieza').value.trim();
       const esObj = document.getElementById('input-pieza-es-obj').checked;
-      const fechaObj = document.getElementById('input-pieza-fecha-obj').value;
+      const fechaInicio = document.getElementById('input-pieza-fecha-inicio').value;
+      const fechaFin = document.getElementById('input-pieza-fecha-fin').value;
       const editIndex = parseInt(document.getElementById('input-pieza-edit-index').value);
 
       if (!titulo) return;
       const cat = repertorioCategorias.find(c => c.nombre === categoriaRepertorioActual);
       if (cat) {
         if (editIndex === -1) {
-          cat.piezas.push({ titulo, autor, desc, esObj, fechaObj });
+          cat.piezas.push({ titulo, autor, desc, esObj, fechaInicio, fechaFin });
         } else {
-          cat.piezas[editIndex] = { titulo, autor, desc, esObj, fechaObj };
+          cat.piezas[editIndex] = { titulo, autor, desc, esObj, fechaInicio, fechaFin };
         }
 
         if (esObj) {
-          objetivosDiarios.push({ titulo: `Repertorio: ${titulo}`, fecha: fechaObj });
+          objetivosDiarios.push({ titulo: `Repertorio: ${titulo}`, fechaInicio, fechaFin });
           renderizarObjetivos();
         }
 
@@ -1193,7 +1203,7 @@
       }
 
       if (esObj) {
-        objetivosDiarios.push({ titulo: `Tarea: ${titulo}`, fecha: fecha });
+        objetivosDiarios.push({ titulo: `Tarea: ${titulo}`, fechaInicio: fecha, fechaFin: fecha });
         renderizarObjetivos();
       }
 
@@ -1208,6 +1218,240 @@
         renderizarTareas();
         actualizarSelectorPomodoroItems();
       }
+    }
+
+    // --- CENTROS Y EDICIÓN DE ASIGNATURAS ---
+    function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
+    function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
+    function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
+
+    function guardarNuevoCentro() {
+      const nombre = document.getElementById('input-nombre-centro').value.trim();
+      if (!nombre) return;
+      centrosEstudios.push({ nombre, asignaturas: [], notas: [], asistencia: [] });
+      renderizarCentros();
+      renderizarNotasCentros();
+      renderizarAsistenciaCentros();
+      cerrarModalCentro();
+    }
+
+    function renderizarCentros() {
+      const contenedor = document.getElementById('lista-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirDetalleCentro('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">🏫</span><span class="link-txt">Ver ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas</p>
+          </div>
+        `;
+      });
+    }
+
+    function abrirDetalleCentro(nombreCentro) {
+      centroActivo = nombreCentro;
+      document.getElementById('titulo-centro-activo').textContent = nombreCentro;
+      renderizarAsignaturasCentro();
+      cambiarVista('centro-detalle');
+    }
+
+    function renderizarAsignaturasCentro() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const contenedor = document.getElementById('lista-asignaturas-container');
+      contenedor.innerHTML = '';
+      if (!centro || centro.asignaturas.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas.</p>`;
+        return;
+      }
+      centro.asignaturas.forEach((asig, idx) => {
+        contenedor.innerHTML += `
+          <div class="card" style="border-left: 4px solid ${asig.color};">
+            <div class="section-flex">
+              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio} - ${asig.fin}</span>
+              <div>
+                <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
+                <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
+              </div>
+            </div>
+            <h4 style="margin-top: 6px;">${asig.nombre}</h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
+          </div>
+        `;
+      });
+    }
+
+    function abrirModalAsignaturaCrear() {
+      document.getElementById('modal-asig-titulo').textContent = 'Nueva Asignatura';
+      document.getElementById('input-asig-edit-index').value = '-1';
+      document.getElementById('input-asig-nombre').value = '';
+      document.getElementById('input-asig-docente').value = '';
+      document.getElementById('input-asig-aula').value = '';
+      document.getElementById('modalAsignatura').classList.add('active');
+    }
+
+    function abrirModalAsignaturaEditar(index) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const asig = centro.asignaturas[index];
+      document.getElementById('modal-asig-titulo').textContent = 'Editar Asignatura';
+      document.getElementById('input-asig-edit-index').value = index;
+      document.getElementById('input-asig-nombre').value = asig.nombre;
+      document.getElementById('input-asig-docente').value = asig.docente;
+      document.getElementById('input-asig-aula').value = asig.aula;
+      document.getElementById('input-asig-dia').value = asig.dia;
+      document.getElementById('input-asig-inicio').value = asig.inicio;
+      document.getElementById('input-asig-fin').value = asig.fin;
+      colorSeleccionadoHex = asig.color;
+      document.getElementById('modalAsignatura').classList.add('active');
+    }
+
+    function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
+    function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
+
+    function guardarOActualizarAsignatura() {
+      const nombre = document.getElementById('input-asig-nombre').value.trim();
+      const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
+      const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
+      const dia = document.getElementById('input-asig-dia').value;
+      const inicio = document.getElementById('input-asig-inicio').value;
+      const fin = document.getElementById('input-asig-fin').value;
+      const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
+
+      if (!nombre) return;
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      if (centro) {
+        if (editIndex === -1) {
+          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
+        } else {
+          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex };
+        }
+      }
+      renderizarAsignaturasCentro();
+      sincronizarYRenderizarHorario();
+      actualizarSelectorPomodoroItems();
+      cerrarModalAsignatura();
+    }
+
+    function eliminarAsignatura(index) {
+      if (confirm('¿Eliminar esta asignatura?')) {
+        const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+        if (centro) {
+          centro.asignaturas.splice(index, 1);
+          renderizarAsignaturasCentro();
+          sincronizarYRenderizarHorario();
+          actualizarSelectorPomodoroItems();
+        }
+      }
+    }
+
+    // --- REGISTRO DE NOTAS (SINCRONIZADO CON CENTROS) ---
+    function renderizarNotasCentros() {
+      const contenedor = document.getElementById('lista-notas-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirNotasDetalle('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">📊</span><span class="link-txt">Ver notas ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">${c.notas.length} notas registradas</p>
+          </div>
+        `;
+      });
+    }
+
+    function abrirNotasDetalle(nombreCentro) {
+      centroActivo = nombreCentro;
+      document.getElementById('titulo-notas-centro').textContent = nombreCentro;
+      renderizarCalificacionesCentro();
+      cambiarVista('notas-detalle');
+    }
+
+    function abrirModalNota() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const sel = document.getElementById('input-nota-asig');
+      sel.innerHTML = '';
+      if (centro && centro.asignaturas.length > 0) {
+        centro.asignaturas.forEach(a => { sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`; });
+      } else {
+        sel.innerHTML = `<option value="General">General</option>`;
+      }
+      document.getElementById('input-nota-tipo').value = '';
+      document.getElementById('input-nota-valor').value = '';
+      document.getElementById('input-nota-obs').value = '';
+      document.getElementById('modalNota').classList.add('active');
+    }
+
+    function cerrarModalNota() { document.getElementById('modalNota').classList.remove('active'); }
+    function cerrarModalNotaFuera(e) { if (e.target.id === 'modalNota') cerrarModalNota(); }
+
+    function guardarNuevaNota() {
+      const asig = document.getElementById('input-nota-asig').value;
+      const tipo = document.getElementById('input-nota-tipo').value.trim() || 'Examen';
+      const valor = parseFloat(document.getElementById('input-nota-valor').value) || 0;
+      const obs = document.getElementById('input-nota-obs').value.trim();
+
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      if (centro) centro.notas.push({ asig, tipo, valor, obs });
+      renderizarCalificacionesCentro();
+      cerrarModalNota();
+    }
+
+    function eliminarNota(idx) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      if (centro) {
+        centro.notas.splice(idx, 1);
+        renderizarCalificacionesCentro();
+      }
+    }
+
+    // --- CONTROL DE ASISTENCIA (SINCRONIZADO Y OPCIONES COMPLETAS) ---
+    function renderizarAsistenciaCentros() {
+      const contenedor = document.getElementById('lista-asistencia-centros-container');
+      contenedor.innerHTML = '';
+      centrosEstudios.forEach(c => {
+        contenedor.innerHTML += `
+          <div class="card interactive" onclick="abrirAsistenciaDetalle('${c.nombre}')">
+            <div class="section-flex"><span style="font-size: 24px;">📋</span><span class="link-txt">Pasar lista ›</span></div>
+            <h4 style="margin-top: 6px;">${c.nombre}</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas</p>
+          </div>
+        `;
+      });
+    }
+
+    function abrirAsistenciaDetalle(nombreCentro) {
+      centroActivo = nombreCentro;
+      document.getElementById('titulo-asistencia-centro').textContent = nombreCentro;
+      renderizarControlAsistenciaCentro();
+      cambiarVista('asistencia-detalle');
+    }
+
+    function renderizarControlAsistenciaCentro() {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const contenedor = document.getElementById('lista-control-asistencia-container');
+      contenedor.innerHTML = '';
+      if (!centro || centro.asignaturas.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas en este centro.</p>`;
+        return;
+      }
+      centro.asignaturas.forEach((asig) => {
+        contenedor.innerHTML += `
+          <div class="card" style="border-left: 4px solid ${asig.color};">
+            <div class="section-flex">
+              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
+              <span style="font-size: 11px; color: var(--text-muted);">Aula: ${asig.aula}</span>
+            </div>
+            <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="alert('✅ Asistencia registrada: Asistió')">Asistió</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="alert('❌ Asistencia registrada: Falta')">Falta</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="alert('⚠️ Asistencia registrada: Retraso')">Retraso</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="alert('📝 Asistencia registrada: Falta Justificada')">Justificada</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="alert('🚫 Asistencia registrada: No hubo clase')">No hubo clase</button>
+            </div>
+          </div>
+        `;
+      });
     }
 
     // --- SINCRONIZACIÓN DE HORARIO ---
@@ -1380,139 +1624,6 @@
         btn.textContent = "Iniciar Pomodoro";
         btn.style.background = "var(--primary)";
       }
-    }
-
-    function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
-    function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
-    function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
-    function guardarNuevoCentro() {
-      const nombre = document.getElementById('input-nombre-centro').value.trim();
-      if (!nombre) return;
-      centrosEstudios.push({ nombre, asignaturas: [], notas: [], asistencia: [] });
-      renderizarCentros();
-      cerrarModalCentro();
-    }
-    function renderizarCentros() {
-      const contenedor = document.getElementById('lista-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirDetalleCentro('${c.nombre}')">
-            <div class="section-flex"><span style="font-size: 24px;">🏫</span><span class="link-txt">Ver ›</span></div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-          </div>
-        `;
-      });
-    }
-    function abrirDetalleCentro(nombre) {
-      centroActivo = nombre;
-      document.getElementById('titulo-centro-activo').textContent = nombre;
-      renderizarAsignaturasCentro();
-      cambiarVista('centro-detalle');
-    }
-    function renderizarAsignaturasCentro() {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const contenedor = document.getElementById('lista-asignaturas-container');
-      contenedor.innerHTML = '';
-      centro.asignaturas.forEach((a, idx) => {
-        contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${a.color};">
-            <div class="section-flex"><span class="badge">${a.dia} • ${a.inicio}</span><button class="btn-accion-txt btn-eliminar" onclick="eliminarAsig(${idx})">Eliminar</button></div>
-            <h4>${a.nombre}</h4>
-          </div>
-        `;
-      });
-    }
-    function abrirModalAsignaturaCrear() { document.getElementById('modalAsignatura').classList.add('active'); }
-    function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
-    function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
-    function guardarOActualizarAsignatura() {
-      const nombre = document.getElementById('input-asig-nombre').value.trim();
-      const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
-      const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
-      const dia = document.getElementById('input-asig-dia').value;
-      const inicio = document.getElementById('input-asig-inicio').value;
-      const fin = document.getElementById('input-asig-fin').value;
-      if (!nombre) return;
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
-      renderizarAsignaturasCentro();
-      sincronizarYRenderizarHorario();
-      actualizarSelectorPomodoroItems();
-      cerrarModalAsignatura();
-    }
-    function eliminarAsig(idx) {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      centro.asignaturas.splice(idx, 1);
-      renderizarAsignaturasCentro();
-      sincronizarYRenderizarHorario();
-    }
-
-    function renderizarNotasCentros() {
-      const contenedor = document.getElementById('lista-notas-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirNotasDetalle('${c.nombre}')">
-            <div class="section-flex"><span style="font-size: 24px;">📊</span><span class="link-txt">Ver ›</span></div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-          </div>
-        `;
-      });
-    }
-    function abrirNotasDetalle(nombre) {
-      centroActivo = nombre;
-      document.getElementById('titulo-notas-centro').textContent = nombre;
-      renderizarCalificacionesCentro();
-      cambiarVista('notas-detalle');
-    }
-    function abrirModalNota() {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      const sel = document.getElementById('input-nota-asig');
-      sel.innerHTML = '';
-      centro.asignaturas.forEach(a => { sel.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`; });
-      document.getElementById('modalNota').classList.add('active');
-    }
-    function cerrarModalNota() { document.getElementById('modalNota').classList.remove('active'); }
-    function cerrarModalNotaFuera(e) { if (e.target.id === 'modalNota') cerrarModalNota(); }
-    function guardarNuevaNota() {
-      const asig = document.getElementById('input-nota-asig').value;
-      const tipo = document.getElementById('input-nota-tipo').value.trim() || 'Examen';
-      const valor = parseFloat(document.getElementById('input-nota-valor').value) || 0;
-      const obs = document.getElementById('input-nota-obs').value.trim();
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      centro.notas.push({ asig, tipo, valor, obs });
-      renderizarCalificacionesCentro();
-      cerrarModalNota();
-    }
-    function eliminarNota(idx) {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      centro.notas.splice(idx, 1);
-      renderizarCalificacionesCentro();
-    }
-
-    function renderizarAsistenciaCentros() {
-      const contenedor = document.getElementById('lista-asistencia-centros-container');
-      contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
-        contenedor.innerHTML += `
-          <div class="card interactive" onclick="abrirAsistenciaDetalle('${c.nombre}')">
-            <div class="section-flex"><span style="font-size: 24px;">📋</span><span class="link-txt">Pasar lista ›</span></div>
-            <h4 style="margin-top: 6px;">${c.nombre}</h4>
-          </div>
-        `;
-      });
-    }
-    function abrirAsistenciaDetalle(nombre) {
-      centroActivo = nombre;
-      document.getElementById('titulo-asistencia-centro').textContent = nombre;
-      const cont = document.getElementById('lista-control-asistencia-container');
-      cont.innerHTML = '';
-      const centro = centrosEstudios.find(c => c.nombre === nombre);
-      centro.asignaturas.forEach(a => {
-        cont.innerHTML += `<div class="card"><h4>${a.nombre}</h4><button class="btn-main" style="padding:6px; font-size:11px;" onclick="alert('Asistencia guardada')">Marcar Asistido</button></div>`;
-      });
-      cambiarVista('asistencia-detalle');
     }
 
     function abrirModalCategoria() { document.getElementById('modalCategoria').classList.add('active'); }
