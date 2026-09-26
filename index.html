@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RitmoAcade - Táctil Corregido</title>
+  <title>RitmoAcade - Navegación Operativa</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Contenedor principal de la aplicación -->
   <div class="app-container">
 
     <!-- ================= VISTA 1: HOY (DASHBOARD) ================= -->
@@ -21,7 +20,7 @@
             <div class="header-title">RitmoAcade</div>
           </div>
         </div>
-        <div class="config-btn" onclick="cambiarVista('mas', document.querySelectorAll('.nav-item')[4])" title="Ajustes">⚙️</div>
+        <button id="btn-ajustes" class="config-btn" title="Ajustes">⚙️</button>
       </header>
 
       <div class="fecha" id="fecha-actual-label">Sábado, 26 de septiembre de 2026</div>
@@ -30,7 +29,7 @@
 
       <div class="dashboard-grid">
         <!-- Próximo evento -->
-        <section class="card card-proximo interactive-card" onclick="cambiarVista('horario', document.querySelectorAll('.nav-item')[1])">
+        <section id="card-proximo-evento" class="card card-proximo interactive-card">
           <div class="card-tag-wrapper">
             <span class="card-tag">PRÓXIMO EVENTO</span>
             <span class="badge-tiempo">En 2 horas</span>
@@ -40,9 +39,9 @@
           <div class="card-footer-info">📍 Estudio Principal • ⏱️ 10:00 - 11:30 (Ver horario completo ›)</div>
         </section>
 
-        <!-- Widgets de estadísticas 1 -->
+        <!-- Widgets estadísticos 1 -->
         <div class="stats-grid-2">
-          <article class="card stat-card interactive-card" onclick="cambiarVista('tareas', null)">
+          <article id="card-widget-tareas" class="card stat-card interactive-card">
             <div class="stat-number-wrapper">
               <span class="stat-number" id="num-tareas-pendientes">2</span>
               <span class="stat-trend positive">Ver listado ›</span>
@@ -50,7 +49,7 @@
             <div class="stat-label">tareas pendientes</div>
           </article>
 
-          <article class="card stat-card interactive-card" onclick="cambiarVista('estudio', document.querySelectorAll('.nav-item')[2])">
+          <article id="card-widget-estudio" class="card stat-card interactive-card">
             <div class="stat-number-wrapper">
               <span class="stat-number" id="num-minutos">0</span>
               <span class="stat-unit">min</span>
@@ -59,9 +58,9 @@
           </article>
         </div>
 
-        <!-- Widgets de estadísticas 2 -->
+        <!-- Widgets estadísticos 2 -->
         <div class="stats-grid-2">
-          <article class="card stat-card interactive-card" onclick="cambiarVista('objetivos', null)">
+          <article id="card-widget-objetivos" class="card stat-card interactive-card">
             <div class="stat-number-wrapper">
               <span class="stat-number" id="porcentaje-objetivo">65%</span>
               <span class="stat-trend positive">Ver metas ›</span>
@@ -73,7 +72,7 @@
           </article>
           
           <!-- Widget Racha -->
-          <article class="card stat-card racha-card-click interactive-card" onclick="abrirRacha()">
+          <article id="card-widget-racha" class="card stat-card racha-card-click interactive-card">
             <div class="stat-number-wrapper">
               <span class="stat-number" id="racha-dias-count">🔥 3</span>
               <span class="badge-streak">Récord</span>
@@ -86,7 +85,7 @@
         <!-- Sección Exámenes -->
         <div class="seccion-bloque">
           <div class="titulo-seccion-chico">Próximos Exámenes / Audiciones</div>
-          <div class="card card-examen interactive-card" onclick="cambiarVista('examenes', null)">
+          <div id="card-widget-examenes" class="card card-examen interactive-card">
             <div class="examen-header">
               <span class="examen-badge">Conservatorio</span>
               <span class="examen-fecha">15 Octubre</span>
@@ -100,20 +99,20 @@
         <div class="seccion-bloque">
           <div class="seccion-header-flex">
             <div class="titulo-seccion-chico" style="margin-bottom:0;">Repertorio Activo</div>
-            <span class="ver-todo-link" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">Ver todo ›</span>
+            <span id="link-ver-todo-rep" class="ver-todo-link">Ver todo ›</span>
           </div>
           <div class="repertorio-grid" id="grid-instrumentos-home" style="margin-top: 10px;">
-            <article class="card-instrumento interactive-card" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+            <article class="card-instrumento interactive-card inst-repertorio-click">
               <span class="icono">🎷</span>
               <h4>Saxofón</h4>
               <span class="card-sub-instrumento">4 piezas</span>
             </article>
-            <article class="card-instrumento interactive-card" onclick="cambiarVista('repertorio', document.querySelectorAll('.nav-item')[3])">
+            <article class="card-instrumento interactive-card inst-repertorio-click">
               <span class="icono">🎹</span>
               <h4>Piano</h4>
               <span class="card-sub-instrumento">2 piezas</span>
             </article>
-            <article class="card-instrumento card-add interactive-card" onclick="abrirModalInstrumento()">
+            <article id="btn-abrir-modal-inst" class="card-instrumento card-add interactive-card">
               <span class="icono-plus">+</span>
               <h4>Añadir</h4>
             </article>
@@ -131,13 +130,13 @@
       
       <div class="horario-controles-bar">
         <div class="horario-opciones" style="flex: 1;">
-          <select id="filtro-horario" onchange="cambiarFiltroHorario(this)">
+          <select id="filtro-horario">
             <option value="semana">Vista Semanal Completa</option>
             <option value="hoy">Eventos de Hoy</option>
             <option value="pendientes">Bloques Pendientes</option>
           </select>
         </div>
-        <button class="btn-secundario-peque interactive-card" onclick="alert('Función de nuevo bloque')">+ Bloque</button>
+        <button id="btn-nuevo-bloque" class="btn-secundario-peque interactive-card">+ Bloque</button>
       </div>
 
       <div class="dashboard-grid" style="margin-top: 16px;">
@@ -179,14 +178,14 @@
 
         <div class="cronometro-display-box" style="font-size: 56px; font-weight: 800; margin-bottom: 24px; letter-spacing: 3px; font-variant-numeric: tabular-nums;" id="cronometro">00:00:00</div>
         
-        <button class="btn-estudio" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
+        <button id="btn-iniciar-sesion" class="btn-estudio">Empezar sesión de estudio</button>
 
         <div class="metronomo-mini-box" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-color);">
           <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Metrónomo de Apoyo (BPM)</div>
           <div style="display: flex; justify-content: center; align-items: center; gap: 12px;">
-            <button class="btn-metronomo-control" onclick="ajustarBPM(-5)">-5</button>
+            <button id="btn-bpm-menos" class="btn-metronomo-control">-5</button>
             <span id="bpm-display" style="font-size: 18px; font-weight: bold; width: 60px;">120 BPM</span>
-            <button class="btn-metronomo-control" onclick="ajustarBPM(5)">+5</button>
+            <button id="btn-bpm-mas" class="btn-metronomo-control">+5</button>
           </div>
         </div>
       </section>
@@ -196,27 +195,27 @@
     <main id="vista-repertorio" class="view">
       <header>
         <div class="header-title">Gestión de Repertorio</div>
-        <button class="config-btn" onclick="abrirModalInstrumento()" title="Añadir instrumento">+</button>
+        <button id="btn-add-inst-header" class="config-btn" title="Añadir instrumento">+</button>
       </header>
       <p class="fecha">Tus categorías de instrumentos y piezas musicales organizadas.</p>
 
       <div class="repertorio-container-completo">
         <div class="repertorio-grid" id="grid-instrumentos-completo">
-          <article class="card-instrumento card-re repertorio-item-detalle interactive-card" onclick="cambiarVista('tareas', null)">
+          <article class="card-instrumento card-re repertorio-item-detalle interactive-card inst-repertorio-click">
             <span class="icono">🎷</span>
             <h4>Saxofón</h4>
             <span class="card-sub-instrumento">4 piezas activas</span>
             <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 80%;"></div></div>
           </article>
 
-          <article class="card-instrumento card-re repertorio-item-detalle interactive-card" onclick="cambiarVista('tareas', null)">
+          <article class="card-instrumento card-re repertorio-item-detalle interactive-card inst-repertorio-click">
             <span class="icono">🎹</span>
             <h4>Piano</h4>
             <span class="card-sub-instrumento">2 piezas activas</span>
             <div class="progress-bar-mini" style="margin-top: 10px;"><div class="progress-fill" style="width: 45%;"></div></div>
           </article>
 
-          <article class="card-instrumento card-add interactive-card" onclick="abrirModalInstrumento()">
+          <article class="card-instrumento card-add interactive-card btn-abrir-modal-inst-class">
             <span class="icono-plus">+</span>
             <h4>Añadir instrumento</h4>
             <span class="card-sub-instrumento">Personalizar</span>
@@ -229,7 +228,7 @@
     <main id="vista-tareas" class="view">
       <header>
         <div class="header-title">Tareas Pendientes</div>
-        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+        <button id="btn-volver-tareas" class="config-btn">‹</button>
       </header>
       <p class="fecha">Listado detallado de tus pendientes musicales y revisiones.</p>
 
@@ -258,7 +257,7 @@
     <main id="vista-objetivos" class="view">
       <header>
         <div class="header-title">Objetivos Diarios</div>
-        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+        <button id="btn-volver-objetivos" class="config-btn">‹</button>
       </header>
       <p class="fecha">Metas establecidas para mantener tu progresión constante.</p>
 
@@ -287,7 +286,7 @@
     <main id="vista-examenes" class="view">
       <header>
         <div class="header-title">Exámenes y Audiciones</div>
-        <button class="config-btn" onclick="cambiarVista('hoy', document.querySelectorAll('.nav-item')[0])">‹</button>
+        <button id="btn-volver-examenes" class="config-btn">‹</button>
       </header>
       <p class="fecha">Tus próximas fechas clave y requisitos de repertorio.</p>
 
@@ -312,7 +311,7 @@
       <p class="fecha">Configuración general de la aplicación y preferencias.</p>
 
       <div class="dashboard-grid">
-        <article class="card card-ajuste-item interactive-card" onclick="alert('Sincronización con la nube completada con éxito.')">
+        <article class="card card-ajuste-item interactive-card">
           <div class="ajuste-icon">🔄</div>
           <div>
             <div class="ajuste-titulo">Sincronizar datos</div>
@@ -320,7 +319,7 @@
           </div>
         </article>
 
-        <article class="card card-ajuste-item interactive-card" onclick="alert('Modo Oscuro nativo activado permanentemente.')">
+        <article class="card card-ajuste-item interactive-card">
           <div class="ajuste-icon">🌙</div>
           <div>
             <div class="ajuste-titulo">Modo Oscuro / Tema</div>
@@ -328,44 +327,44 @@
           </div>
         </article>
 
-        <article class="card card-ajuste-item interactive-card" onclick="alert('RitmoAcade v2.9 - Versión Táctil Optimizada.')">
+        <article class="card card-ajuste-item interactive-card">
           <div class="ajuste-icon">ℹ️</div>
           <div>
             <div class="ajuste-titulo">Acerca de RitmoAcade</div>
-            <div class="ajuste-desc">Versión 2.9 Táctil Corregida</div>
+            <div class="ajuste-desc">Versión 3.1 Navegación Blindada</div>
           </div>
         </article>
       </div>
     </main>
 
-  </div> <!-- Fin .app-container -->
+  </div>
 
-  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR (Z-index y eventos seguros) ================= -->
+  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR (IDs directos para garantizar eventos) ================= -->
   <nav class="nav-bar">
-    <div class="nav-item active" onclick="cambiarVista('hoy', this)">
+    <div id="nav-hoy" class="nav-item active" data-view="hoy">
       <span class="nav-icon">🏠</span>
       <span class="nav-label">Hoy</span>
     </div>
-    <div class="nav-item" onclick="cambiarVista('horario', this)">
+    <div id="nav-horario" class="nav-item" data-view="horario">
       <span class="nav-icon">📅</span>
       <span class="nav-label">Horario</span>
     </div>
-    <div class="nav-item" onclick="cambiarVista('estudio', this)">
+    <div id="nav-estudio" class="nav-item" data-view="estudio">
       <span class="nav-icon">⏱️</span>
       <span class="nav-label">Estudio</span>
     </div>
-    <div class="nav-item" onclick="cambiarVista('repertorio', this)">
+    <div id="nav-repertorio" class="nav-item" data-view="repertorio">
       <span class="nav-icon">🎵</span>
       <span class="nav-label">Repertorio</span>
     </div>
-    <div class="nav-item" onclick="cambiarVista('mas', this)">
+    <div id="nav-mas" class="nav-item" data-view="mas">
       <span class="nav-icon">⋯</span>
       <span class="nav-label">Más</span>
     </div>
   </nav>
 
   <!-- ================= BOTTOM SHEET 1: RACHA ================= -->
-  <div id="modalRacha" class="bottom-sheet-overlay" onclick="cerrarRachaFuera(event)">
+  <div id="modalRacha" class="bottom-sheet-overlay">
     <div class="bottom-sheet-content">
       <div class="drag-handle"></div>
       <h3 style="margin-bottom: 8px;">Tu Racha y Progreso</h3>
@@ -389,18 +388,18 @@
         </div>
       </div>
 
-      <button class="btn-cerrar" onclick="cerrarRacha()">Entendido</button>
+      <button id="btn-cerrar-racha" class="btn-cerrar">Entendido</button>
     </div>
   </div>
 
   <!-- ================= BOTTOM SHEET 2: AÑADIR INSTRUMENTO ================= -->
-  <div id="modalInstrumento" class="bottom-sheet-overlay" onclick="cerrarModalInstFuera(event)">
+  <div id="modalInstrumento" class="bottom-sheet-overlay">
     <div class="bottom-sheet-content">
       <div class="drag-handle"></div>
       <h3 style="margin-bottom: 8px;">Nuevo Instrumento</h3>
       <p class="bottom-sheet-desc">Añade una categoría personalizada a tu repertorio directamente desde aquí.</p>
       <input type="text" id="nombre-instrumento" placeholder="Ej. Violín, Guitarra, Cello..." style="width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 15px; margin-bottom: 16px;">
-      <button class="btn-cerrar" onclick="guardarNuevoInstrumento()">Guardar instrumento</button>
+      <button id="btn-guardar-instrumento" class="btn-cerrar">Guardar instrumento</button>
     </div>
   </div>
 
