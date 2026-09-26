@@ -33,7 +33,7 @@ body {
 }
 .view.active-view {
   display: block;
-  animation: fadeIn 0.25s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -84,7 +84,6 @@ header {
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  transition: border-color 0.2s ease;
 }
 .config-btn:active {
   transform: scale(0.95);
@@ -141,9 +140,11 @@ header {
   transition: transform 0.1s ease, border-color 0.2s ease;
 }
 
+.interactive-card {
+  cursor: pointer;
+}
 .interactive-card:active {
   transform: scale(0.98);
-  cursor: pointer;
 }
 
 .card-tag-wrapper {
@@ -218,7 +219,7 @@ header {
 
 .stat-trend {
   font-size: 11px;
-  color: var(--success);
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -253,7 +254,9 @@ header {
 
 .racha-card-click {
   cursor: pointer;
-  position: relative;
+}
+.racha-card-click:active {
+  transform: scale(0.98);
 }
 
 .ver-detalle-txt {
@@ -291,7 +294,7 @@ header {
   color: var(--text-muted);
 }
 
-/* Horarios - Tipografía grande y legible (Adiós letra enana) */
+/* Horarios y Tareas */
 .horario-controles-bar {
   display: flex;
   gap: 10px;
@@ -308,13 +311,13 @@ header {
   font-weight: 600;
   cursor: pointer;
 }
-.horario-item {
+.horario-item, .tarea-item-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 16px;
 }
-.horario-header-row {
+.horario-header-row, .tarea-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -340,7 +343,7 @@ header {
   color: var(--warning);
 }
 .horario-titulo {
-  font-size: 16px; /* Tipografía cómoda y legible */
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 4px;
@@ -359,7 +362,7 @@ header {
   color: var(--text-main);
 }
 
-/* Botón de estudio con feedback interactivo fluido */
+/* Botón de estudio */
 .btn-estudio {
   background-color: var(--primary);
   color: #FFFFFF;
@@ -392,7 +395,7 @@ header {
   cursor: pointer;
 }
 
-/* Repertorio: Tarjetas grandes y amplias */
+/* Repertorio */
 .repertorio-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -449,6 +452,9 @@ header {
   gap: 16px;
   cursor: pointer;
 }
+.card-ajuste-item:active {
+  transform: scale(0.98);
+}
 .ajuste-icon {
   font-size: 24px;
   background: var(--bg-main);
@@ -466,7 +472,7 @@ header {
   color: var(--text-muted);
 }
 
-/* Barra de navegación inferior fija (Formato original y táctil) */
+/* Barra de navegación inferior fija */
 .nav-bar {
   position: fixed;
   bottom: 0;
@@ -505,7 +511,7 @@ header {
   color: var(--primary);
 }
 
-/* Bottom Sheets / Paneles deslizantes inferiores */
+/* Bottom Sheets */
 .bottom-sheet-overlay {
   position: fixed;
   bottom: 0;
