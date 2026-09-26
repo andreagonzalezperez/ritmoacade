@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Gamificado</title>
+  <title>RitmoAcade - Gamificado y Completo</title>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -250,15 +250,13 @@
       z-index: 2;
     }
 
-    /* ESTILOS ESTILO DUOLINGO PARA LA VISTA DE RACHA */
+    /* Estilos Duolingo */
     .duo-header-card {
       background: linear-gradient(135deg, #1E1B4B, #311042);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 24px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
     }
     .duo-fire-big {
       font-size: 64px;
@@ -297,7 +295,6 @@
       font-size: 14px;
     }
 
-    /* Pestañas de Racha (Diaria, Semanal, Mensual) */
     .racha-tabs {
       display: flex;
       background: var(--bg-card);
@@ -330,7 +327,6 @@
       display: flex !important;
     }
 
-    /* Sistema de Recompensas Camino */
     .reward-step {
       display: flex;
       align-items: center;
@@ -352,7 +348,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Paleta de colores */
     .color-picker-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -371,7 +366,6 @@
       transform: scale(1.1);
     }
 
-    /* Barra Inferior */
     .nav-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -464,6 +458,15 @@
       align-items: center;
       justify-content: center;
     }
+    .btn-accion-txt {
+      background: none;
+      border: none;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-editar { color: var(--primary); }
+    .btn-eliminar { color: var(--danger); }
   </style>
 </head>
 <body>
@@ -521,7 +524,6 @@
           <div class="progress"><div class="fill" style="width: 65%;"></div></div>
         </div>
         
-        <!-- ENLACE A LA NUEVA VISTA TIPO DUOLINGO -->
         <div class="card interactive" onclick="cambiarVista('racha-duo')">
           <div class="stat-top">
             <span class="num" style="color: var(--duo-fire);">🔥 3</span>
@@ -545,7 +547,7 @@
     </div>
   </div>
 
-  <!-- ================= VISTA NUEVA: RACHA TIPO DUOLINGO CON ANÁLISIS Y REGALOS ================= -->
+  <!-- ================= VISTA DUOLINGO RACHA ================= -->
   <div id="vista-racha-duo" class="view">
     <header>
       <div class="titulo">Tu Racha y Progreso</div>
@@ -553,13 +555,11 @@
     </header>
 
     <div class="grid">
-      <!-- Tarjeta Principal Fueguitos -->
       <div class="duo-header-card">
         <div class="duo-fire-big">🔥</div>
         <div style="font-size: 32px; font-weight: bold; margin: 4px 0;">3 DÍAS</div>
         <p style="color: var(--text-muted); font-size: 13px;">¡Estás a 4 días de batir tu récord personal de 7 días!</p>
         
-        <!-- Burbujas de los días de la semana -->
         <div class="duo-days-row">
           <div class="duo-day-bubble active"><span>L</span><strong>✓</strong></div>
           <div class="duo-day-bubble active"><span>M</span><strong>✓</strong></div>
@@ -571,81 +571,65 @@
         </div>
       </div>
 
-      <!-- Selector de Análisis (Diario, Semanal, Mensual) -->
       <div class="racha-tabs">
         <div class="racha-tab active" onclick="cambiarRachaTab('diario', this)">Diario</div>
         <div class="racha-tab" onclick="cambiarRachaTab('semanal', this)">Semanal</div>
         <div class="racha-tab" onclick="cambiarRachaTab('mensual', this)">Mensual</div>
       </div>
 
-      <!-- Subvista Análisis Diario -->
       <div id="racha-sub-diario" class="racha-subview active">
         <div class="card">
           <div class="section-flex">
             <h4>Análisis de Hoy</h4>
             <span class="badge" style="background: var(--duo-flame-bg); color: var(--duo-fire);">Completado</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has practicado 45 minutos hoy distribuidos en Saxofón y Armonía. ¡Excelente constancia!</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has practicado 45 minutos hoy distribuidos en Saxofón y Armonía.</p>
         </div>
       </div>
 
-      <!-- Subvista Análisis Semanal -->
       <div id="racha-sub-semanal" class="racha-subview">
         <div class="card">
           <div class="section-flex">
             <h4>Resumen de la Semana</h4>
             <span class="badge">3.5 hrs total</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Tu día más productivo fue el miércoles con 1h 20m de estudio enfocado.</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Tu día más productivo fue el miércoles con 1h 20m de estudio.</p>
         </div>
       </div>
 
-      <!-- Subvista Análisis Mensual -->
       <div id="racha-sub-mensual" class="racha-subview">
         <div class="card">
           <div class="section-flex">
             <h4 style="color: var(--duo-fire);">📅 Septiembre 2026</h4>
             <span class="badge-warn">18 días activos</span>
           </div>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has acumulado un total de 14 horas de práctica instrumental este mes.</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Has acumulado 14 horas de práctica instrumental este mes.</p>
         </div>
       </div>
 
-      <!-- CAMINO DE RECOMPENSAS / REGALOS POR RACHA -->
       <div class="card">
         <h4 style="margin-bottom: 12px; color: var(--duo-fire);">🎁 Camino de Recompensas</h4>
-        
         <div class="grid" style="gap: 10px;">
           <div class="reward-step unlocked">
             <div class="reward-icon">🎁</div>
             <div>
               <div style="font-weight: bold; font-size: 13px; color: var(--success);">1 Semana Consecutiva</div>
-              <div style="font-size: 11px; color: var(--text-muted);">Desbloquea: Tema visual neón exclusivo. ¡Reclamado!</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Tema visual neón desbloqueado. ¡Reclamado!</div>
             </div>
           </div>
-
           <div class="reward-step">
             <div class="reward-icon">🔓</div>
             <div>
               <div style="font-weight: bold; font-size: 13px;">2 Semanas Consecutivas</div>
-              <div style="font-size: 11px; color: var(--text-muted);">Regalo: Pack de partituras de Jazz avanzadas. (Te faltan 4 días)</div>
-            </div>
-          </div>
-
-          <div class="reward-step">
-            <div class="reward-icon">🏆</div>
-            <div>
-              <div style="font-weight: bold; font-size: 13px;">1 Mes de Racha Maestra</div>
-              <div style="font-size: 11px; color: var(--text-muted);">Regalo: Efecto de sonido de aplausos maestro al finalizar sesiones.</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Pack de partituras de Jazz avanzadas. (Te faltan 4 días)</div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ================= VISTA 2: HORARIO (Sincronizado) ================= -->
+  <!-- ================= VISTA 2: HORARIO ================= -->
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
@@ -661,29 +645,12 @@
 
     <!-- Subvista Diaria -->
     <div id="subview-diaria" class="horario-subview active">
-      <div id="container-diaria-dinamico" class="grid">
-        <div class="card">
-          <div class="section-flex">
-            <span style="color: var(--primary); font-weight: bold;">10:00 - 11:30</span>
-            <span class="badge">Completado</span>
-          </div>
-          <h4>Práctica de Saxofón</h4>
-          <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Estudio de escalas armónicas.</p>
-        </div>
-      </div>
+      <div id="container-diaria-dinamico" class="grid"></div>
     </div>
 
     <!-- Subvista Semanal -->
     <div id="subview-semanal" class="horario-subview">
-      <div id="container-semanal-dinamico" class="grid">
-        <div class="card">
-          <div class="section-flex">
-            <h4 style="color: var(--primary);">Lunes / Miércoles</h4>
-            <span class="badge">09:30 - 11:00</span>
-          </div>
-          <p style="font-size: 14px; margin-top: 4px;">Técnica instrumental avanzada (Saxofón)</p>
-        </div>
-      </div>
+      <div id="container-semanal-dinamico" class="grid"></div>
     </div>
 
     <!-- Subvista Mensual -->
@@ -700,7 +667,7 @@
       </div>
     </div>
 
-    <!-- Subvista Horario Visual tipo Excel Sincronizado -->
+    <!-- Subvista Horario Visual Sincronizado -->
     <div id="subview-calendario" class="horario-subview">
       <div class="card" style="padding: 10px;">
         <div class="section-flex" style="margin-bottom: 8px;">
@@ -726,7 +693,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- ================= VISTA 3: ESTUDIO ================= -->
@@ -735,7 +701,6 @@
       <div class="titulo">Sesión de Estudio</div>
     </header>
     <p class="fecha">Cronometra tus avances en tiempo real.</p>
-
     <div class="card" style="text-align: center; padding: 30px 16px;">
       <div style="font-size: 48px; font-weight: bold; margin-bottom: 20px;" id="cronometro">00:00:00</div>
       <button class="btn-main" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
@@ -749,47 +714,11 @@
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalCategoria()">+ Añadir categoría</button>
     </header>
     <p class="fecha">Tus categorías y piezas organizadas.</p>
-
     <div class="grid" id="lista-categorias-container" style="grid-template-columns: 1fr 1fr;">
       <div class="card interactive" onclick="abrirDetalleRepertorio('Saxofón', '🎷')">
         <span style="font-size: 32px;">🎷</span>
         <h4 style="margin-top: 8px;">Saxofón</h4>
         <p style="font-size: 11px; color: var(--text-muted);">4 piezas activas</p>
-      </div>
-      <div class="card interactive" onclick="abrirDetalleRepertorio('Piano', '🎹')">
-        <span style="font-size: 32px;">🎹</span>
-        <h4 style="margin-top: 8px;">Piano</h4>
-        <p style="font-size: 11px; color: var(--text-muted);">2 piezas activas</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= VISTA SECUNDARIA: DETALLE REPERTORIO ================= -->
-  <div id="vista-repertorio-detalle" class="view">
-    <header>
-      <div class="header-user">
-        <span class="avatar" id="detalle-emoji">🎷</span>
-        <div>
-          <div class="sub">Repertorio de</div>
-          <div class="titulo" id="detalle-titulo-cat">Saxofón</div>
-        </div>
-      </div>
-      <button class="btn-config" onclick="cambiarVista('repertorio')">‹</button>
-    </header>
-
-    <div class="section-flex" style="margin-bottom: 14px;">
-      <p class="fecha" style="margin-bottom:0;">Obras y piezas en estudio.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalPieza()">+ Añadir pieza</button>
-    </div>
-
-    <div class="grid" id="lista-piezas-container">
-      <div class="card pieza-item" data-cat="Saxofón">
-        <div class="section-flex">
-          <span class="badge">Estudio Activo</span>
-          <span style="font-size: 11px; color: var(--text-muted);">Autor: Creston</span>
-        </div>
-        <h4>Sonata para Saxofón Alto</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Primer movimiento (Allegro giusto).</p>
       </div>
     </div>
   </div>
@@ -809,21 +738,14 @@
         </div>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Gestiona centros, horarios, docentes y colores</p>
       </div>
-
       <div class="card interactive" onclick="cambiarVista('tareas')">
         <div class="section-flex">
           <h4>📝 Tareas Pendientes</h4>
           <span class="link-txt">Gestionar ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ver listado completo y añadir pendientes</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Ver listado completo</p>
       </div>
-
-      <div class="card interactive" onclick="alert('Datos sincronizados correctamente.')">
-        <h4>🔄 Sincronizar datos</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Guardar progreso en la nube</p>
-      </div>
-      
-      <div class="card interactive" onclick="alert('RitmoAcade v4.3 - Estilo Duolingo y recompensas implementado.')">
+      <div class="card interactive" onclick="alert('RitmoAcade v4.4 - Edición y fechas en asignaturas.')">
         <h4>ℹ️ Acerca de</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Versión optimizada</p>
       </div>
@@ -842,16 +764,7 @@
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalCentro()">+ Añadir centro</button>
     </div>
 
-    <div class="grid" id="lista-centros-container">
-      <div class="card interactive" onclick="abrirDetalleCentro('Conservatorio Superior de Música')">
-        <div class="section-flex">
-          <span style="font-size: 24px;">🏫</span>
-          <span class="link-txt">Ver asignaturas ›</span>
-        </div>
-        <h4 style="margin-top: 6px;">Conservatorio Superior de Música</h4>
-        <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Centro principal</p>
-      </div>
-    </div>
+    <div class="grid" id="lista-centros-container"></div>
   </div>
 
   <!-- ================= VISTA SECUNDARIA: DETALLE ASIGNATURAS CENTRO ================= -->
@@ -861,7 +774,7 @@
         <span class="avatar">🏫</span>
         <div>
           <div class="sub">Centro de Estudios</div>
-          <div class="titulo" id="titulo-centro-activo">Conservatorio Superior</div>
+          <div class="titulo" id="titulo-centro-activo">Conservatorio</div>
         </div>
       </div>
       <button class="btn-config" onclick="cambiarVista('centros-estudio')">‹</button>
@@ -869,39 +782,22 @@
 
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Asignaturas impartidas.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalAsignatura()">+ Añadir asignatura</button>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalAsignaturaCrear()">+ Añadir asignatura</button>
     </div>
 
     <div class="grid" id="lista-asignaturas-container"></div>
   </div>
 
-  <!-- ================= VISTA SECUNDARIA: TAREAS PENDIENTES ================= -->
+  <!-- ================= VISTA SECUNDARIA: TAREAS ================= -->
   <div id="vista-tareas" class="view">
     <header>
       <div class="titulo">Tareas Pendientes</div>
       <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
     </header>
-
-    <div class="section-flex" style="margin-bottom: 14px;">
-      <p class="fecha" style="margin-bottom:0;">Listado de tus pendientes musicales.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTareaParaCrear()">+ Añadir tarea</button>
-    </div>
-
     <div class="grid" id="lista-tareas-container">
-      <div class="card" data-id="1">
-        <div class="section-flex">
-          <span class="badge asignatura-tag">Saxofón</span>
-          <span class="badge-danger prioridad-tag">Urgente</span>
-        </div>
-        <h4 style="margin-top: 6px;" class="titulo-tag">Repasar articulación compases 30-45</h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" class="desc-tag">Estudio detallado del pasaje rápido en la sonata.</p>
-        <div class="footer-info">
-          <span class="fecha-aviso-tag">📅 Fecha: Mañana • ⏰ Aviso activado</span>
-          <div class="tarea-acciones">
-            <button class="btn-accion-txt btn-editar" onclick="editarTarea(this)">Editar</button>
-            <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(this)">Eliminar</button>
-          </div>
-        </div>
+      <div class="card">
+        <h4>Repasar articulación compases 30-45</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Saxofón • Urgente</p>
       </div>
     </div>
   </div>
@@ -958,29 +854,34 @@
     </div>
   </div>
 
-  <!-- ================= MODAL ASIGNATURA ================= -->
+  <!-- ================= MODAL ASIGNATURA (CREAR / EDITAR CON FECHAS) ================= -->
   <div id="modalAsignatura" class="modal" onclick="cerrarModalAsignaturaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nueva Asignatura</h3>
+        <h3 id="modal-asig-titulo">Nueva Asignatura</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalAsignatura()">✕</span>
       </div>
+
+      <input type="hidden" id="input-asig-edit-index" value="-1">
+
       <div class="form-group">
         <label>Nombre</label>
-        <input type="text" id="input-asig-nombre" class="form-control">
+        <input type="text" id="input-asig-nombre" class="form-control" placeholder="Ej. Piano Avanzado...">
       </div>
+
       <div class="row-2">
         <div class="form-group">
           <label>Docente</label>
-          <input type="text" id="input-asig-docente" class="form-control">
+          <input type="text" id="input-asig-docente" class="form-control" placeholder="Profesor...">
         </div>
         <div class="form-group">
           <label>Aula</label>
-          <input type="text" id="input-asig-aula" class="form-control">
+          <input type="text" id="input-asig-aula" class="form-control" placeholder="Aula 3...">
         </div>
       </div>
+
       <div class="form-group">
-        <label>Día</label>
+        <label>Día de la semana</label>
         <select id="input-asig-dia" class="form-control">
           <option value="Lun">Lunes</option>
           <option value="Mar">Martes</option>
@@ -991,70 +892,35 @@
           <option value="Dom">Domingo</option>
         </select>
       </div>
+
       <div class="row-2">
         <div class="form-group">
-          <label>Inicio</label>
+          <label>Hora de inicio</label>
           <select id="input-asig-inicio" class="form-control"></select>
         </div>
         <div class="form-group">
-          <label>Fin</label>
+          <label>Hora de fin</label>
           <select id="input-asig-fin" class="form-control"></select>
         </div>
       </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label>Fecha de inicio</label>
+          <input type="date" id="input-asig-fec-inicio" class="form-control" value="2026-09-01">
+        </div>
+        <div class="form-group">
+          <label>Fecha de fin</label>
+          <input type="date" id="input-asig-fec-fin" class="form-control" value="2027-06-30">
+        </div>
+      </div>
+
       <div class="form-group">
-        <label>Color distintivo (20+ colores)</label>
+        <label>Color distintivo</label>
         <div class="color-picker-grid" id="paleta-colores"></div>
       </div>
-      <button class="btn-main" onclick="guardarNuevaAsignatura()">Guardar y sincronizar</button>
-    </div>
-  </div>
 
-  <!-- ================= MODAL CATEGORÍA REPERTORIO ================= -->
-  <div id="modalCategoria" class="modal" onclick="cerrarModalCategoriaFuera(event)">
-    <div class="modal-content">
-      <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nueva Categoría</h3>
-        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalCategoria()">✕</span>
-      </div>
-      <div class="form-group">
-        <label>Emoji</label>
-        <input type="text" id="input-emoji-cat" class="form-control" value="🎸">
-      </div>
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" id="input-nombre-cat" class="form-control">
-      </div>
-      <button class="btn-main" onclick="guardarNuevaCategoria()">Crear</button>
-    </div>
-  </div>
-
-  <!-- ================= MODAL PIEZA REPERTORIO ================= -->
-  <div id="modalPieza" class="modal" onclick="cerrarModalPiezaFuera(event)">
-    <div class="modal-content">
-      <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Añadir Pieza</h3>
-        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalPieza()">✕</span>
-      </div>
-      <div class="form-group">
-        <label>Título</label>
-        <input type="text" id="input-titulo-pieza" class="form-control">
-      </div>
-      <button class="btn-main" onclick="guardarNuevaPieza()">Guardar</button>
-    </div>
-  </div>
-
-  <!-- ================= MODAL TAREA ================= -->
-  <div id="modalTarea" class="modal" onclick="cerrarModalTareaFuera(event)">
-    <div class="modal-content">
-      <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nueva Tarea</h3>
-        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalTarea()">✕</span>
-      </div>
-      <div class="form-group">
-        <label>Título</label>
-        <input type="text" id="input-titulo-tarea" class="form-control">
-      </div>
-      <button class="btn-main" onclick="cerrarOActualizarTarea()">Guardar</button>
+      <button class="btn-main" id="btn-guardar-asig" onclick="guardarOActualizarAsignatura()">Guardar asignatura</button>
     </div>
   </div>
 
@@ -1063,9 +929,8 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899" },
-          { nombre: "Piano", docente: "Profª. Gómez", aula: "Aula 12", dia: "Mar", inicio: "11:00", fin: "12:30", color: "#6366F1" },
-          { nombre: "Armonía", docente: "Prof. Ruiz", aula: "Aula 05", dia: "Lun", inicio: "16:00", fin: "17:30", color: "#F59E0B" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", fecInicio: "2026-09-01", fecFin: "2027-06-30", color: "#EC4899" },
+          { nombre: "Piano", docente: "Profª. Gómez", aula: "Aula 12", dia: "Mar", inicio: "11:00", fin: "12:30", fecInicio: "2026-09-01", fecFin: "2027-06-30", color: "#6366F1" }
         ]
       }
     ];
@@ -1090,6 +955,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       inicializarSelectoresHora();
       inicializarPaletaColores();
+      renderizarCentros();
       sincronizarYRenderizarHorario();
     });
 
@@ -1149,7 +1015,7 @@
       if (sub) sub.classList.add('active');
     }
 
-    // --- CENTROS Y ASIGNATURAS ---
+    // --- GESTIÓN DE CENTROS ---
     function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
     function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
     function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
@@ -1186,12 +1052,13 @@
       cambiarVista('centro-detalle');
     }
 
+    // --- GESTIÓN DE ASIGNATURAS (CREAR, EDITAR, ELIMINAR) ---
     function renderizarAsignaturasCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-asignaturas-container');
       contenedor.innerHTML = '';
       if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas.</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas en este centro.</p>`;
         return;
       }
       centro.asignaturas.forEach((asig, idx) => {
@@ -1199,52 +1066,112 @@
           <div class="card" style="border-left: 4px solid ${asig.color};">
             <div class="section-flex">
               <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio} - ${asig.fin}</span>
-              <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
+              <div class="tarea-acciones">
+                <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
+                <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
+              </div>
             </div>
             <h4 style="margin-top: 6px;">${asig.nombre}</h4>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">📅 Del ${asig.fecInicio || 'N/D'} al ${asig.fecFin || 'N/D'}</p>
           </div>
         `;
       });
     }
 
-    function abrirModalAsignatura() { document.getElementById('modalAsignatura').classList.add('active'); }
+    function abrirModalAsignaturaCrear() {
+      document.getElementById('modal-asig-titulo').textContent = 'Nueva Asignatura';
+      document.getElementById('input-asig-edit-index').value = '-1';
+      document.getElementById('input-asig-nombre').value = '';
+      document.getElementById('input-asig-docente').value = '';
+      document.getElementById('input-asig-aula').value = '';
+      document.getElementById('input-asig-fec-inicio').value = '2026-09-01';
+      document.getElementById('input-asig-fec-fin').value = '2027-06-30';
+      document.getElementById('modalAsignatura').classList.add('active');
+    }
+
+    function abrirModalAsignaturaEditar(index) {
+      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+      const asig = centro.asignaturas[index];
+
+      document.getElementById('modal-asig-titulo').textContent = 'Editar Asignatura';
+      document.getElementById('input-asig-edit-index').value = index;
+      document.getElementById('input-asig-nombre').value = asig.nombre;
+      document.getElementById('input-asig-docente').value = asig.docente;
+      document.getElementById('input-asig-aula').value = asig.aula;
+      document.getElementById('input-asig-dia').value = asig.dia;
+      document.getElementById('input-asig-inicio').value = asig.inicio;
+      document.getElementById('input-asig-fin').value = asig.fin;
+      document.getElementById('input-asig-fec-inicio').value = asig.fecInicio || '2026-09-01';
+      document.getElementById('input-asig-fec-fin').value = asig.fecFin || '2027-06-30';
+
+      colorSeleccionadoHex = asig.color;
+      document.querySelectorAll('.color-option').forEach(el => {
+        if (el.style.backgroundColor === hexToRgb(asig.color) || el.style.backgroundColor === asig.color) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
+      document.getElementById('modalAsignatura').classList.add('active');
+    }
+
+    function hexToRgb(hex) {
+      return hex; // Simplificación para compatibilidad de comparación visual
+    }
+
     function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
     function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
 
-    function guardarNuevaAsignatura() {
+    function guardarOActualizarAsignatura() {
       const nombre = document.getElementById('input-asig-nombre').value.trim();
       const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
       const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
       const dia = document.getElementById('input-asig-dia').value;
       const inicio = document.getElementById('input-asig-inicio').value;
       const fin = document.getElementById('input-asig-fin').value;
+      const fecInicio = document.getElementById('input-asig-fec-inicio').value;
+      const fecFin = document.getElementById('input-asig-fec-fin').value;
+      const editIndex = parseInt(document.getElementById('input-asig-edit-index').value);
 
-      if (!nombre) return;
+      if (!nombre) { alert('Introduce el nombre de la asignatura.'); return; }
+
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro) {
-        centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, color: colorSeleccionadoHex });
+        if (editIndex === -1) {
+          centro.asignaturas.push({ nombre, docente, aula, dia, inicio, fin, fecInicio, fecFin, color: colorSeleccionadoHex });
+        } else {
+          centro.asignaturas[editIndex] = { nombre, docente, aula, dia, inicio, fin, fecInicio, fecFin, color: colorSeleccionadoHex };
+        }
       }
+
       renderizarAsignaturasCentro();
       sincronizarYRenderizarHorario();
       cerrarModalAsignatura();
     }
 
     function eliminarAsignatura(index) {
-      const centro = centrosEstudios.find(c => c.nombre === centroActivo);
-      if (centro) {
-        centro.asignaturas.splice(index, 1);
-        renderizarAsignaturasCentro();
-        sincronizarYRenderizarHorario();
+      if (confirm('¿Estás seguro de eliminar esta asignatura?')) {
+        const centro = centrosEstudios.find(c => c.nombre === centroActivo);
+        if (centro) {
+          centro.asignaturas.splice(index, 1);
+          renderizarAsignaturasCentro();
+          sincronizarYRenderizarHorario();
+        }
       }
     }
 
+    // --- SINCRONIZACIÓN DE HORARIO ---
     function sincronizarYRenderizarHorario() {
       let todasLasAsignaturas = [];
       centrosEstudios.forEach(c => { todasLasAsignaturas = todasLasAsignaturas.concat(c.asignaturas); });
 
       const contDiaria = document.getElementById('container-diaria-dinamico');
       contDiaria.innerHTML = '';
+      if(todasLasAsignaturas.length === 0) {
+        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px;">No hay clases programadas.</p>`;
+      }
       todasLasAsignaturas.forEach(a => {
         contDiaria.innerHTML += `
           <div class="card" style="border-left: 4px solid ${a.color};">
@@ -1344,9 +1271,6 @@
     function abrirModalPieza() { document.getElementById('modalPieza').classList.add('active'); }
     function cerrarModalPieza() { document.getElementById('modalPieza').classList.remove('active'); }
     function guardarNuevaPieza() { cerrarModalPieza(); }
-    function abrirModalTareaParaCrear() { document.getElementById('modalTarea').classList.add('active'); }
-    function cerrarModalTarea() { document.getElementById('modalTarea').classList.remove('active'); }
-    function guardarOActualizarTarea() { cerrarModalTarea(); }
     function abrirDetalleRepertorio(n, e) { cambiarVista('repertorio-detalle'); }
   </script>
 </body>
