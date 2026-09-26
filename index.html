@@ -3,307 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RitmoAcade - Versión Corregida</title>
-  <style>
-    :root {
-      --bg-main: #0B0F19;
-      --bg-card: #161E2E;
-      --text-main: #F3F4F6;
-      --text-muted: #9CA3AF;
-      --border-color: #2D3748;
-      --primary: #6366F1;
-      --primary-hover: #4F46E5;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      padding: 16px;
-      padding-bottom: 90px; /* Espacio para la barra inferior */
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    .fecha {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .titulo-seccion {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    /* Layout principal adaptativo */
-    .dashboard-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 20px;
-      transition: transform 0.1s ease, border-color 0.2s ease;
-    }
-
-    .card:active {
-      transform: scale(0.98);
-    }
-
-    /* Sección de repertorio corregida para evitar solapes */
-    .repertorio-container {
-      margin-top: 24px;
-    }
-
-    .repertorio-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .card-instrumento {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px 16px;
-      text-align: center;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 120px;
-    }
-
-    .card-instrumento:hover {
-      border-color: var(--primary);
-    }
-
-    .card-instrumento .icono {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .card-instrumento h4 {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .card-add {
-      border: 2px dashed var(--border-color);
-      background: transparent;
-    }
-
-    .card-add .icono-plus {
-      font-size: 28px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    /* Barra de navegación inferior fija */
-    .nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #111827;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      z-index: 100;
-    }
-
-    .nav-item {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 12px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .nav-item.active {
-      color: var(--primary);
-    }
-
-    /* Panel deslizante (Bottom Sheet) para la racha */
-    .bottom-sheet-overlay {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: flex-end;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1000;
-    }
-
-    .bottom-sheet-overlay.active {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .bottom-sheet-content {
-      background: var(--bg-card);
-      width: 100%;
-      border-radius: 24px 24px 0 0;
-      padding: 24px;
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
-      border-top: 1px solid var(--border-color);
-    }
-
-    .bottom-sheet-overlay.active .bottom-sheet-content {
-      transform: translateY(0);
-    }
-
-    .drag-handle {
-      width: 40px;
-      height: 4px;
-      background: var(--border-color);
-      border-radius: 2px;
-      margin: 0 auto 16px auto;
-    }
-
-    .btn-cerrar {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      margin-top: 16px;
-      cursor: pointer;
-    }
-  </style>
+  <title>RitmoAcade - Versión Completa</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header>
-    <h1>RitmoAcade</h1>
-    <div style="background: var(--bg-card); padding: 8px; border-radius: 50%; border: 1px solid var(--border-color);">⚙️</div>
-  </header>
+  <!-- ================= VISTA HOY ================= -->
+  <main id="vista-hoy" class="view active-view">
+    <header>
+      <h1>RitmoAcade</h1>
+      <div class="config-btn" onclick="alert('Ajustes y Modo Oscuro activados')">⚙️</div>
+    </header>
 
-  <div class="fecha">Viernes, 25 de septiembre</div>
-  
-  <div class="titulo-seccion">Tu día, de un vistazo.</div>
+    <div class="fecha">Sábado, 26 de septiembre</div>
+    
+    <h2 class="titulo-seccion">Tu día, de un vistazo.</h2>
 
-  <div class="dashboard-grid">
-    <!-- Próximo evento -->
-    <div class="card">
-      <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px;">PRÓXIMO</div>
-      <div style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">Sin eventos próximos</div>
-      <div style="font-size: 13px; color: var(--text-muted);">Añade clases, ensayos o conciertos.</div>
+    <div class="dashboard-grid">
+      <!-- Próximo evento -->
+      <section class="card">
+        <span class="card-tag">PRÓXIMO</span>
+        <h3 class="card-title">Sin eventos próximos</h3>
+        <p class="card-sub">Añade clases, ensayos o conciertos.</p>
+      </section>
+
+      <!-- Estadísticas -->
+      <div class="stats-grid">
+        <article class="card stat-card-mini">
+          <div class="stat-number" id="num-tareas">0</div>
+          <div class="stat-label">tareas pendientes</div>
+        </article>
+        <article class="card stat-card-mini">
+          <div class="stat-number" id="num-minutos">0</div>
+          <div class="stat-label">min estudiados</div>
+        </article>
+      </div>
+
+      <!-- Widget Racha (Abre el Bottom Sheet contextual) -->
+      <article class="card racha-widget" onclick="abrirRacha()">
+        <div>
+          <div class="stat-number">🔥 3</div>
+          <div class="stat-label">racha de práctica</div>
+        </div>
+        <div class="racha-action">Ver detalle ›</div>
+      </article>
+    </div>
+  </main>
+
+  <!-- ================= VISTA HORARIO ================= -->
+  <main id="vista-horario" class="view">
+    <header>
+      <h1>Horarios</h1>
+    </header>
+    <p class="fecha">Organiza tus clases y bloques de práctica.</p>
+    
+    <div class="horario-opciones" style="margin-bottom: 16px;">
+      <select id="filtro-horario" onchange="cambiarFiltroHorario(this)">
+        <option value="semana">Vista Semanal Completa</option>
+        <option value="hoy">Eventos de Hoy</option>
+      </select>
     </div>
 
-    <!-- Widgets de estadísticas interactivos -->
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-      <div class="card" style="padding: 16px;">
-        <div style="font-size: 20px; font-weight: bold;">0</div>
-        <div style="font-size: 12px; color: var(--text-muted);">tareas pendientes</div>
-      </div>
-      <div class="card" style="padding: 16px;">
-        <div style="font-size: 20px; font-weight: bold;">0</div>
-        <div style="font-size: 12px; color: var(--text-muted);">min estudiados</div>
-      </div>
+    <div class="dashboard-grid">
+      <article class="horario-item">
+        <div class="horario-hora">10:00 - 11:30</div>
+        <div class="horario-titulo">Práctica de Saxofón (Escalas y Técnica)</div>
+      </article>
+      <article class="horario-item">
+        <div class="horario-hora">17:00 - 18:30</div>
+        <div class="horario-titulo">Clase de Piano y Repertorio</div>
+      </article>
     </div>
+  </main>
 
-    <!-- Widget Racha (Al hacer clic abre el Bottom Sheet) -->
-    <div class="card" onclick="abrirRacha()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px;">
-      <div>
-        <div style="font-size: 20px; font-weight: bold;">🔥 0</div>
-        <div style="font-size: 12px; color: var(--text-muted);">racha de práctica</div>
-      </div>
-      <div style="color: var(--text-muted); font-size: 14px;">Ver detalle ›</div>
-    </div>
+  <!-- ================= VISTA ESTUDIO ================= -->
+  <main id="vista-estudio" class="view">
+    <header>
+      <h1>Sesión de Estudio</h1>
+    </header>
+    <p class="fecha">Cronometra y registra tus avances con feedback inmediato.</p>
 
-    <!-- Repertorio corregido -->
+    <section class="card" style="text-align: center; padding: 32px 20px;">
+      <div style="font-size: 48px; font-weight: bold; margin-bottom: 16px;" id="cronometro">00:00:00</div>
+      <!-- Botón con feedback interactivo que no se queda estático -->
+      <button class="btn-estudio" onclick="iniciarSesionEstudio()">Empezar sesión de estudio</button>
+    </section>
+  </main>
+
+  <!-- ================= VISTA REPERTORIO ================= -->
+  <main id="vista-repertorio" class="view">
+    <header>
+      <h1>Repertorio</h1>
+    </header>
+    <p class="fecha">Tus instrumentos y piezas musicales ampliadas.</p>
+
     <div class="repertorio-container">
-      <div class="titulo-seccion">Repertorio</div>
-      <div class="repertorio-grid">
-        <div class="card-instrumento">
+      <div class="repertorio-grid" id="grid-instrumentos">
+        <article class="card-instrumento">
           <span class="icono">🎷</span>
           <h4>Saxofón</h4>
-        </div>
-        <div class="card-instrumento">
+        </article>
+        <article class="card-instrumento">
           <span class="icono">🎹</span>
           <h4>Piano</h4>
-        </div>
-        <div class="card-instrumento card-add" onclick="alert('Función para añadir instrumento')">
+        </article>
+        <!-- Tarjeta para añadir instrumento de forma dinámica -->
+        <article class="card-instrumento card-add" onclick="abrirModalInstrumento()">
           <span class="icono-plus">+</span>
           <h4>Añadir instrumento</h4>
-        </div>
+        </article>
       </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Barra de navegación inferior -->
-  <div class="nav-bar">
-    <div class="nav-item active">🏠<br>Hoy</div>
-    <div class="nav-item">📅<br>Horario</div>
-    <div class="nav-item">⏱️<br>Estudio</div>
-    <div class="nav-item">🎵<br>Repertorio</div>
-    <div class="nav-item">⋯<br>Más</div>
-  </div>
+  <!-- ================= VISTA MÁS ================= -->
+  <main id="vista-mas" class="view">
+    <header>
+      <h1>Ajustes y Más</h1>
+    </header>
+    <div class="dashboard-grid">
+      <article class="card" style="cursor: pointer;" onclick="alert('Sincronización en la nube activada')">🔄 Sincronizar datos</article>
+      <article class="card" style="cursor: pointer;" onclick="alert('RitmoAcade - Versión 2.0 Definitiva')">ℹ️ Acerca de RitmoAcade</article>
+    </div>
+  </main>
 
-  <!-- Bottom Sheet para la racha -->
+  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
+  <nav class="nav-bar">
+    <a class="nav-item active" onclick="cambiarVista('hoy', this)">🏠<br><span>Hoy</span></a>
+    <a class="nav-item" onclick="cambiarVista('horario', this)">📅<br><span>Horario</span></a>
+    <a class="nav-item" onclick="cambiarVista('estudio', this)">⏱️<br><span>Estudio</span></a>
+    <a class="nav-item" onclick="cambiarVista('repertorio', this)">🎵<br><span>Repertorio</span></a>
+    <a class="nav-item" onclick="cambiarVista('mas', this)">⋯<br><span>Más</span></a>
+  </nav>
+
+  <!-- ================= BOTTOM SHEET: DETALLE DE RACHA ================= -->
   <div id="modalRacha" class="bottom-sheet-overlay" onclick="cerrarRachaFuera(event)">
     <div class="bottom-sheet-content">
       <div class="drag-handle"></div>
       <h3 style="margin-bottom: 12px;">Tu Racha y Progreso</h3>
-      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">Aquí puedes ver el desglose detallado de tus días de estudio y constancia.</p>
-      <div style="background: var(--bg-main); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
-        <div style="font-weight: 600; margin-bottom: 4px;">Racha actual: 0 días</div>
-        <div style="font-size: 13px; color: var(--text-muted);">¡Empieza hoy tu primera sesión para encender el fuego! 🔥</div>
+      <p class="bottom-sheet-desc">Desglose detallado de tu constancia semanal sin saltos bruscos de pantalla.</p>
+      <div class="racha-detalle-box">
+        <div style="font-weight: 600; margin-bottom: 6px;">Racha actual: 3 días 🔥</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Has acumulado 4.5 horas de estudio esta semana. ¡Sigue así!</div>
       </div>
       <button class="btn-cerrar" onclick="cerrarRacha()">Entendido</button>
     </div>
   </div>
 
-  <script>
-    function abrirRacha() {
-      document.getElementById('modalRacha').classList.add('active');
-    }
+  <!-- ================= BOTTOM SHEET: NUEVO INSTRUMENTO ================= -->
+  <div id="modalInstrumento" class="bottom-sheet-overlay" onclick="cerrarModalInstFuera(event)">
+    <div class="bottom-sheet-content">
+      <div class="drag-handle"></div>
+      <h3 style="margin-bottom: 12px;">Nuevo Instrumento</h3>
+      <p class="bottom-sheet-desc">Crea y personaliza un nuevo instrumento para tu repertorio.</p>
+      <input type="text" id="nombre-instrumento" placeholder="Ej. Guitarra, Violín..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 15px; margin-bottom: 16px;">
+      <button class="btn-cerrar" onclick="guardarNuevoInstrumento()">Guardar instrumento</button>
+    </div>
+  </div>
 
-    function cerrarRacha() {
-      document.getElementById('modalRacha').classList.remove('active');
-    }
-
-    function cerrarRachaFuera(event) {
-      if (event.target.id === 'modalRacha') {
-        cerrarRacha();
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
