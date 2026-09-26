@@ -1,322 +1,309 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RitmoAcade</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RitmoAcade - Versión Corregida</title>
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #161E2E;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --border-color: #2D3748;
+      --primary: #6366F1;
+      --primary-hover: #4F46E5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding: 16px;
+      padding-bottom: 90px; /* Espacio para la barra inferior */
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .fecha {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .titulo-seccion {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* Layout principal adaptativo */
+    .dashboard-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      transition: transform 0.1s ease, border-color 0.2s ease;
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    /* Sección de repertorio corregida para evitar solapes */
+    .repertorio-container {
+      margin-top: 24px;
+    }
+
+    .repertorio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .card-instrumento {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+
+    .card-instrumento:hover {
+      border-color: var(--primary);
+    }
+
+    .card-instrumento .icono {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .card-instrumento h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .card-add {
+      border: 2px dashed var(--border-color);
+      background: transparent;
+    }
+
+    .card-add .icono-plus {
+      font-size: 28px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    /* Barra de navegación inferior fija */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111827;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    /* Panel deslizante (Bottom Sheet) para la racha */
+    .bottom-sheet-overlay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: flex-end;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .bottom-sheet-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .bottom-sheet-content {
+      background: var(--bg-card);
+      width: 100%;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .bottom-sheet-overlay.active .bottom-sheet-content {
+      transform: translateY(0);
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      margin: 0 auto 16px auto;
+    }
+
+    .btn-cerrar {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        
-        <main class="main-content">
-            
-            <!-- VISTA: HOY -->
-            <section id="hoy" class="tab-section active">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
-                </header>
-                <div class="sub-header-date" id="welcome-date">Viernes, 25 de septiembre</div>
-                <h2 class="hero-title">Tu día, de un vistazo.</h2>
 
-                <!-- Widget Próximo -->
-                <div class="card-hero" onclick="switchTab('horario')">
-                    <span class="widget-label">PRÓXIMO</span>
-                    <div id="widget-next-event" class="widget-hero-title">Sin eventos próximos</div>
-                    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;" id="widget-next-time">Añade clases, ensayos o conciertos.</p>
-                </div>
+  <header>
+    <h1>RitmoAcade</h1>
+    <div style="background: var(--bg-card); padding: 8px; border-radius: 50%; border: 1px solid var(--border-color);">⚙️</div>
+  </header>
 
-                <!-- Cuadrícula 2x2 -->
-                <div class="ios-2x2-grid">
-                    <div class="card stat-card" onclick="switchTab('tareas')">
-                        <div class="stat-number" id="widget-tasks-count">0</div>
-                        <div class="stat-desc">tareas pendientes</div>
-                    </div>
-                    <div class="card stat-card" onclick="switchTab('estudio')">
-                        <div class="stat-number" id="widget-study-mins">0</div>
-                        <div class="stat-desc">min estudiados</div>
-                    </div>
-                    <div class="card stat-card" onclick="switchTab('tareas')">
-                        <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <div class="stat-number" id="widget-daily-goal-text">0%</div>
-                            <div class="circular-progress" id="daily-circle-progress" style="--p: 0;">
-                                <div class="circular-progress-inner"></div>
-                            </div>
-                        </div>
-                        <div class="stat-desc">objetivos diarios</div>
-                    </div>
-                    <div class="card stat-card" onclick="switchTab('estudio')">
-                        <div class="stat-number" id="widget-streak-count">🔥 0</div>
-                        <div class="stat-desc">racha de práctica</div>
-                    </div>
-                </div>
+  <div class="fecha">Viernes, 25 de septiembre</div>
+  
+  <div class="titulo-seccion">Tu día, de un vistazo.</div>
 
-                <!-- Cuenta atrás para exámenes en la vista Hoy -->
-                <div class="section-block-header">
-                    <h3>Próximos Exámenes</h3>
-                    <button class="text-btn" onclick="openModal('exam-modal')">+ examen</button>
-                </div>
-                <div class="card" id="today-exams-container">
-                    <p style="color: var(--text-muted); text-align:center;">No hay exámenes próximos.</p>
-                </div>
-
-                <div class="section-block-header">
-                    <h3>Plan de hoy</h3>
-                    <button class="text-btn" onclick="openModal('task-modal')">+ tarea</button>
-                </div>
-                <div class="card" id="today-plan-container">
-                    <p style="color: var(--text-muted); text-align:center;">No tienes tareas pendientes.</p>
-                </div>
-            </section>
-
-            <!-- VISTA: HORARIO -->
-            <section id="horario" class="tab-section">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
-                </header>
-                <div class="section-header-flex">
-                    <h2>Horario</h2>
-                    <button class="text-btn" onclick="openModal('schedule-modal')">+ evento</button>
-                </div>
-                
-                <div class="repertoire-tabs" style="margin-bottom:14px;">
-                    <button class="btn primary rep-tab-btn active" onclick="switchScheduleView('calendar', this)">Calendario</button>
-                    <button class="btn secondary rep-tab-btn" onclick="switchScheduleView('weekly', this)">Semanal (Parrilla)</button>
-                </div>
-
-                <div id="schedule-view-calendar">
-                    <div class="card calendar-card">
-                        <div class="calendar-grid-header">
-                            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                        </div>
-                        <div class="calendar-grid-days" id="calendar-days"></div>
-                    </div>
-                    <div class="card" style="margin-top:16px;">
-                        <h3>Eventos del día (pulsa para añadir recordatorios)</h3>
-                        <div id="schedule-day-events" style="margin-top:10px;">
-                            <p style="color:var(--text-muted);">No hay eventos para esta fecha.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="schedule-view-weekly" style="display:none;">
-                    <div class="card">
-                        <h3>Organización Semanal</h3>
-                        <div id="weekly-grid-container" style="margin-top:12px; overflow-x:auto;"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VISTA: ESTUDIO -->
-            <section id="estudio" class="tab-section">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
-                </header>
-                <div class="section-header-flex">
-                    <h2>Estudio</h2>
-                    <button class="text-btn" onclick="openModal('study-record-modal')">+ sesión</button>
-                </div>
-
-                <div class="card">
-                    <span class="widget-label">OBJETIVO SEMANAL</span>
-                    <div class="widget-hero-title" id="weekly-goal-display" style="font-size:1.6rem; margin:8px 0;">0 / 300 min</div>
-                    <div style="width:100%; background:rgba(255,255,255,0.05); height:8px; border-radius:4px; overflow:hidden;">
-                        <div id="weekly-progress-bar" style="width:0%; background:var(--primary); height:100%;"></div>
-                    </div>
-                </div>
-
-                <div class="card timer-card-v2">
-                    <span class="widget-label">TEMPORIZADOR</span>
-                    <div style="margin: 8px 0;">
-                        <label style="font-size:0.8rem; color:var(--text-muted);">Duración (min):</label>
-                        <input type="number" id="timer-duration-input" value="25" min="1" max="180" onchange="changeTimerDuration(this.value)" class="modal-input" style="width:100px; display:inline-block; margin-left:8px; text-align:center;">
-                    </div>
-                    <div id="timer-display" class="timer-digits-v2">25:00</div>
-                    <div class="timer-controls-natural">
-                        <button class="btn-play-pause" id="btn-toggle-timer" onclick="toggleTimer()">▶ Iniciar</button>
-                        <button class="btn-reset" onclick="resetTimer()">Reiniciar</button>
-                    </div>
-                    <div style="margin-top:16px;">
-                        <select id="timer-subject" class="modal-input"></select>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top:16px;">
-                    <h3>Últimas sesiones</h3>
-                    <div id="sessions-history-list" style="margin-top:10px;">
-                        <p style="color:var(--text-muted);">Registra tu primera sesión.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VISTA: REPERTORIO -->
-            <section id="repertorio" class="tab-section">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
-                </header>
-                <div class="section-header-flex">
-                    <h2>Repertorio</h2>
-                    <button class="text-btn" onclick="openModal('repertoire-modal')">+ obra</button>
-                </div>
-                
-                <div class="repertoire-tabs-wide" id="repertoire-tabs-container" style="margin-bottom:16px;"></div>
-                <div id="repertoire-container"></div>
-            </section>
-
-            <!-- VISTA: MÁS -->
-            <section id="mas" class="tab-section">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                </header>
-                <h2 style="margin-bottom:16px;">Más</h2>
-                
-                <div class="ios-2x2-grid" style="margin-bottom:24px;">
-                    <div class="card stat-card" onclick="switchTab('tareas')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.4rem; margin-bottom:4px;">✓</div>
-                        <div style="font-weight:600;">Tareas</div>
-                    </div>
-                    <div class="card stat-card" onclick="openModal('exam-modal')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.4rem; margin-bottom:4px;">⏰</div>
-                        <div style="font-weight:600;">Exámenes</div>
-                    </div>
-                    <div class="card stat-card" onclick="switchTab('repertorio')" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.4rem; margin-bottom:4px;">🎵</div>
-                        <div style="font-weight:600;">Ensayos / Obras</div>
-                    </div>
-                    <div class="card stat-card" onclick="openSettingsModal()" style="cursor:pointer; text-align:center; justify-content:center;">
-                        <div style="font-size:1.4rem; margin-bottom:4px;">⚙️</div>
-                        <div style="font-weight:600;">Ajustes & Centros</div>
-                    </div>
-                </div>
-
-                <div class="section-block-header">
-                    <h3>Estadísticas</h3>
-                </div>
-                <div class="card">
-                    <h3 style="margin-bottom:8px;">Estudio total</h3>
-                    <p id="stats-total-study" style="color:var(--text-muted); margin-bottom:14px;">0 minutos registrados.</p>
-                    
-                    <h3 style="margin-bottom:8px;">Obras</h3>
-                    <p id="stats-total-repertoire" style="color:var(--text-muted); margin-bottom:14px;">0 obras · progreso medio 0%.</p>
-                    
-                    <h3 style="margin-bottom:8px;">Tareas</h3>
-                    <p id="stats-total-tasks" style="color:var(--text-muted);">0 completadas de 0.</p>
-                </div>
-            </section>
-
-            <!-- VISTA: TAREAS -->
-            <section id="tareas" class="tab-section">
-                <header class="header-top-bar">
-                    <h1 class="app-brand">RitmoAcade</h1>
-                    <button class="icon-btn-gear" onclick="switchTab('mas')">⚙️</button>
-                </header>
-                <div class="section-header-flex">
-                    <h2>Tareas</h2>
-                    <button class="text-btn" onclick="openModal('task-modal')">+ tarea</button>
-                </div>
-                <div class="task-filters" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-                    <button class="btn secondary active" onclick="filterTasks('todos', this)" style="font-size:0.75rem; padding:4px 8px;">Todas</button>
-                    <button class="btn secondary" onclick="filterTasks('Llevar/Preparar', this)" style="font-size:0.75rem; padding:4px 8px;">Llevar/Preparar</button>
-                    <button class="btn secondary" onclick="filterTasks('Estudiar', this)" style="font-size:0.75rem; padding:4px 8px;">Estudiar</button>
-                    <button class="btn secondary" onclick="filterTasks('Enviar', this)" style="font-size:0.75rem; padding:4px 8px;">Enviar</button>
-                    <button class="btn secondary" onclick="filterTasks('Administrativo', this)" style="font-size:0.75rem; padding:4px 8px;">Administrativo</button>
-                </div>
-                <div class="card">
-                    <ul id="tasks-full-list" class="task-list"></ul>
-                </div>
-            </section>
-
-        </main>
-
-        <button class="floating-plus-btn" onclick="openGlobalAddModal()">+</button>
-
-        <div id="app-modal" class="drawer-overlay" style="justify-content: center; align-items: center;">
-            <div class="card" style="width: 90%; max-width: 400px; background: var(--card-bg);" onclick="event.stopPropagation()">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 id="modal-title" style="margin:0;">Añadir</h3>
-                    <button class="icon-btn-close" onclick="closeModal()">✕</button>
-                </div>
-                <div id="modal-body"></div>
-            </div>
-        </div>
-
-        <nav class="bottom-quick-nav">
-            <button class="nav-btn active" data-tab="hoy" onclick="switchTab('hoy')">
-                <span class="nav-icon">⌂</span>
-                <span>Hoy</span>
-            </button>
-            <button class="nav-btn" data-tab="horario" onclick="switchTab('horario')">
-                <span class="nav-icon">📅</span>
-                <span>Horario</span>
-            </button>
-            <button class="nav-btn" data-tab="estudio" onclick="switchTab('estudio')">
-                <span class="nav-icon">⏱</span>
-                <span>Estudio</span>
-            </button>
-            <button class="nav-btn" data-tab="repertorio" onclick="switchTab('repertorio')">
-                <span class="nav-icon">🎵</span>
-                <span>Repertorio</span>
-            </button>
-            <button class="nav-btn" data-tab="mas" onclick="switchTab('mas')">
-                <span class="nav-icon">⋯</span>
-                <span>Más</span>
-            </button>
-        </nav>
-
+  <div class="dashboard-grid">
+    <!-- Próximo evento -->
+    <div class="card">
+      <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px;">PRÓXIMO</div>
+      <div style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">Sin eventos próximos</div>
+      <div style="font-size: 13px; color: var(--text-muted);">Añade clases, ensayos o conciertos.</div>
     </div>
-    <script src="app.js"></script>
+
+    <!-- Widgets de estadísticas interactivos -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <div class="card" style="padding: 16px;">
+        <div style="font-size: 20px; font-weight: bold;">0</div>
+        <div style="font-size: 12px; color: var(--text-muted);">tareas pendientes</div>
+      </div>
+      <div class="card" style="padding: 16px;">
+        <div style="font-size: 20px; font-weight: bold;">0</div>
+        <div style="font-size: 12px; color: var(--text-muted);">min estudiados</div>
+      </div>
+    </div>
+
+    <!-- Widget Racha (Al hacer clic abre el Bottom Sheet) -->
+    <div class="card" onclick="abrirRacha()" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 16px;">
+      <div>
+        <div style="font-size: 20px; font-weight: bold;">🔥 0</div>
+        <div style="font-size: 12px; color: var(--text-muted);">racha de práctica</div>
+      </div>
+      <div style="color: var(--text-muted); font-size: 14px;">Ver detalle ›</div>
+    </div>
+
+    <!-- Repertorio corregido -->
+    <div class="repertorio-container">
+      <div class="titulo-seccion">Repertorio</div>
+      <div class="repertorio-grid">
+        <div class="card-instrumento">
+          <span class="icono">🎷</span>
+          <h4>Saxofón</h4>
+        </div>
+        <div class="card-instrumento">
+          <span class="icono">🎹</span>
+          <h4>Piano</h4>
+        </div>
+        <div class="card-instrumento card-add" onclick="alert('Función para añadir instrumento')">
+          <span class="icono-plus">+</span>
+          <h4>Añadir instrumento</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de navegación inferior -->
+  <div class="nav-bar">
+    <div class="nav-item active">🏠<br>Hoy</div>
+    <div class="nav-item">📅<br>Horario</div>
+    <div class="nav-item">⏱️<br>Estudio</div>
+    <div class="nav-item">🎵<br>Repertorio</div>
+    <div class="nav-item">⋯<br>Más</div>
+  </div>
+
+  <!-- Bottom Sheet para la racha -->
+  <div id="modalRacha" class="bottom-sheet-overlay" onclick="cerrarRachaFuera(event)">
+    <div class="bottom-sheet-content">
+      <div class="drag-handle"></div>
+      <h3 style="margin-bottom: 12px;">Tu Racha y Progreso</h3>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">Aquí puedes ver el desglose detallado de tus días de estudio y constancia.</p>
+      <div style="background: var(--bg-main); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+        <div style="font-weight: 600; margin-bottom: 4px;">Racha actual: 0 días</div>
+        <div style="font-size: 13px; color: var(--text-muted);">¡Empieza hoy tu primera sesión para encender el fuego! 🔥</div>
+      </div>
+      <button class="btn-cerrar" onclick="cerrarRacha()">Entendido</button>
+    </div>
+  </div>
+
+  <script>
+    function abrirRacha() {
+      document.getElementById('modalRacha').classList.add('active');
+    }
+
+    function cerrarRacha() {
+      document.getElementById('modalRacha').classList.remove('active');
+    }
+
+    function cerrarRachaFuera(event) {
+      if (event.target.id === 'modalRacha') {
+        cerrarRacha();
+      }
+    }
+  </script>
 </body>
 </html>
-
-<!-- Estructura HTML del Bottom Sheet -->
-<div id="modalRacha" class="bottom-sheet-overlay">
-  <div class="bottom-sheet-content">
-    <div class="drag-handle"></div>
-    <h3>Tu Racha y Progreso</h3>
-    <div class="racha-stats">
-      <div class="stat-card">
-        <span class="stat-number">12 días</span>
-        <span class="stat-label">Racha actual 🔥</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-number">14.5 hrs</span>
-        <span class="stat-label">Estudiadas esta semana</span>
-      </div>
-    </div>
-    <!-- Aquí iría el calendario mensual o gráfico -->
-    <button class="btn-cerrar" onclick="cerrarRacha()">Cerrar</button>
-  </div>
-</div>
-
-<div class="repertorio-grid">
-  <!-- Instrumento existente -->
-  <div class="card-instrumento">
-    <span class="icono">🎷</span>
-    <h4>Saxofón</h4>
-  </div>
-  <div class="card-instrumento">
-    <span class="icono">🎹</span>
-    <h4>Piano</h4>
-  </div>
-  
-  <!-- Botón para añadir uno nuevo -->
-  <div class="card-instrumento card-add" onclick="abrirModalNuevoInstrumento()">
-    <span class="icono-plus">+</span>
-    <h4>Añadir instrumento</h4>
-  </div>
-</div>
-
-<!-- Ejemplo de Estado Vacío para el Repertorio o Historial -->
-<div class="empty-state">
-  <div class="empty-icon">🎵</div>
-  <h3>Aún no tienes instrumentos aquí</h3>
-  <p>Añade tu primer instrumento para empezar a registrar tus prácticas y organizar tus repertorios.</p>
-  <button class="btn-estudio" onclick="abrirModalNuevoInstrumento()">Añadir instrumento</button>
-</div>
-
