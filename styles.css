@@ -333,3 +333,213 @@ body {
 .modal-input { width: 100%; padding: 10px; border-radius: 10px; background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border); margin-bottom: 10px; font-size: 0.9rem; }
 .task-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .task-item { background: rgba(255,255,255,0.02); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+/* Estilo base y transición fluida para el botón */
+.btn-estudio {
+  background-color: #4F46E5;
+  color: #FFFFFF;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Efecto al pasar el ratón */
+.btn-estudio:hover {
+  background-color: #4338CA;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+/* Efecto físico de pulsación (evita que se quede estático) */
+.btn-estudio:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+}
+
+.bottom-sheet-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+.bottom-sheet-overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+.bottom-sheet-content {
+  background: #FFFFFF;
+  width: 100%;
+  max-height: 75vh;
+  border-radius: 24px 24px 0 0;
+  padding: 24px;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.1, 1, 0.1, 1);
+}
+.bottom-sheet-overlay.active .bottom-sheet-content {
+  transform: translateY(0);
+}
+.drag-handle {
+  width: 40px;
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  margin: 0 auto 16px auto;
+}
+
+.repertorio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+}
+.card-instrumento {
+  background: #F9FAFB;
+  border: 2px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.card-instrumento:hover {
+  border-color: #4F46E5;
+  background: #EEF2FF;
+  transform: translateY(-2px);
+}
+.card-instrumento .icono {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+}
+.card-instrumento h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1F2937;
+  margin: 0;
+}
+.card-add {
+  border: 2px dashed #D1D5DB;
+  background: transparent;
+}
+.card-add .icono-plus {
+  font-size: 28px;
+  color: #9CA3AF;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Tipografía legible y limpia para los horarios */
+.seccion-horario {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.horario-item {
+  font-size: 16px; /* Letra grande y cómoda, adiós a la letra enana */
+  font-weight: 500;
+  padding: 12px 16px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+/* Opciones del horario estables y funcionales */
+.horario-opciones select {
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #D1D5DB;
+  width: 100%;
+  background-color: #FFFFFF;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: #F9FAFB;
+  border-radius: 16px;
+  border: 2px dashed #E5E7EB;
+  margin: 16px 0;
+}
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin: 0 0 8px 0;
+}
+.empty-state p {
+  font-size: 14px;
+  color: #6B7280;
+  max-width: 280px;
+  margin: 0 auto 20px auto;
+  line-height: 1.4;
+}
+
+:root {
+  --bg-main: #FFFFFF;
+  --bg-card: #F9FAFB;
+  --text-main: #1F2937;
+  --text-muted: #6B7280;
+  --border-color: #E5E7EB;
+  --primary: #4F46E5;
+}
+
+/* Modo oscuro automático o forzado con clase .dark */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-main: #111827;
+    --bg-card: #1F2937;
+    --text-main: #F3F4F6;
+    --text-muted: #9CA3AF;
+    --border-color: #374151;
+    --primary: #6366F1;
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card-instrumento, .horario-item, .empty-state {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+/* Forzar un área interactiva mínima de 44x44 píxeles en elementos clave */
+button, 
+.card-instrumento, 
+.horario-item, 
+.bottom-sheet-content .btn-cerrar {
+  min-height: 44px;
+  min-width: 44px;
+  /* El padding interno asegura que el espacio clickeable sea cómodo */
+  padding: 12px 16px; 
+}
+
+/* Espaciado de seguridad entre elementos clicables para evitar toques accidentales */
+.repertorio-grid {
+  row-gap: 16px;
+  column-gap: 16px;
+}
+
