@@ -212,7 +212,6 @@
           <div class="label">tareas pendientes</div>
         </div>
 
-        <!-- WIDGET DE ASISTENCIA RÁPIDA SINCRONIZADO -->
         <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
           <div class="stat-top">
             <span class="num" id="home-asistencia-pendientes-num" style="color: var(--warning);">0</span>
@@ -592,7 +591,10 @@
     <div id="subview-asistencia-control" class="horario-subview active">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaAsistencia(-1)">‹</button>
-        <div class="day-nav-title" id="asistencia-nav-titulo-semana">Semana actual</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <div class="day-nav-title" id="asistencia-nav-titulo-semana" style="margin-bottom: 0;">Semana actual</div>
+          <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irSemanaActualAsistencia()">Ir a semana actual</button>
+        </div>
         <button class="day-nav-btn" onclick="cambiarSemanaAsistencia(1)">›</button>
       </div>
       <div class="grid" id="lista-control-asistencia-container"></div>
@@ -609,7 +611,7 @@
       <button class="btn-config" onclick="cambiarVista('hoy')">‹</button>
     </header>
     <div class="section-flex" style="margin-bottom: 14px;">
-      <p class="fecha" style="margin-bottom:0;">Listado con fecha exacta y calendario.</p>
+      <p class="fecha" style="margin-bottom:0;">Listado con fecha exacta y cuenta atrás.</p>
       <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalTareaParaCrear()">+ Añadir tarea</button>
     </div>
     <div class="grid" id="lista-tareas-container"></div>
@@ -640,7 +642,6 @@
   </nav>
 
   <!-- ================= MODALES ================= -->
-  <!-- Modal Detalle Asignatura (Pantalla Emergente) -->
   <div id="modalDetalleAsignatura" class="modal" onclick="cerrarModalDetalleAsignaturaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -922,7 +923,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Fecha exacta</label>
+          <label>Fecha límite</label>
           <input type="date" id="input-fecha-tarea" class="form-control">
         </div>
       </div>
@@ -986,7 +987,7 @@
             email: "martinez@conservatorio.es", tel: "+34600112233",
             dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", 
             periodo: "1_cuatri", fechaInicio: "2026-09-16", fechaFin: "2027-01-31", 
-            estadoAsistencia: "Sin registrar", historial1: [], historial2: [] 
+            historial1: [], historial2: [] 
           }
         ],
         notas: [
@@ -1140,6 +1141,11 @@
       renderizarControlAsistenciaCentro();
     }
 
+    function irSemanaActualAsistencia() {
+      fechaHorarioAsistencia = new Date();
+      renderizarControlAsistenciaCentro();
+    }
+
     function cambiarMesHorario(meses) {
       fechaHorarioMes.setMonth(fechaHorarioMes.getMonth() + meses);
       renderizarHorarioAvanzado();
@@ -1192,10 +1198,12 @@
         `).join('');
       }
 
-      // Actualizar widget de asistencia rápida en Home (calculando cuántas clases de hoy están pendientes)
       let pendientesHoy = 0;
       asigsHoy.forEach(a => {
-        let estado = a.dia === a.dia2 ? (a.estadoAsistencia2 || 'Sin registrar') : (a.estadoAsistencia || 'Sin registrar');
+        let fechaIsoHoy = obtenerFechaIsoRealClase(a.dia, fechaHomeActual);
+        let historialArr = a.dia === a.dia2 ? (a.historial2 || []) : (a.historial1 || []);
+        let registroHoy = historialArr.find(h => h.isoFecha === fechaIsoHoy);
+        let estado = registroHoy ? registroHoy.estado : 'Sin registrar';
         if (estado === 'Sin registrar') pendientesHoy++;
       });
       document.getElementById('home-asistencia-pendientes-num').textContent = pendientesHoy;
@@ -1210,7 +1218,6 @@
       }
     }
 
-    // --- MODAL DETALLE ASIGNATURA ---
     function abrirDetalleAsignaturaModal(nombre, docente, aula, email, tel, horario, periodo) {
       document.getElementById('detalle-asig-modal-nombre').textContent = nombre;
       let textoPeriodo = "Periodo general";
@@ -1755,13 +1762,22 @@
       let totalAsignaturas = 0;
       centrosEstudios.forEach(c => totalAsignaturas += c.asignaturas.length);
 
+      let tieneHistorialAsistencia = false;
+      centrosEstudios.forEach(c => {
+        c.asignaturas.forEach(a => {
+          if ((a.historial1 && a.historial1.length > 0) || (a.historial2 && a.historial2.length > 0)) {
+            tieneHistorialAsistencia = true;
+          }
+        });
+      });
+
       let insignias = [
         { id: 'primer_paso', titulo: 'Primeros Pasos', desc: 'Crea tu primera asignatura o tarea', icono: '🌱', desbloqueada: totalAsignaturas > 0 || tareasPendientes.length > 0 },
         { id: 'pomodoro_1', titulo: 'Virtuoso Pomodoro', desc: 'Completa al menos un bloque de estudio', icono: '⏱️', desbloqueada: minutosEstudiadosTotal > 0 },
         { id: 'racha_3', titulo: 'Llama Musical', desc: 'Alcanza una racha de 3 días', icono: '🔥', desbloqueada: rachaActual >= 3 },
         { id: 'nota_excelente', titulo: 'Matrícula de Honor', desc: 'Registra una nota superior a 9', icono: '⭐', desbloqueada: centrosEstudios.some(c => c.notas.some(n => n.valor >= 9)) },
         { id: 'repertorio_pro', titulo: 'Maestro de Obras', desc: 'Añade piezas a tu repertorio activo', icono: '🎼', desbloqueada: repertorioCategorias.some(cat => cat.piezas.length > 0) },
-        { id: 'asistencia_fiel', titulo: 'Asistencia Fiel', desc: 'Registra tu control de asistencia', icono: '📋', desbloqueada: centrosEstudios.some(c => c.asignaturas.some(a => a.estadoAsistencia && a.estadoAsistencia !== 'Sin registrar')) }
+        { id: 'asistencia_fiel', titulo: 'Asistencia Fiel', desc: 'Registra tu control de asistencia', icono: '📋', desbloqueada: tieneHistorialAsistencia }
       ];
 
       let desbloqueadasCount = insignias.filter(i => i.desbloqueada).length;
@@ -1911,6 +1927,29 @@
       cambiarVista('repertorio-detalle');
     }
 
+    function iniciarPracticaPiezaPomodoro(nombrePieza, autorPieza) {
+      let textoObra = autorPieza ? `${nombrePieza} (${autorPieza})` : nombrePieza;
+      cambiarVista('estudio');
+      
+      const sel = document.getElementById('pomodoro-item');
+      let encontrada = false;
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text.includes(nombrePieza)) {
+          sel.selectedIndex = i;
+          encontrada = true;
+          break;
+        }
+      }
+
+      if (!encontrada) {
+        let opt = document.createElement('option');
+        opt.value = `[Repertorio] ${textoObra}`;
+        opt.textContent = `🎼 ${textoObra}`;
+        sel.appendChild(opt);
+        sel.value = opt.value;
+      }
+    }
+
     function renderizarPiezasRepertorio() {
       const cat = repertorioCategorias.find(c => c.nombre === categoriaRepertorioActual);
       const contenedor = document.getElementById('lista-piezas-container');
@@ -1921,7 +1960,7 @@
       }
       cat.piezas.forEach((p, idx) => {
         contenedor.innerHTML += `
-          <div class="card">
+          <div class="card" style="border-left: 4px solid var(--calendar-accent);">
             <div class="section-flex">
               <span class="badge">Estudio Activo</span>
               ${p.autor ? `<span style="font-size: 11px; color: var(--text-muted);">Autor: ${p.autor}</span>` : ''}
@@ -1929,6 +1968,9 @@
             <h4>${p.titulo}</h4>
             ${p.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</p>` : ''}
             ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al ${p.fechaFin})</p>` : ''}
+            
+            <button class="btn-main" style="background: var(--study-accent); color: #0B0F19; font-size: 12px; padding: 8px; margin-top: 10px;" onclick="iniciarPracticaPiezaPomodoro('${p.titulo}', '${p.autor || ''}')">⏱️ Iniciar práctica con Pomodoro</button>
+
             <div class="footer-info" style="text-align: right; margin-top: 8px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalPiezaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar</button>
@@ -1994,6 +2036,7 @@
         guardarDatos();
         renderizarPiezasRepertorio();
         renderizarRepertorioCategorias();
+        actualizarSelectorPomodoroItems();
       }
       cerrarModalPieza();
     }
@@ -2005,7 +2048,25 @@
         guardarDatos();
         renderizarPiezasRepertorio();
         renderizarRepertorioCategorias();
+        actualizarSelectorPomodoroItems();
       }
+    }
+
+    function calcularDiasRestantes(fechaStr) {
+      if (!fechaStr) return { texto: "Sin fecha", clase: "badge" };
+      let hoy = new Date();
+      hoy.setHours(0,0,0,0);
+      let [yyyy, mm, dd] = fechaStr.split('-').map(Number);
+      let fechaMeta = new Date(yyyy, mm - 1, dd);
+      fechaMeta.setHours(0,0,0,0);
+
+      let diffTime = fechaMeta - hoy;
+      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) return { texto: `Vencida hace ${Math.abs(diffDays)}d`, clase: "badge-danger" };
+      if (diffDays === 0) return { texto: "¡Vence hoy!", clase: "badge-danger" };
+      if (diffDays === 1) return { texto: "Vence mañana", clase: "badge-warn" };
+      return { texto: `Faltan ${diffDays} días`, clase: "badge" };
     }
 
     function renderizarTareas() {
@@ -2024,11 +2085,16 @@
         if (t.prioridad === 'Urgente') badgePrioClass = 'badge-danger';
         else if (t.prioridad === 'Normal') badgePrioClass = 'badge-warn';
 
+        let infoCuentaAtras = calcularDiasRestantes(t.fecha);
+
         contenedor.innerHTML += `
           <div class="card">
             <div class="section-flex">
               <span class="badge">${t.asignatura}</span>
-              <span class="${badgePrioClass}">${t.prioridad}</span>
+              <div style="display: flex; gap: 4px;">
+                <span class="${infoCuentaAtras.clase}">${infoCuentaAtras.texto}</span>
+                <span class="${badgePrioClass}">${t.prioridad}</span>
+              </div>
             </div>
             <h4 style="margin-top: 6px;">${t.titulo}</h4>
             ${t.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.desc}</p>` : ''}
@@ -2296,7 +2362,7 @@
             nombre, docente, aula, email, tel, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
-            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar', estadoAsistencia2: 'Sin registrar',
+            color: colorSeleccionadoHex,
             historial1: [], historial2: []
           });
         } else {
@@ -2392,7 +2458,6 @@
       }
     }
 
-    // --- CÁLCULO DE FECHA REAL DE LA ASIGNATURA SEGÚN CUADRANTE ---
     function obtenerFechaRealClase(diaStr, refDate = fechaHorarioAsistencia) {
       let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
       let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
@@ -2448,7 +2513,7 @@
     function abrirAsistenciaDetalle(nombreCentro) {
       centroActivo = nombreCentro;
       document.getElementById('titulo-asistencia-centro').textContent = nombreCentro;
-      fechaHorarioAsistencia = new Date(); // Resetear a la semana actual al abrir
+      fechaHorarioAsistencia = new Date();
       
       let tabs = document.querySelectorAll('#vista-asistencia-detalle .horario-tab');
       if(tabs.length > 0) cambiarAsistenciaTab('control', tabs[0]);
@@ -2462,15 +2527,15 @@
       if (centro && centro.asignaturas[asigIdx]) {
         let asig = centro.asignaturas[asigIdx];
         let fechaSesion = obtenerFechaRealClase(sesionNum === 2 ? asig.dia2 : asig.dia, fechaHorarioAsistencia);
+        let isoFechaSesion = obtenerFechaIsoRealClase(sesionNum === 2 ? asig.dia2 : asig.dia, fechaHorarioAsistencia);
 
-        if (sesionNum === 2) {
-          asig.estadoAsistencia2 = estado;
-          if (!asig.historial2) asig.historial2 = [];
-          asig.historial2.push({ fecha: fechaSesion, estado: estado });
+        let historialArr = sesionNum === 2 ? (asig.historial2 || (asig.historial2 = [])) : (asig.historial1 || (asig.historial1 = []));
+        let indexExistente = historialArr.findIndex(h => h.isoFecha === isoFechaSesion);
+
+        if (indexExistente >= 0) {
+          historialArr[indexExistente].estado = estado;
         } else {
-          asig.estadoAsistencia = estado;
-          if (!asig.historial1) asig.historial1 = [];
-          asig.historial1.push({ fecha: fechaSesion, estado: estado });
+          historialArr.push({ fecha: fechaSesion, isoFecha: isoFechaSesion, estado: estado });
         }
 
         guardarDatos();
@@ -2507,6 +2572,10 @@
         let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin;
 
         if (enRango1) {
+          let historial1 = asig.historial1 || [];
+          let reg1 = historial1.find(h => h.isoFecha === fechaIso1);
+          let estado1 = reg1 ? reg1.estado : 'Sin registrar';
+
           listaSesionesPasarLista.push({
             asigIdx: idxOriginal,
             sesionNum: 1,
@@ -2517,7 +2586,7 @@
             dia: asig.dia,
             inicio: asig.inicio,
             fin: asig.fin,
-            estado: asig.estadoAsistencia || 'Sin registrar',
+            estado: estado1,
             isoFecha: fechaIso1
           });
         }
@@ -2527,6 +2596,10 @@
           let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin;
 
           if (enRango2) {
+            let historial2 = asig.historial2 || [];
+            let reg2 = historial2.find(h => h.isoFecha === fechaIso2);
+            let estado2 = reg2 ? reg2.estado : 'Sin registrar';
+
             listaSesionesPasarLista.push({
               asigIdx: idxOriginal,
               sesionNum: 2,
@@ -2537,7 +2610,7 @@
               dia: asig.dia2,
               inicio: asig.inicio2 || asig.inicio,
               fin: asig.fin2 || asig.fin,
-              estado: asig.estadoAsistencia2 || 'Sin registrar',
+              estado: estado2,
               isoFecha: fechaIso2
             });
           }
@@ -2549,13 +2622,10 @@
         return;
       }
 
-      // ORDEN CRONOLÓGICO Y POR ESTADO (Fecha/Hora primero, y pendientes arriba)
       listaSesionesPasarLista.sort((a, b) => {
         let aPendiente = a.estado === 'Sin registrar' ? 0 : 1;
         let bPendiente = b.estado === 'Sin registrar' ? 0 : 1;
-        if (aPendiente !== bPendiente) return aPendiente - bPendiente; // Pendientes primero
-
-        // Si ambas tienen el mismo estado, ordenar estrictamente por fecha y hora
+        if (aPendiente !== bPendiente) return aPendiente - bPendiente;
         if (a.isoFecha !== b.isoFecha) return a.isoFecha.localeCompare(b.isoFecha);
         return a.inicio.localeCompare(b.inicio);
       });
@@ -2611,21 +2681,21 @@
 
       centro.asignaturas.forEach((asig) => {
         let sesiones = [
-          { num: 1, dia: asig.dia, estado: asig.estadoAsistencia || 'Sin registrar', historial: asig.historial1 || [] }
+          { num: 1, dia: asig.dia, historial: asig.historial1 || [] }
         ];
         if (asig.tieneSegunda && asig.dia2) {
-          sesiones.push({ num: 2, dia: asig.dia2, estado: asig.estadoAsistencia2 || 'Sin registrar', historial: asig.historial2 || [] });
+          sesiones.push({ num: 2, dia: asig.dia2, historial: asig.historial2 || [] });
         }
 
         sesiones.forEach(ses => {
-          let colorEstado = obtenerColorEstadoAsistencia(ses.estado);
           let asistenciasCount = ses.historial.filter(h => h.estado === 'Asistió').length;
           let totalHistorial = ses.historial.length;
-          let pct = totalHistorial > 0 ? Math.round((asistenciasCount / totalHistorial) * 100) : (ses.estado === 'Asistió' ? 100 : 0);
+          let pct = totalHistorial > 0 ? Math.round((asistenciasCount / totalHistorial) * 100) : 0;
+          let colorEstado = pct >= 75 ? '#10B981' : (pct >= 50 ? '#F59E0B' : '#EF4444');
 
           let puntosHtml = '';
           if (ses.historial.length === 0) {
-            puntosHtml = `<span class="attendance-dot" style="background: ${colorEstado};" title="${ses.estado}"></span>`;
+            puntosHtml = `<span style="font-size: 11px; color: var(--text-muted);">Sin registros de asistencia aún.</span>`;
           } else {
             puntosHtml = ses.historial.map(h => {
               let c = obtenerColorEstadoAsistencia(h.estado);
@@ -2637,13 +2707,13 @@
             <div class="card" style="border-left: 4px solid ${asig.color};">
               <div class="section-flex">
                 <h4 style="color: var(--text-main);">📚 ${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
-                <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${ses.estado}</span>
+                <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${pct}% Asistencia</span>
               </div>
               <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Día asignado: ${ses.dia} • Docente: ${asig.docente}</p>
               
               <div style="background: var(--bg-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
                 <div class="section-flex" style="margin-bottom: 4px;">
-                  <span style="font-size: 11px; color: var(--text-muted);">Efectividad de Asistencia</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">Efectividad acumulada</span>
                   <strong style="font-size: 12px; color: ${colorEstado};">${pct}%</strong>
                 </div>
                 <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
@@ -2651,7 +2721,7 @@
                 </div>
 
                 <div style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;">
-                  <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Histórico de Sesiones:</div>
+                  <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Histórico de Sesiones (${totalHistorial} registradas):</div>
                   <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
                     ${puntosHtml}
                   </div>
@@ -2683,6 +2753,13 @@
 
       tareasPendientes.forEach(t => {
         sel.innerHTML += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo}</option>`;
+      });
+
+      repertorioCategorias.forEach(cat => {
+        cat.piezas.forEach(p => {
+          let txt = p.autor ? `${p.titulo} (${p.autor})` : p.titulo;
+          sel.innerHTML += `<option value="[Repertorio] ${txt}">🎼 ${txt}</option>`;
+        });
       });
 
       if (sel.options.length === 0) {
