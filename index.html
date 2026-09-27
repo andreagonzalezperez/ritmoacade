@@ -589,6 +589,11 @@
     </div>
 
     <div id="subview-asistencia-control" class="horario-subview active">
+      <div class="day-navigator">
+        <button class="day-nav-btn" onclick="cambiarSemanaAsistencia(-1)">‹</button>
+        <div class="day-nav-title" id="asistencia-nav-titulo-semana">Semana actual</div>
+        <button class="day-nav-btn" onclick="cambiarSemanaAsistencia(1)">›</button>
+      </div>
       <div class="grid" id="lista-control-asistencia-container"></div>
     </div>
 
@@ -1075,6 +1080,7 @@
     let fechaHorarioDiario = new Date();
     let fechaHorarioSemana = new Date();
     let fechaHorarioCuadrante = new Date();
+    let fechaHorarioAsistencia = new Date(); // Sincronizado con el cuadrante para asistencia
     let fechaHorarioMes = new Date();
     let fechaSeleccionadaMes = new Date();
 
@@ -1126,6 +1132,11 @@
     function cambiarSemanaCuadrante(semanas) {
       fechaHorarioCuadrante.setDate(fechaHorarioCuadrante.getDate() + (semanas * 7));
       renderizarCuadranteSemanal();
+    }
+
+    function cambiarSemanaAsistencia(semanas) {
+      fechaHorarioAsistencia.setDate(fechaHorarioAsistencia.getDate() + (semanas * 7));
+      renderizarControlAsistenciaCentro();
     }
 
     function cambiarMesHorario(meses) {
@@ -2373,11 +2384,11 @@
     }
 
     // --- CÁLCULO DE FECHA REAL DE LA ASIGNATURA SEGÚN CUADRANTE ---
-    function obtenerFechaRealClase(diaStr) {
+    function obtenerFechaRealClase(diaStr, refDate = fechaHorarioAsistencia) {
       let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
       let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
       
-      let d = new Date(fechaHorarioCuadrante);
+      let d = new Date(refDate);
       let currentDay = d.getDay();
       let diffToMonday = d.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
       let lunesSemana = new Date(d.setDate(diffToMonday));
@@ -2390,6 +2401,25 @@
       let mm = String(dClase.getMonth() + 1).padStart(2, '0');
       let dd = String(dClase.getDate()).padStart(2, '0');
       return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function obtenerFechaIsoRealClase(diaStr, refDate = fechaHorarioAsistencia) {
+      let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
+      let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
+      
+      let d = new Date(refDate);
+      let currentDay = d.getDay();
+      let diffToMonday = d.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+      let lunesSemana = new Date(d.setDate(diffToMonday));
+      
+      let dClase = new Date(lunesSemana);
+      let dayIndex = targetDay === 0 ? 6 : targetDay - 1;
+      dClase.setDate(lunesSemana.getDate() + dayIndex);
+
+      let yyyy = dClase.getFullYear();
+      let mm = String(dClase.getMonth() + 1).padStart(2, '0');
+      let dd = String(dClase.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
     }
 
     function renderizarAsistenciaCentros() {
@@ -2409,6 +2439,7 @@
     function abrirAsistenciaDetalle(nombreCentro) {
       centroActivo = nombreCentro;
       document.getElementById('titulo-asistencia-centro').textContent = nombreCentro;
+      fechaHorarioAsistencia = new Date(); // Resetear a la semana actual al abrir
       
       let tabs = document.querySelectorAll('#vista-asistencia-detalle .horario-tab');
       if(tabs.length > 0) cambiarAsistenciaTab('control', tabs[0]);
@@ -2421,7 +2452,7 @@
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro && centro.asignaturas[asigIdx]) {
         let asig = centro.asignaturas[asigIdx];
-        let fechaSesion = obtenerFechaRealClase(sesionNum === 2 ? asig.dia2 : asig.dia);
+        let fechaSesion = obtenerFechaRealClase(sesionNum === 2 ? asig.dia2 : asig.dia, fechaHorarioAsistencia);
 
         if (sesionNum === 2) {
           asig.estadoAsistencia2 = estado;
@@ -2440,6 +2471,19 @@
     }
 
     function renderizarControlAsistenciaCentro() {
+      // Actualizar título del navegador de semanas en asistencia
+      let dSemana = new Date(fechaHorarioAsistencia);
+      let day = dSemana.getDay();
+      let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
+      let lunesSemana = new Date(dSemana.setDate(diffToMonday));
+      let domingoSemana = new Date(lunesSemana);
+      domingoSemana.setDate(domingoSemana.getDate() + 6);
+      
+      const navTitulo = document.getElementById('asistencia-nav-titulo-semana');
+      if (navTitulo) {
+        navTitulo.textContent = `${lunesSemana.getDate()} ${lunesSemana.toLocaleString('es-ES', { month: 'short' })} - ${domingoSemana.getDate()} ${domingoSemana.toLocaleString('es-ES', { month: 'short' })}`;
+      }
+
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-control-asistencia-container');
       contenedor.innerHTML = '';
@@ -2448,37 +2492,53 @@
         return;
       }
       
-      // Creamos una lista aplanada de bloques de sesión (Sesión 1 y Sesión 2 si existe)
       let listaSesionesPasarLista = [];
       centro.asignaturas.forEach((asig, idxOriginal) => {
-        listaSesionesPasarLista.push({
-          asigIdx: idxOriginal,
-          sesionNum: 1,
-          nombre: asig.nombre,
-          docente: asig.docente,
-          aula: asig.aula,
-          color: asig.color,
-          dia: asig.dia,
-          inicio: asig.inicio,
-          fin: asig.fin,
-          estado: asig.estadoAsistencia || 'Sin registrar'
-        });
+        // Comprobar Sesión 1 dentro del periodo lectivo y semana seleccionada
+        let fechaIso1 = obtenerFechaIsoRealClase(asig.dia, fechaHorarioAsistencia);
+        let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin;
 
-        if (asig.tieneSegunda && asig.dia2) {
+        if (enRango1) {
           listaSesionesPasarLista.push({
             asigIdx: idxOriginal,
-            sesionNum: 2,
-            nombre: asig.nombre + " (2ª Sesión)",
+            sesionNum: 1,
+            nombre: asig.nombre,
             docente: asig.docente,
             aula: asig.aula,
             color: asig.color,
-            dia: asig.dia2,
-            inicio: asig.inicio2 || asig.inicio,
-            fin: asig.fin2 || asig.fin,
-            estado: asig.estadoAsistencia2 || 'Sin registrar'
+            dia: asig.dia,
+            inicio: asig.inicio,
+            fin: asig.fin,
+            estado: asig.estadoAsistencia || 'Sin registrar'
           });
         }
+
+        // Comprobar Sesión 2 dentro del periodo lectivo y semana seleccionada
+        if (asig.tieneSegunda && asig.dia2) {
+          let fechaIso2 = obtenerFechaIsoRealClase(asig.dia2, fechaHorarioAsistencia);
+          let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin;
+
+          if (enRango2) {
+            listaSesionesPasarLista.push({
+              asigIdx: idxOriginal,
+              sesionNum: 2,
+              nombre: asig.nombre + " (2ª Sesión)",
+              docente: asig.docente,
+              aula: asig.aula,
+              color: asig.color,
+              dia: asig.dia2,
+              inicio: asig.inicio2 || asig.inicio,
+              fin: asig.fin2 || asig.fin,
+              estado: asig.estadoAsistencia2 || 'Sin registrar'
+            });
+          }
+        }
       });
+
+      if (listaSesionesPasarLista.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay clases programadas para esta semana según sus periodos lectivos.</p>`;
+        return;
+      }
 
       // ORDENAR: Las que NO están registradas van primero, las ya registradas bajan al final
       listaSesionesPasarLista.sort((a, b) => {
@@ -2488,7 +2548,7 @@
       });
 
       listaSesionesPasarLista.forEach(item => {
-        let fechaSesion = obtenerFechaRealClase(item.dia);
+        let fechaSesion = obtenerFechaRealClase(item.dia, fechaHorarioAsistencia);
         let badgeColor = obtenerColorEstadoAsistencia(item.estado);
         let cardBg = item.estado === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor) + ', 0.08)';
 
