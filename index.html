@@ -104,6 +104,7 @@
     .badge-study { font-size: 10px; color: var(--study-accent); background: rgba(56,189,248,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-warn { font-size: 10px; color: #F59E0B; background: rgba(245,158,11,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-danger { font-size: 10px; color: #EF4444; background: rgba(239,68,68,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .badge-voluntaria { font-size: 10px; color: #34D399; background: rgba(52, 211, 153, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
     .section-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
@@ -440,7 +441,7 @@
   <div id="vista-repertorio" class="view">
     <header>
       <div class="titulo">Gestión de Repertorio</div>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalCategoria()">+ Añadir categoría</button>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalCategoriaCrear()">+ Añadir categoría</button>
     </header>
     <p class="fecha">Tus categorías y piezas organizadas.</p>
 
@@ -535,7 +536,7 @@
           <h4>📝 Tareas Pendientes</h4>
           <span class="link-txt">Gestionar ›</span>
         </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Listado con fecha exacta y calendario</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Listado con fecha exacta y cuenta atrás</p>
       </div>
     </div>
   </div>
@@ -560,7 +561,7 @@
     </header>
     <div class="section-flex" style="margin-bottom: 14px;">
       <p class="fecha" style="margin-bottom:0;">Selecciona un centro o crea uno nuevo.</p>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalCentro()">+ Añadir centro</button>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalCentroCrear()">+ Añadir centro</button>
     </div>
     <div class="grid" id="lista-centros-container"></div>
   </div>
@@ -770,27 +771,41 @@
   <div id="modalCentro" class="modal" onclick="cerrarModalCentroFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nuevo Centro de Estudios</h3>
+        <h3 id="modal-centro-titulo">Centro de Estudios</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalCentro()">✕</span>
       </div>
+      <input type="hidden" id="input-centro-edit-index" value="-1">
       <div class="form-group">
         <label>Nombre del Centro</label>
         <input type="text" id="input-nombre-centro" class="form-control" placeholder="Ej. Conservatorio...">
       </div>
-      <button class="btn-main" onclick="guardarNuevoCentro()">Crear centro</button>
+      <button class="btn-main" onclick="guardarOActualizarCentro()">Guardar centro</button>
     </div>
   </div>
 
   <div id="modalAsignatura" class="modal" onclick="cerrarModalAsignaturaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3 id="modal-asig-titulo">Nueva Asignatura</h3>
+        <h3 id="modal-asig-titulo">Nueva Asignatura / Clase</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalAsignatura()">✕</span>
       </div>
       <input type="hidden" id="input-asig-edit-index" value="-1">
       <div class="form-group">
         <label>Nombre</label>
-        <input type="text" id="input-asig-nombre" class="form-control" placeholder="Ej. Piano...">
+        <input type="text" id="input-asig-nombre" class="form-control" placeholder="Ej. Música de cámara...">
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Carácter</label>
+          <select id="input-asig-caracter" class="form-control">
+            <option value="obligatoria" selected>Obligatoria</option>
+            <option value="voluntaria">Voluntaria / Oyente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Aula</label>
+          <input type="text" id="input-asig-aula" class="form-control" placeholder="Aula...">
+        </div>
       </div>
       <div class="row-2">
         <div class="form-group">
@@ -798,8 +813,25 @@
           <input type="text" id="input-asig-docente" class="form-control" placeholder="Profesor...">
         </div>
         <div class="form-group">
-          <label>Aula</label>
-          <input type="text" id="input-asig-aula" class="form-control" placeholder="Aula...">
+          <label>Periodo Lectivo</label>
+          <select id="input-asig-periodo" class="form-control" onchange="actualizarFechasCustomSegunPeriodo()">
+            <option value="1_cuatri">1º Cuatrimestre</option>
+            <option value="2_cuatri">2º Cuatrimestre</option>
+            <option value="1_trim">1º Trimestre</option>
+            <option value="2_trim">2º Trimestre</option>
+            <option value="3_trim">3º Trimestre</option>
+            <option value="custom">Personalizado (Fechas exactas)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-2" id="bloque-fechas-personalizadas" style="display: none;">
+        <div class="form-group">
+          <label>Fecha Inicio</label>
+          <input type="date" id="input-asig-fechaini" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Fecha Fin</label>
+          <input type="date" id="input-asig-fechafin" class="form-control">
         </div>
       </div>
       <div class="row-2">
@@ -825,25 +857,15 @@
             <option value="Dom">Domingo</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Periodo Lectivo</label>
-          <select id="input-asig-periodo" class="form-control">
-            <option value="1_cuatri">1º Cuatrimestre</option>
-            <option value="2_cuatri">2º Cuatrimestre</option>
-            <option value="1_trim">1º Trimestre</option>
-            <option value="2_trim">2º Trimestre</option>
-            <option value="3_trim">3º Trimestre</option>
-          </select>
-        </div>
-      </div>
-      <div class="row-2">
-        <div class="form-group">
-          <label>Hora Inicio (1ª Sesión)</label>
-          <select id="input-asig-inicio" class="form-control"></select>
-        </div>
-        <div class="form-group">
-          <label>Hora Fin (1ª Sesión)</label>
-          <select id="input-asig-fin" class="form-control"></select>
+        <div class="row-2">
+          <div class="form-group">
+            <label>Hora Inicio</label>
+            <select id="input-asig-inicio" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label>Hora Fin</label>
+            <select id="input-asig-fin" class="form-control"></select>
+          </div>
         </div>
       </div>
       <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;">
@@ -916,9 +938,10 @@
   <div id="modalCategoria" class="modal" onclick="cerrarModalCategoriaFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nueva Categoría de Repertorio</h3>
+        <h3 id="modal-cat-titulo">Categoría de Repertorio</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalCategoria()">✕</span>
       </div>
+      <input type="hidden" id="input-cat-edit-index" value="-1">
       <div class="form-group">
         <label>Emoji</label>
         <input type="text" id="input-emoji-cat" class="form-control" value="🎹">
@@ -927,7 +950,7 @@
         <label>Nombre</label>
         <input type="text" id="input-nombre-cat" class="form-control" placeholder="Ej. Piano...">
       </div>
-      <button class="btn-main" onclick="guardarNuevaCategoria()">Crear categoría</button>
+      <button class="btn-main" onclick="guardarOActualizarCategoria()">Guardar categoría</button>
     </div>
   </div>
 
@@ -1055,7 +1078,7 @@
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
           { 
-            nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", 
+            nombre: "Saxofón", caracter: "obligatoria", docente: "Prof. Martínez", aula: "Estudio 1", 
             email: "martinez@conservatorio.es", tel: "+34600112233",
             dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", 
             periodo: "1_cuatri", fechaInicio: "2026-09-16", fechaFin: "2027-01-31", 
@@ -1333,8 +1356,11 @@
           contAsig.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 4px 0;">No hay asignaturas programadas para hoy.</p>`;
         } else {
           contAsig.innerHTML = asigsHoy.map(a => `
-            <div style="padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
-              <div style="font-weight: bold; font-size: 13px; color: ${a.color};">📚 ${a.nombre}</div>
+            <div style="padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}', '${a.caracter || 'obligatoria'}')">
+              <div style="font-weight: bold; font-size: 13px; color: ${a.color}; display: flex; justify-content: space-between;">
+                <span>📚 ${a.nombre}</span>
+                ${a.caracter === 'voluntaria' ? '<span class="badge-voluntaria">Voluntaria</span>' : ''}
+              </div>
               <div style="font-size: 11px; color: var(--text-muted);">⏱️ ${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
             </div>
           `).join('');
@@ -1374,7 +1400,7 @@
       }
     }
 
-    function abrirDetalleAsignaturaModal(nombre, docente, aula, email, tel, horario, periodo) {
+    function abrirDetalleAsignaturaModal(nombre, docente, aula, email, tel, horario, periodo, caracter = 'obligatoria') {
       document.getElementById('detalle-asig-modal-nombre').textContent = nombre;
       let textoPeriodo = "Periodo general";
       if (periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (16 Sep 2026 - 31 Ene 2027)";
@@ -1382,9 +1408,16 @@
       else if (periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Sep 2026 - 30 Nov 2026)";
       else if (periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic 2026 - 15 Mar 2027)";
       else if (periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar 2027 - 30 Jun 2027)";
+      else if (periodo === 'custom') textoPeriodo = "Personalizado por fechas";
+
+      let badgeCaracterHtml = caracter === 'voluntaria' ? '<span class="badge-voluntaria" style="margin-left: 6px;">⭐ Voluntaria / Oyente</span>' : '<span class="badge" style="margin-left: 6px;">Obligatoria</span>';
 
       const body = document.getElementById('detalle-asig-modal-body');
       body.innerHTML = `
+        <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Carácter de la clase</div>
+          <div style="font-size: 14px; font-weight: bold;">${badgeCaracterHtml}</div>
+        </div>
         <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
           <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Docente</div>
           <div style="font-size: 14px; font-weight: bold;">👤 ${docente}</div>
@@ -1549,10 +1582,13 @@
       } else {
         eventosHoy.forEach(ev => {
           contDiaria.innerHTML += `
-            <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}')">
+            <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}', '${ev.caracter || 'obligatoria'}')">
               <div class="section-flex">
                 <span style="color: ${ev.color}; font-weight: bold;">${ev.inicio} - ${ev.fin}</span>
-                <span class="badge" style="background: ${ev.color}25; color: ${ev.color};">${ev.dia}</span>
+                <div style="display: flex; gap: 4px;">
+                  ${ev.caracter === 'voluntaria' ? '<span class="badge-voluntaria">Voluntaria</span>' : ''}
+                  <span class="badge" style="background: ${ev.color}25; color: ${ev.color};">${ev.dia}</span>
+                </div>
               </div>
               <h4>📚 ${ev.nombre}</h4>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">📍 ${ev.aula} • 👤 ${ev.docente}</p>
@@ -1616,8 +1652,11 @@
             ${asigsDelDia.length === 0 && sesDelDia.length === 0 && !festivoDia ? `<p style="font-size: 12px; color: var(--text-muted);">Sin eventos en esta fecha.</p>` : ''}
             <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
               ${asigsDelDia.map(a => `
-                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color}; cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
-                  <strong style="font-size: 12px;">📚 ${a.nombre}</strong>
+                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color}; cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}', '${a.caracter || 'obligatoria'}')">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="font-size: 12px;">📚 ${a.nombre}</strong>
+                    ${a.caracter === 'voluntaria' ? '<span style="font-size: 9px; color: #34D399;">⭐ Vol.</span>' : ''}
+                  </div>
                   <div style="font-size: 11px; color: var(--text-muted);">${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
                 </div>
               `).join('')}
@@ -1713,8 +1752,11 @@
 
       eventos.forEach(ev => {
         cont.innerHTML += `
-          <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}')">
-            <strong style="font-size: 13px;">📚 ${ev.nombre}</strong>
+          <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}', '${ev.caracter || 'obligatoria'}')">
+            <div style="display: flex; justify-content: space-between;">
+              <strong style="font-size: 13px;">📚 ${ev.nombre}</strong>
+              ${ev.caracter === 'voluntaria' ? '<span class="badge-voluntaria">Voluntaria</span>' : ''}
+            </div>
             <div style="font-size: 12px; color: var(--text-muted);">${ev.inicio} - ${ev.fin} • 📍 ${ev.aula}</div>
           </div>
         `;
@@ -1841,7 +1883,7 @@
                 bloqueDiv.style.cursor = "pointer";
                 bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
                 bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong>`;
-                bloqueDiv.onclick = () => abrirDetalleAsignaturaModal(ev.nombre, ev.docente, ev.aula, ev.email || '-', ev.tel || '-', `${ev.dia} ${ev.inicio}-${ev.fin}`, ev.periodo);
+                bloqueDiv.onclick = () => abrirDetalleAsignaturaModal(ev.nombre, ev.docente, ev.aula, ev.email || '-', ev.tel || '-', `${ev.dia} ${ev.inicio}-${ev.fin}`, ev.periodo, ev.caracter || 'obligatoria');
                 contenedorParalelo.appendChild(bloqueDiv);
               });
 
@@ -1909,6 +1951,19 @@
     function toggleSegundaSesionInputs() {
       let activo = document.getElementById('input-tiene-segunda-sesion').checked;
       document.getElementById('bloque-segunda-sesion').style.display = activo ? 'flex' : 'none';
+    }
+
+    function actualizarFechasCustomSegunPeriodo() {
+      let periodo = document.getElementById('input-asig-periodo').value;
+      let bloqueCustom = document.getElementById('bloque-fechas-personalizadas');
+      if (periodo === 'custom') {
+        bloqueCustom.style.display = 'grid';
+        let hoyStr = new Date().toISOString().split('T')[0];
+        if (!document.getElementById('input-asig-fechaini').value) document.getElementById('input-asig-fechaini').value = hoyStr;
+        if (!document.getElementById('input-asig-fechafin').value) document.getElementById('input-asig-fechafin').value = hoyStr;
+      } else {
+        bloqueCustom.style.display = 'none';
+      }
     }
 
     function inicializarPaletaColores() {
@@ -2106,16 +2161,72 @@
     function renderizarRepertorioCategorias() {
       const contenedor = document.getElementById('lista-categorias-container');
       contenedor.innerHTML = '';
-      repertorioCategorias.forEach((cat) => {
+      if (repertorioCategorias.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px; grid-column: span 2;">No hay categorías de repertorio.</p>`;
+        return;
+      }
+      repertorioCategorias.forEach((cat, idx) => {
         contenedor.innerHTML += `
           <div class="card interactive" onclick="abrirDetalleRepertorio('${cat.nombre}')">
-            <span style="font-size: 32px;">${cat.emoji}</span>
-            <h4 style="margin-top: 8px;">${cat.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted);">${cat.piezas.length} piezas activas</p>
+            <div class="section-flex" style="margin-bottom: 2px;">
+              <span style="font-size: 28px;">${cat.emoji}</span>
+              <div onclick="event.stopPropagation()">
+                <button class="btn-accion-txt btn-editar" onclick="abrirModalCategoriaEditar(${idx})">Editar</button>
+                <button class="btn-accion-txt btn-eliminar" onclick="eliminarCategoriaRepertorio(${idx})">Eliminar</button>
+              </div>
+            </div>
+            <h4 style="margin-top: 4px;">${cat.nombre}</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">${cat.piezas.length} piezas</p>
           </div>
         `;
       });
       actualizarPanelRachaEInsignias();
+    }
+
+    function abrirModalCategoriaCrear() {
+      document.getElementById('modal-cat-titulo').textContent = 'Nueva Categoría';
+      document.getElementById('input-cat-edit-index').value = '-1';
+      document.getElementById('input-emoji-cat').value = '🎹';
+      document.getElementById('input-nombre-cat').value = '';
+      document.getElementById('modalCategoria').classList.add('active');
+    }
+
+    function abrirModalCategoriaEditar(idx) {
+      const cat = repertorioCategorias[idx];
+      document.getElementById('modal-cat-titulo').textContent = 'Editar Categoría';
+      document.getElementById('input-cat-edit-index').value = idx;
+      document.getElementById('input-emoji-cat').value = cat.emoji;
+      document.getElementById('input-nombre-cat').value = cat.nombre;
+      document.getElementById('modalCategoria').classList.add('active');
+    }
+
+    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
+    function cerrarModalCategoriaFuera(e) { if (e.target.id === 'modalCategoria') cerrarModalCategoria(); }
+
+    function guardarOActualizarCategoria() {
+      const emoji = document.getElementById('input-emoji-cat').value.trim() || '🎵';
+      const nombre = document.getElementById('input-nombre-cat').value.trim();
+      const editIndex = parseInt(document.getElementById('input-cat-edit-index').value);
+
+      if (!nombre) return;
+      if (editIndex === -1) {
+        repertorioCategorias.push({ nombre, emoji, piezas: [] });
+      } else {
+        repertorioCategorias[editIndex].nombre = nombre;
+        repertorioCategorias[editIndex].emoji = emoji;
+      }
+      guardarDatos();
+      renderizarRepertorioCategorias();
+      cerrarModalCategoria();
+    }
+
+    function eliminarCategoriaRepertorio(idx) {
+      if (confirm('¿Eliminar esta categoría de repertorio y todas sus piezas?')) {
+        repertorioCategorias.splice(idx, 1);
+        guardarDatos();
+        renderizarRepertorioCategorias();
+        actualizarSelectorPomodoroItems();
+      }
     }
 
     function abrirDetalleRepertorio(nombreCat) {
@@ -2395,14 +2506,34 @@
       }
     }
 
-    function abrirModalCentro() { document.getElementById('modalCentro').classList.add('active'); }
+    function abrirModalCentroCrear() {
+      document.getElementById('modal-centro-titulo').textContent = 'Nuevo Centro de Estudios';
+      document.getElementById('input-centro-edit-index').value = '-1';
+      document.getElementById('input-nombre-centro').value = '';
+      document.getElementById('modalCentro').classList.add('active');
+    }
+
+    function abrirModalCentroEditar(idx) {
+      const centro = centrosEstudios[idx];
+      document.getElementById('modal-centro-titulo').textContent = 'Editar Centro de Estudios';
+      document.getElementById('input-centro-edit-index').value = idx;
+      document.getElementById('input-nombre-centro').value = centro.nombre;
+      document.getElementById('modalCentro').classList.add('active');
+    }
+
     function cerrarModalCentro() { document.getElementById('modalCentro').classList.remove('active'); }
     function cerrarModalCentroFuera(e) { if (e.target.id === 'modalCentro') cerrarModalCentro(); }
 
-    function guardarNuevoCentro() {
+    function guardarOActualizarCentro() {
       const nombre = document.getElementById('input-nombre-centro').value.trim();
+      const editIndex = parseInt(document.getElementById('input-centro-edit-index').value);
       if (!nombre) return;
-      centrosEstudios.push({ nombre, asignaturas: [], notas: [] });
+
+      if (editIndex === -1) {
+        centrosEstudios.push({ nombre, asignaturas: [], notas: [] });
+      } else {
+        centrosEstudios[editIndex].nombre = nombre;
+      }
       guardarDatos();
       renderizarCentros();
       renderizarNotasCentros();
@@ -2410,15 +2541,37 @@
       cerrarModalCentro();
     }
 
+    function eliminarCentro(idx, event) {
+      event.stopPropagation();
+      if (confirm('¿Eliminar este centro de estudios y todas sus asignaturas y notas?')) {
+        centrosEstudios.splice(idx, 1);
+        guardarDatos();
+        renderizarCentros();
+        renderizarNotasCentros();
+        renderizarAsistenciaCentros();
+        renderizarHorarioAvanzado();
+      }
+    }
+
     function renderizarCentros() {
       const contenedor = document.getElementById('lista-centros-container');
       contenedor.innerHTML = '';
-      centrosEstudios.forEach(c => {
+      if (centrosEstudios.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay centros de estudios.</p>`;
+        return;
+      }
+      centrosEstudios.forEach((c, idx) => {
         contenedor.innerHTML += `
           <div class="card interactive" onclick="abrirDetalleCentro('${c.nombre}')">
-            <div class="section-flex"><span style="font-size: 24px;">🏫</span><span class="link-txt">Ver ›</span></div>
+            <div class="section-flex">
+              <span style="font-size: 24px;">🏫</span>
+              <div onclick="event.stopPropagation()">
+                <button class="btn-accion-txt btn-editar" onclick="abrirModalCentroEditar(${idx})">Editar</button>
+                <button class="btn-accion-txt btn-eliminar" onclick="eliminarCentro(${idx}, event)">Eliminar</button>
+              </div>
+            </div>
             <h4 style="margin-top: 6px;">${c.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas</p>
+            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas / clases</p>
           </div>
         `;
       });
@@ -2437,7 +2590,7 @@
       const contenedor = document.getElementById('lista-asignaturas-container');
       contenedor.innerHTML = '';
       if (!centro || centro.asignaturas.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas.</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay asignaturas o clases.</p>`;
         return;
       }
       centro.asignaturas.forEach((asig, idx) => {
@@ -2447,16 +2600,22 @@
         else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Sep 2026 - 30 Nov 2026)";
         else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic 2026 - 15 Mar 2027)";
         else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar 2027 - 30 Jun 2027)";
+        else if (asig.periodo === 'custom') textoPeriodo = `Personalizado (${asig.fechaInicio} al ${asig.fechaFin})`;
 
         let infoSesiones = `1ª Sesión: ${asig.dia} (${asig.inicio} - ${asig.fin})`;
         if (asig.tieneSegunda && asig.dia2) {
           infoSesiones += `<br>2ª Sesión: ${asig.dia2} (${asig.inicio2} - ${asig.fin2})`;
         }
 
+        let badgeCaracterHtml = asig.caracter === 'voluntaria' ? '<span class="badge-voluntaria">⭐ Voluntaria</span>' : '<span class="badge">Obligatoria</span>';
+
         contenedor.innerHTML += `
-          <div class="card interactive" style="border-left: 4px solid ${asig.color};" onclick="abrirDetalleAsignaturaModal('${asig.nombre}', '${asig.docente}', '${asig.aula}', '${asig.email || '-'}', '${asig.tel || '-'}', '${asig.dia} ${asig.inicio}-${asig.fin}', '${asig.periodo}')">
+          <div class="card interactive" style="border-left: 4px solid ${asig.color};" onclick="abrirDetalleAsignaturaModal('${asig.nombre}', '${asig.docente}', '${asig.aula}', '${asig.email || '-'}', '${asig.tel || '-'}', '${asig.dia} ${asig.inicio}-${asig.fin}', '${asig.periodo}', '${asig.caracter || 'obligatoria'}')">
             <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
+                ${badgeCaracterHtml}
+              </div>
               <div onclick="event.stopPropagation()">
                 <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
                 <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
@@ -2472,14 +2631,16 @@
     }
 
     function abrirModalAsignaturaCrear() {
-      document.getElementById('modal-asig-titulo').textContent = 'Nueva Asignatura';
+      document.getElementById('modal-asig-titulo').textContent = 'Nueva Asignatura / Clase';
       document.getElementById('input-asig-edit-index').value = '-1';
       document.getElementById('input-asig-nombre').value = '';
+      document.getElementById('input-asig-caracter').value = 'obligatoria';
       document.getElementById('input-asig-docente').value = '';
       document.getElementById('input-asig-aula').value = '';
       document.getElementById('input-asig-email').value = '';
       document.getElementById('input-asig-tel').value = '';
       document.getElementById('input-asig-periodo').value = '1_cuatri';
+      document.getElementById('bloque-fechas-personalizadas').style.display = 'none';
       document.getElementById('input-tiene-segunda-sesion').checked = false;
       document.getElementById('bloque-segunda-sesion').style.display = 'none';
       document.getElementById('modalAsignatura').classList.add('active');
@@ -2488,9 +2649,10 @@
     function abrirModalAsignaturaEditar(index) {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const asig = centro.asignaturas[index];
-      document.getElementById('modal-asig-titulo').textContent = 'Editar Asignatura';
+      document.getElementById('modal-asig-titulo').textContent = 'Editar Asignatura / Clase';
       document.getElementById('input-asig-edit-index').value = index;
       document.getElementById('input-asig-nombre').value = asig.nombre;
+      document.getElementById('input-asig-caracter').value = asig.caracter || 'obligatoria';
       document.getElementById('input-asig-docente').value = asig.docente;
       document.getElementById('input-asig-aula').value = asig.aula;
       document.getElementById('input-asig-email').value = asig.email || '';
@@ -2498,7 +2660,17 @@
       document.getElementById('input-asig-dia').value = asig.dia;
       document.getElementById('input-asig-inicio').value = asig.inicio;
       document.getElementById('input-asig-fin').value = asig.fin;
-      document.getElementById('input-asig-periodo').value = asig.periodo || '1_cuatri';
+      
+      let periodo = asig.periodo || '1_cuatri';
+      document.getElementById('input-asig-periodo').value = periodo;
+      
+      if (periodo === 'custom') {
+        document.getElementById('bloque-fechas-personalizadas').style.display = 'grid';
+        document.getElementById('input-asig-fechaini').value = asig.fechaInicio || '';
+        document.getElementById('input-asig-fechafin').value = asig.fechaFin || '';
+      } else {
+        document.getElementById('bloque-fechas-personalizadas').style.display = 'none';
+      }
       
       let tieneSeg = asig.tieneSegunda || false;
       document.getElementById('input-tiene-segunda-sesion').checked = tieneSeg;
@@ -2535,8 +2707,23 @@
     function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
     function cerrarModalAsignaturaFuera(e) { if (e.target.id === 'modalAsignatura') cerrarModalAsignatura(); }
 
+    function calcularFechasPeriodo(periodo) {
+      if (periodo === '1_cuatri') return { inicio: '2026-09-16', fin: '2027-01-31' };
+      if (periodo === '2_cuatri') return { inicio: '2027-02-01', fin: '2027-06-01' };
+      if (periodo === '1_trim') return { inicio: '2026-09-16', fin: '2026-11-30' };
+      if (periodo === '2_trim') return { inicio: '2026-12-01', fin: '2027-03-15' };
+      if (periodo === '3_trim') return { inicio: '2027-03-16', fin: '2027-06-30' };
+      if (periodo === 'custom') {
+        let ini = document.getElementById('input-asig-fechaini').value || '2026-09-16';
+        let fin = document.getElementById('input-asig-fechafin').value || '2027-06-30';
+        return { inicio: ini, fin: fin };
+      }
+      return { inicio: '2026-09-16', fin: '2027-06-30' };
+    }
+
     function guardarOActualizarAsignatura() {
       const nombre = document.getElementById('input-asig-nombre').value.trim();
+      const caracter = document.getElementById('input-asig-caracter').value;
       const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
       const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
       const email = document.getElementById('input-asig-email').value.trim();
@@ -2560,7 +2747,7 @@
       if (centro) {
         if (editIndex === -1) {
           centro.asignaturas.push({
-            nombre, docente, aula, email, tel, dia, inicio, fin, periodo,
+            nombre, caracter, docente, aula, email, tel, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
             color: colorSeleccionadoHex,
@@ -2569,7 +2756,7 @@
         } else {
           centro.asignaturas[editIndex] = {
             ...centro.asignaturas[editIndex],
-            nombre, docente, aula, email, tel, dia, inicio, fin, periodo,
+            nombre, caracter, docente, aula, email, tel, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
             color: colorSeleccionadoHex
@@ -2584,7 +2771,7 @@
     }
 
     function eliminarAsignatura(index) {
-      if (confirm('¿Eliminar esta asignatura?')) {
+      if (confirm('¿Eliminar esta asignatura / clase?')) {
         const centro = centrosEstudios.find(c => c.nombre === centroActivo);
         if (centro) {
           centro.asignaturas.splice(index, 1);
@@ -2705,7 +2892,7 @@
           <div class="card interactive" onclick="abrirAsistenciaDetalle('${c.nombre}')">
             <div class="section-flex"><span style="font-size: 24px;">📋</span><span class="link-txt">Pasar lista ›</span></div>
             <h4 style="margin-top: 6px;">${c.nombre}</h4>
-            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas</p>
+            <p style="font-size: 11px; color: var(--text-muted);">${c.asignaturas.length} asignaturas / clases</p>
           </div>
         `;
       });
@@ -2781,6 +2968,7 @@
             asigIdx: idxOriginal,
             sesionNum: 1,
             nombre: asig.nombre,
+            caracter: asig.caracter,
             docente: asig.docente,
             aula: asig.aula,
             color: asig.color,
@@ -2805,6 +2993,7 @@
               asigIdx: idxOriginal,
               sesionNum: 2,
               nombre: asig.nombre + " (2ª Sesión)",
+              caracter: asig.caracter,
               docente: asig.docente,
               aula: asig.aula,
               color: asig.color,
@@ -2835,12 +3024,16 @@
         let fechaSesion = obtenerFechaRealClase(item.dia, fechaHorarioAsistencia);
         let badgeColor = obtenerColorEstadoAsistencia(item.estado);
         let cardBg = item.estado === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor) + ', 0.08)';
+        let badgeCaracter = item.caracter === 'voluntaria' ? '<span class="badge-voluntaria">Voluntaria</span>' : '';
 
         contenedor.innerHTML += `
           <div class="card" style="background: ${cardBg}; border-left: 4px solid ${badgeColor};">
             <div class="section-flex">
               <span class="badge" style="background: ${item.color}25; color: ${item.color};">📅 ${fechaSesion} (${item.dia} ${item.inicio})</span>
-              <span class="badge" style="background: ${badgeColor}25; color: ${badgeColor};">${item.estado}</span>
+              <div style="display: flex; gap: 4px;">
+                ${badgeCaracter}
+                <span class="badge" style="background: ${badgeColor}25; color: ${badgeColor};">${item.estado}</span>
+              </div>
             </div>
             <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${item.nombre}</h4>
             <div style="display: flex; gap: 4px; flex-wrap: wrap;">
@@ -2904,10 +3097,15 @@
             }).join('');
           }
 
+          let badgeCaracter = asig.caracter === 'voluntaria' ? '<span class="badge-voluntaria">⭐ Voluntaria</span>' : '';
+
           contenedor.innerHTML += `
             <div class="card" style="border-left: 4px solid ${asig.color};">
               <div class="section-flex">
-                <h4 style="color: var(--text-main);">📚 ${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <h4 style="color: var(--text-main);">📚 ${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
+                  ${badgeCaracter}
+                </div>
                 <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${pct}% Asistencia</span>
               </div>
               <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Día asignado: ${ses.dia} • Docente: ${asig.docente}</p>
@@ -2942,7 +3140,8 @@
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
           if (hoyStr >= a.fechaInicio && hoyStr <= a.fechaFin) {
-            opcionesHtml += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}</option>`;
+            let tagVol = a.caracter === 'voluntaria' ? ' (Voluntaria)' : '';
+            opcionesHtml += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}${tagVol}</option>`;
           }
         });
       });
@@ -3085,22 +3284,9 @@
         } else {
           alert('La sesión fue demasiado corta para registrar minutos.');
         }
-        segundosTranscurridos = 0;
+        segundosTranscurridos = false;
         display.textContent = "00:00:00";
       }
-    }
-
-    function abrirModalCategoria() { document.getElementById('modalCategoria').classList.add('active'); }
-    function cerrarModalCategoria() { document.getElementById('modalCategoria').classList.remove('active'); }
-    function cerrarModalCategoriaFuera(e) { if (e.target.id === 'modalCategoria') cerrarModalCategoria(); }
-    function guardarNuevaCategoria() {
-      const emoji = document.getElementById('input-emoji-cat').value.trim() || '🎵';
-      const nombre = document.getElementById('input-nombre-cat').value.trim();
-      if (!nombre) return;
-      repertorioCategorias.push({ nombre, emoji, piezas: [] });
-      guardarDatos();
-      renderizarRepertorioCategorias();
-      cerrarModalCategoria();
     }
   </script>
 </body>
