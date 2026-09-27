@@ -899,7 +899,7 @@
           { 
             nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", 
             dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", 
-            periodo: "1_cuatri", fechaInicio: "2026-10-16", fechaFin: "2027-01-31", 
+            periodo: "1_cuatri", fechaInicio: "2026-09-16", fechaFin: "2027-01-31", 
             estadoAsistencia: "Sin registrar", historial1: [], historial2: [] 
           }
         ],
@@ -914,11 +914,11 @@
     ];
 
     let tareasPendientes = JSON.parse(localStorage.getItem('ritmo_tareas')) || [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-10-20", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-10-20", fechaFin: "2026-10-20" }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-20", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-20", fechaFin: "2026-09-20" }
     ];
 
     let objetivosDiarios = JSON.parse(localStorage.getItem('ritmo_objetivos')) || [
-      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-10-20", fechaFin: "2026-10-20" }
+      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-20", fechaFin: "2026-09-20" }
     ];
 
     let rachaActual = parseInt(localStorage.getItem('ritmo_racha')) || 0;
@@ -1045,14 +1045,14 @@
       renderizarHorarioAvanzado();
     }
 
-    // --- CÁLCULO DE FECHAS OFICIALES Y FIDELIDAD POR PERIODOS ---
+    // --- CÁLCULO DE FECHAS OFICIALES (1º Cuatrimestre desde 16 de septiembre) ---
     function calcularFechasPeriodo(periodo) {
-      if (periodo === '1_cuatri') return { inicio: "2026-10-16", fin: "2027-01-31" };
+      if (periodo === '1_cuatri') return { inicio: "2026-09-16", fin: "2027-01-31" };
       if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
-      if (periodo === '1_trim') return { inicio: "2026-10-16", fin: "2026-11-30" };
+      if (periodo === '1_trim') return { inicio: "2026-09-16", fin: "2026-11-30" };
       if (periodo === '2_trim') return { inicio: "2026-12-01", fin: "2027-03-15" };
       if (periodo === '3_trim') return { inicio: "2027-03-16", fin: "2027-06-30" };
-      return { inicio: "2026-10-16", fin: "2027-06-30" };
+      return { inicio: "2026-09-16", fin: "2027-06-30" };
     }
 
     function actualizarHomePorFecha() {
@@ -1079,7 +1079,6 @@
 
       let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
       
-      // Filtro estricto por rango lectivo
       let asigHoy = todasAsig.find(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
       let tareaDelDia = tareasPendientes.find(t => t.fecha === fechaIso);
 
@@ -1117,7 +1116,6 @@
         });
       });
 
-      // Filtro de fecha diario
       let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
       eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
@@ -1163,7 +1161,6 @@
         });
       }
 
-      // Vista semanal
       let dSemana = new Date(fechaHorarioSemana);
       let day = dSemana.getDay();
       let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
@@ -1201,7 +1198,6 @@
         `;
       });
 
-      // Vista mensual
       let mesIdx = fechaHorarioMes.getMonth();
       let anioIdx = fechaHorarioMes.getFullYear();
       document.getElementById('horario-nav-titulo-mes').textContent = `${fechaHorarioMes.toLocaleString('es-ES', { month: 'long' })} ${anioIdx}`;
@@ -1893,9 +1889,9 @@
       }
       centro.asignaturas.forEach((asig, idx) => {
         let textoPeriodo = "Periodo general";
-        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (16 Oct 2026 - 31 Ene 2027)";
+        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (16 Sep 2026 - 31 Ene 2027)";
         else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb 2027 - 1 Jun 2027)";
-        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Oct 2026 - 30 Nov 2026)";
+        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Sep 2026 - 30 Nov 2026)";
         else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic 2026 - 15 Mar 2027)";
         else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar 2027 - 30 Jun 2027)";
 
@@ -2142,7 +2138,6 @@
       cambiarVista('asistencia-detalle');
     }
 
-    // --- REGISTRO Y HISTORIAL DE ASISTENCIA ---
     function registrarAsistencia(asigIdx, estado, sesionNum = 1) {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro && centro.asignaturas[asigIdx]) {
@@ -2239,7 +2234,6 @@
       return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
     }
 
-    // --- RENDIMIENTO Y REGISTRO VISUAL CON PUNTOS DE COLORES ---
     function renderizarEstadisticasAsistenciaCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-estadisticas-asistencia-container');
@@ -2263,7 +2257,6 @@
           let totalHistorial = ses.historial.length;
           let pct = totalHistorial > 0 ? Math.round((asistenciasCount / totalHistorial) * 100) : (ses.estado === 'Asistió' ? 100 : 0);
 
-          // Construcción de puntos de colores para el historial visual
           let puntosHtml = '';
           if (ses.historial.length === 0) {
             puntosHtml = `<span class="attendance-dot" style="background: ${colorEstado};" title="${ses.estado}"></span>`;
@@ -2291,7 +2284,6 @@
                   <div style="width: ${pct}%; height: 100%; background: ${colorEstado};"></div>
                 </div>
 
-                <!-- Registro visual con puntos de colores -->
                 <div style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;">
                   <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Histórico de Sesiones:</div>
                   <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
@@ -2305,17 +2297,28 @@
       });
     }
 
-    // --- MÉTODOS AUXILIARES ---
+    // --- MÉTODOS AUXILIARES Y POMODORO ---
     function actualizarSelectorPomodoroItems() {
       const sel = document.getElementById('pomodoro-item');
       sel.innerHTML = '';
+      
+      let hoyStr = new Date().toISOString().split('T')[0];
+
       centrosEstudios.forEach(c => {
-        c.asignaturas.forEach(a => { sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 Asignatura: ${a.nombre}</option>`; });
+        c.asignaturas.forEach(a => {
+          if (hoyStr >= a.fechaInicio && hoyStr <= a.fechaFin) {
+            sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}</option>`;
+          }
+        });
       });
+
       tareasPendientes.forEach(t => {
         sel.innerHTML += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo}</option>`;
       });
-      if (sel.options.length === 0) sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
+
+      if (sel.options.length === 0) {
+        sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
+      }
     }
 
     let pomodoroActivo = false, pomodoroIntervalo = null, segundosRestantes = 25 * 60;
