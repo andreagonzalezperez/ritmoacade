@@ -375,32 +375,63 @@
     </div>
   </div>
 
-  <!-- ================= VISTA 3: ESTUDIO (POMODORO) ================= -->
+  <!-- ================= VISTA 3: ESTUDIO (POMODORO & CRONÓMETRO) ================= -->
   <div id="vista-estudio" class="view">
     <header>
-      <div class="titulo">Pomodoro Musical</div>
+      <div class="titulo">Estudio y Práctica</div>
     </header>
-    <p class="fecha">Cronometra tus bloques de práctica instrumental o teórica.</p>
+    <p class="fecha">Mide tu tiempo mediante Pomodoro o cronómetro libre.</p>
 
-    <div class="card" style="padding: 20px;">
-      <div class="form-group">
-        <label>Asignatura o Tarea a Estudiar</label>
-        <select id="pomodoro-item" class="form-control"></select>
+    <div class="grid">
+      <!-- MÓDULO 1: POMODORO -->
+      <div class="card" style="padding: 16px;">
+        <div class="section-flex" style="margin-bottom: 10px;">
+          <h4 style="color: var(--primary);">🍅 Pomodoro Musical</h4>
+          <span class="badge">Bloques</span>
+        </div>
+        <div class="form-group">
+          <label>Asignatura o Tarea</label>
+          <select id="pomodoro-item" class="form-control"></select>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label>Preestablecido</label>
+            <select id="pomodoro-duracion-select" class="form-control" onchange="seleccionarDuracionPomodoro(this.value)">
+              <option value="15">15 min</option>
+              <option value="25" selected>25 min</option>
+              <option value="45">45 min</option>
+              <option value="60">60 min</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div class="form-group" id="bloque-pomodoro-custom" style="display: none;">
+            <label>Minutos exactos</label>
+            <input type="number" min="1" max="300" id="pomodoro-duracion-custom" class="form-control" value="30">
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: 10px 0;">
+          <div style="font-size: 48px; font-weight: bold; margin-bottom: 12px; color: var(--primary);" id="pomodoro-display">25:00</div>
+          <button class="btn-main" id="btn-pomodoro-accion" style="margin-top: 0;" onclick="togglePomodoro()">Iniciar Pomodoro</button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Duración (minutos)</label>
-        <select id="pomodoro-duracion" class="form-control">
-          <option value="15">15 minutos</option>
-          <option value="25" selected>25 minutos</option>
-          <option value="45">45 minutos</option>
-          <option value="60">60 minutos</option>
-        </select>
-      </div>
+      <!-- MÓDULO 2: CRONÓMETRO LIBRE -->
+      <div class="card" style="padding: 16px; border: 2px dashed var(--study-accent); background: rgba(56,189,248,0.03);">
+        <div class="section-flex" style="margin-bottom: 10px;">
+          <h4 style="color: var(--study-accent);">⏱️ Cronómetro Libre</h4>
+          <span class="badge-study">Tiempo Real</span>
+        </div>
+        <div class="form-group">
+          <label>Seleccionar Elemento / Repertorio</label>
+          <select id="crono-item" class="form-control"></select>
+        </div>
 
-      <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 54px; font-weight: bold; margin-bottom: 16px; color: var(--primary);" id="pomodoro-display">25:00</div>
-        <button class="btn-main" id="btn-pomodoro-accion" onclick="togglePomodoro()">Iniciar Pomodoro</button>
+        <div style="text-align: center; padding: 10px 0;">
+          <div style="font-size: 48px; font-weight: bold; margin-bottom: 12px; color: var(--study-accent);" id="crono-display">00:00:00</div>
+          <button class="btn-main" id="btn-crono-accion" style="background: var(--study-accent); color: #0B0F19; margin-top: 0;" onclick="toggleCronometro()">Iniciar Cronómetro</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2904,51 +2935,86 @@
     }
 
     function actualizarSelectorPomodoroItems() {
-      const sel = document.getElementById('pomodoro-item');
-      sel.innerHTML = '';
-      
+      const sels = ['pomodoro-item', 'crono-item'];
+      let opcionesHtml = '';
       let hoyStr = new Date().toISOString().split('T')[0];
 
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
           if (hoyStr >= a.fechaInicio && hoyStr <= a.fechaFin) {
-            sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}</option>`;
+            opcionesHtml += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}</option>`;
           }
         });
       });
 
       sesionesEstudio.forEach(s => {
-        sel.innerHTML += `<option value="[Sesión Estudio] ${s.titulo}">⏱️ ${s.titulo}</option>`;
+        opcionesHtml += `<option value="[Sesión Estudio] ${s.titulo}">⏱️ ${s.titulo}</option>`;
       });
 
       tareasPendientes.forEach(t => {
-        sel.innerHTML += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo}</option>`;
+        opcionesHtml += `<option value="[Tarea] ${t.titulo}">📝 Tarea: ${t.titulo}</option>`;
       });
 
       repertorioCategorias.forEach(cat => {
         cat.piezas.forEach(p => {
           let txt = p.autor ? `${p.titulo} (${p.autor})` : p.titulo;
-          sel.innerHTML += `<option value="[Repertorio] ${txt}">🎼 ${txt}</option>`;
+          opcionesHtml += `<option value="[Repertorio] ${txt}">🎼 ${txt}</option>`;
         });
       });
 
-      if (sel.options.length === 0) {
-        sel.innerHTML = `<option value="Práctica General">🎵 Práctica General</option>`;
+      if (!opcionesHtml) {
+        opcionesHtml = `<option value="Práctica General">🎵 Práctica General</option>`;
+      }
+
+      sels.forEach(id => {
+        let el = document.getElementById(id);
+        if (el) {
+          let valorPrevio = el.value;
+          el.innerHTML = opcionesHtml;
+          if (valorPrevio) el.value = valorPrevio;
+        }
+      });
+    }
+
+    function seleccionarDuracionPomodoro(val) {
+      let bloqueCustom = document.getElementById('bloque-pomodoro-custom');
+      let display = document.getElementById('pomodoro-display');
+      if (val === 'custom') {
+        bloqueCustom.style.display = 'block';
+        let mins = parseInt(document.getElementById('pomodoro-duracion-custom').value) || 30;
+        display.textContent = `${String(mins).padStart(2,'0')}:00`;
+      } else {
+        bloqueCustom.style.display = 'none';
+        display.textContent = `${String(val).padStart(2,'0')}:00`;
       }
     }
+
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'pomodoro-duracion-custom') {
+        let mins = parseInt(e.target.value) || 1;
+        document.getElementById('pomodoro-display').textContent = `${String(mins).padStart(2,'0')}:00`;
+      }
+    });
 
     let pomodoroActivo = false, pomodoroIntervalo = null, segundosRestantes = 25 * 60;
     function togglePomodoro() {
       const btn = document.getElementById('btn-pomodoro-accion');
-      const duracionSel = document.getElementById('pomodoro-duracion');
+      const duracionSel = document.getElementById('pomodoro-duracion-select');
       const display = document.getElementById('pomodoro-display');
 
       if (!pomodoroActivo) {
         pomodoroActivo = true;
         duracionSel.disabled = true;
+        document.getElementById('pomodoro-duracion-custom').disabled = true;
         btn.textContent = "Pausar / Finalizar";
         btn.style.background = "#EF4444";
-        let minutosElegidos = parseInt(duracionSel.value);
+        
+        let minutosElegidos = 25;
+        if (duracionSel.value === 'custom') {
+          minutosElegidos = parseInt(document.getElementById('pomodoro-duracion-custom').value) || 30;
+        } else {
+          minutosElegidos = parseInt(duracionSel.value);
+        }
         segundosRestantes = minutosElegidos * 60;
 
         pomodoroIntervalo = setInterval(() => {
@@ -2960,23 +3026,67 @@
             clearInterval(pomodoroIntervalo);
             pomodoroActivo = false;
             duracionSel.disabled = false;
+            document.getElementById('pomodoro-duracion-custom').disabled = false;
             btn.textContent = "Iniciar Pomodoro";
             btn.style.background = "var(--primary)";
-            let minsAgregados = parseInt(duracionSel.value);
-            minutosEstudiadosTotal += minsAgregados;
+            
+            minutosEstudiadosTotal += minutosElegidos;
             rachaActual = Math.max(rachaActual, 1);
             guardarDatos();
 
             actualizarPanelRachaEInsignias();
-            alert(`¡Pomodoro completado! Se han sumado ${minsAgregados} minutos y tu racha ha comenzado. 🎉`);
+            alert(`¡Pomodoro completado! Se han sumado ${minutosElegidos} minutos a tus estadísticas. 🎉`);
           }
         }, 1000);
       } else {
         clearInterval(pomodoroIntervalo);
         pomodoroActivo = false;
         duracionSel.disabled = false;
+        document.getElementById('pomodoro-duracion-custom').disabled = false;
         btn.textContent = "Iniciar Pomodoro";
         btn.style.background = "var(--primary)";
+      }
+    }
+
+    let cronoActivo = false, cronoIntervalo = null, segundosTranscurridos = 0;
+    function toggleCronometro() {
+      const btn = document.getElementById('btn-crono-accion');
+      const display = document.getElementById('crono-display');
+
+      if (!cronoActivo) {
+        cronoActivo = true;
+        btn.textContent = "Detener y Guardar";
+        btn.style.background = "#EF4444";
+        btn.style.color = "#FFF";
+        segundosTranscurridos = 0;
+        display.textContent = "00:00:00";
+
+        cronoIntervalo = setInterval(() => {
+          segundosTranscurridos++;
+          let h = Math.floor(segundosTranscurridos / 3600);
+          let m = Math.floor((segundosTranscurridos % 3600) / 60);
+          let s = segundosTranscurridos % 60;
+          display.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }, 1000);
+      } else {
+        clearInterval(cronoIntervalo);
+        cronoActivo = false;
+        btn.textContent = "Iniciar Cronómetro";
+        btn.style.background = "var(--study-accent)";
+        btn.style.color = "#0B0F19";
+
+        let minutosPracticados = Math.round(segundosTranscurridos / 60);
+        if (minutosPracticados > 0) {
+          minutosEstudiadosTotal += minutosPracticados;
+          rachaActual = Math.max(rachaActual, 1);
+          guardarDatos();
+          actualizarPanelRachaEInsignias();
+          alert(`¡Sesión de cronómetro finalizada! Has registrado ${minutosPracticados} minutos de práctica. 🎵`);
+        } else {
+          alert('La sesión fue demasiado corta para registrar minutos.');
+        }
+        segundosTranscurridos = 0;
+        display.textContent = "00:00:00";
       }
     }
 
