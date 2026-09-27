@@ -144,6 +144,18 @@
     .color-option { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; }
     .color-option.selected { border-color: #fff; transform: scale(1.1); }
 
+    .attendance-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .attendance-dot:hover {
+      transform: scale(1.3);
+    }
+
     .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #111827; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 14px 0 32px 0; z-index: 9999; }
     .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; padding: 6px 0; }
     .nav-item span { font-size: 26px; display: block; margin-bottom: 4px; }
@@ -884,7 +896,12 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-01", fechaFin: "2027-01-31", estadoAsistencia: "Sin registrar" }
+          { 
+            nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", 
+            dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", 
+            periodo: "1_cuatri", fechaInicio: "2026-10-16", fechaFin: "2027-01-31", 
+            estadoAsistencia: "Sin registrar", historial1: [], historial2: [] 
+          }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -897,11 +914,11 @@
     ];
 
     let tareasPendientes = JSON.parse(localStorage.getItem('ritmo_tareas')) || [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-27", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-27", fechaFin: "2026-09-27" }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-10-20", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-10-20", fechaFin: "2026-10-20" }
     ];
 
     let objetivosDiarios = JSON.parse(localStorage.getItem('ritmo_objetivos')) || [
-      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-27", fechaFin: "2026-09-27" }
+      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-10-20", fechaFin: "2026-10-20" }
     ];
 
     let rachaActual = parseInt(localStorage.getItem('ritmo_racha')) || 0;
@@ -1028,13 +1045,14 @@
       renderizarHorarioAvanzado();
     }
 
+    // --- CÁLCULO DE FECHAS OFICIALES Y FIDELIDAD POR PERIODOS ---
     function calcularFechasPeriodo(periodo) {
-      if (periodo === '1_cuatri') return { inicio: "2026-09-01", fin: "2027-01-31" };
+      if (periodo === '1_cuatri') return { inicio: "2026-10-16", fin: "2027-01-31" };
       if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
-      if (periodo === '1_trim') return { inicio: "2026-09-01", fin: "2026-11-30" };
+      if (periodo === '1_trim') return { inicio: "2026-10-16", fin: "2026-11-30" };
       if (periodo === '2_trim') return { inicio: "2026-12-01", fin: "2027-03-15" };
       if (periodo === '3_trim') return { inicio: "2027-03-16", fin: "2027-06-30" };
-      return { inicio: "2026-09-01", fin: "2027-06-30" };
+      return { inicio: "2026-10-16", fin: "2027-06-30" };
     }
 
     function actualizarHomePorFecha() {
@@ -1060,13 +1078,14 @@
       });
 
       let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
-      let asigHoy = todasAsig.find(a => a.dia === diaSemanaStr);
-
+      
+      // Filtro estricto por rango lectivo
+      let asigHoy = todasAsig.find(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
       let tareaDelDia = tareasPendientes.find(t => t.fecha === fechaIso);
 
       if (asigHoy) {
         document.getElementById('home-evento-titulo').textContent = `${asigHoy.nombre}`;
-        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Horario semanal regular`;
+        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Periodo lectivo activo`;
         document.getElementById('home-evento-info').textContent = `📍 ${asigHoy.aula} • ⏱️ ${asigHoy.inicio} - ${asigHoy.fin} (Ver horario ›)`;
       } else if (tareaDelDia) {
         document.getElementById('home-evento-titulo').textContent = `📝 Tarea: ${tareaDelDia.titulo}`;
@@ -1098,21 +1117,22 @@
         });
       });
 
-      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr);
+      // Filtro de fecha diario
+      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
       eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
 
       const contDiaria = document.getElementById('container-diaria-huecos');
       contDiaria.innerHTML = '';
       if (eventosHoy.length === 0 && tareasHoy.length === 0) {
-        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases para este día.</p>`;
+        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases lectivas para este día.</p>`;
       } else {
         let ultimaHoraFin = "08:00";
         eventosHoy.forEach((ev, idx) => {
           if (idx > 0 && ev.inicio > ultimaHoraFin) {
             contDiaria.innerHTML += `
               <div style="background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--success); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: var(--success); text-align: center;">
-                ✨ Hueco libre (${ultimaHoraFin} - ${ev.inicio}) • Ideal para estudio autónomo o práctica instrumental
+                ✨ Hueco libre (${ultimaHoraFin} - ${ev.inicio}) • Ideal para estudio autónomo
               </div>
             `;
           }
@@ -1143,6 +1163,7 @@
         });
       }
 
+      // Vista semanal
       let dSemana = new Date(fechaHorarioSemana);
       let day = dSemana.getDay();
       let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
@@ -1157,7 +1178,8 @@
       diasNombres.forEach((dNombre, idx) => {
         let diaActual = new Date(lunesSemana);
         diaActual.setDate(lunesSemana.getDate() + idx);
-        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre);
+        let isoStr = diaActual.toISOString().split('T')[0];
+        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
         asigsDelDia.sort((a,b) => a.inicio.localeCompare(b.inicio));
 
         contSemana.innerHTML += `
@@ -1166,7 +1188,7 @@
               <h4 style="color: var(--primary);">${dNombre} (${diaActual.getDate()} ${diaActual.toLocaleString('es-ES', { month: 'short' })})</h4>
               <span class="badge">${asigsDelDia.length} eventos</span>
             </div>
-            ${asigsDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin clases programadas.</p>` : ''}
+            ${asigsDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin clases lectivas en esta fecha.</p>` : ''}
             <div style="display: flex; flex-direction: column; gap: 6px;">
               ${asigsDelDia.map(a => `
                 <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color};">
@@ -1179,6 +1201,7 @@
         `;
       });
 
+      // Vista mensual
       let mesIdx = fechaHorarioMes.getMonth();
       let anioIdx = fechaHorarioMes.getFullYear();
       document.getElementById('horario-nav-titulo-mes').textContent = `${fechaHorarioMes.toLocaleString('es-ES', { month: 'long' })} ${anioIdx}`;
@@ -1199,7 +1222,7 @@
         let dFecha = new Date(anioIdx, mesIdx, dia);
         let isoD = `${anioIdx}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
         let dSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dFecha.getDay()];
-        let tieneEv = todasAsig.some(a => a.dia === dSemStr) || tareasPendientes.some(t => t.fecha === isoD);
+        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || tareasPendientes.some(t => t.fecha === isoD);
         let esSel = fechaSeleccionadaMes.toISOString().split('T')[0] === isoD;
 
         let divD = document.createElement('div');
@@ -1233,7 +1256,7 @@
         });
       });
 
-      let eventos = todasAsig.filter(a => a.dia === diaSemStr);
+      let eventos = todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
       let tareas = tareasPendientes.filter(t => t.fecha === isoStr);
 
       const cont = document.getElementById('container-eventos-dia-mes');
@@ -1302,9 +1325,16 @@
         tr.appendChild(tdHora);
 
         diasCortos.forEach((dia, dIdx) => {
+          let dActual = new Date(lunesSemana);
+          dActual.setDate(lunesSemana.getDate() + dIdx);
+          let isoStr = dActual.toISOString().split('T')[0];
+
           let td = document.createElement('td');
           
-          let eventosEnCelda = todasLasAsignaturas.filter(a => a.dia === dia && a.inicio === hora);
+          let eventosEnCelda = todasLasAsignaturas.filter(a => {
+            let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
+            return a.dia === dia && enRango && a.inicio === hora;
+          });
 
           if (eventosEnCelda.length > 0) {
             let contenedorParalelo = document.createElement('div');
@@ -1350,7 +1380,8 @@
               let idxIni = horasDisponibles.indexOf(a.inicio);
               let idxF = horasDisponibles.indexOf(a.fin);
               let idxAct = horasDisponibles.indexOf(hora);
-              return a.dia === dia && idxAct > idxIni && idxAct < idxF;
+              let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
+              return a.dia === dia && enRango && idxAct > idxIni && idxAct < idxF;
             });
             if (cubierto) {
               td.style.backgroundColor = "rgba(99, 102, 241, 0.03)";
@@ -1862,11 +1893,11 @@
       }
       centro.asignaturas.forEach((asig, idx) => {
         let textoPeriodo = "Periodo general";
-        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (1 Sep - 31 Ene)";
-        else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb - 1 Jun)";
-        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (1 Sep - 30 Nov)";
-        else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic - 15 Mar)";
-        else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar - 30 Jun)";
+        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (16 Oct 2026 - 31 Ene 2027)";
+        else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb 2027 - 1 Jun 2027)";
+        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Oct 2026 - 30 Nov 2026)";
+        else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic 2026 - 15 Mar 2027)";
+        else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar 2027 - 30 Jun 2027)";
 
         let infoSesiones = `1ª Sesión: ${asig.dia} (${asig.inicio} - ${asig.fin})`;
         if (asig.tieneSegunda && asig.dia2) {
@@ -1977,7 +2008,8 @@
             nombre, docente, aula, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
-            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar', estadoAsistencia2: 'Sin registrar'
+            color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar', estadoAsistencia2: 'Sin registrar',
+            historial1: [], historial2: []
           });
         } else {
           centro.asignaturas[editIndex] = {
@@ -2110,14 +2142,23 @@
       cambiarVista('asistencia-detalle');
     }
 
+    // --- REGISTRO Y HISTORIAL DE ASISTENCIA ---
     function registrarAsistencia(asigIdx, estado, sesionNum = 1) {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro && centro.asignaturas[asigIdx]) {
+        let asig = centro.asignaturas[asigIdx];
+        let fechaSesion = obtenerFechaDeDiaSemana(sesionNum === 2 ? asig.dia2 : asig.dia);
+
         if (sesionNum === 2) {
-          centro.asignaturas[asigIdx].estadoAsistencia2 = estado;
+          asig.estadoAsistencia2 = estado;
+          if (!asig.historial2) asig.historial2 = [];
+          asig.historial2.push({ fecha: fechaSesion, estado: estado });
         } else {
-          centro.asignaturas[asigIdx].estadoAsistencia = estado;
+          asig.estadoAsistencia = estado;
+          if (!asig.historial1) asig.historial1 = [];
+          asig.historial1.push({ fecha: fechaSesion, estado: estado });
         }
+
         guardarDatos();
         renderizarControlAsistenciaCentro();
         actualizarPanelRachaEInsignias();
@@ -2198,6 +2239,7 @@
       return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
     }
 
+    // --- RENDIMIENTO Y REGISTRO VISUAL CON PUNTOS DE COLORES ---
     function renderizarEstadisticasAsistenciaCentro() {
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       const contenedor = document.getElementById('lista-estadisticas-asistencia-container');
@@ -2208,13 +2250,29 @@
       }
 
       centro.asignaturas.forEach((asig) => {
-        let sesiones = [{ num: 1, dia: asig.dia, estado: asig.estadoAsistencia || 'Sin registrar' }];
+        let sesiones = [
+          { num: 1, dia: asig.dia, estado: asig.estadoAsistencia || 'Sin registrar', historial: asig.historial1 || [] }
+        ];
         if (asig.tieneSegunda && asig.dia2) {
-          sesiones.push({ num: 2, dia: asig.dia2, estado: asig.estadoAsistencia2 || 'Sin registrar' });
+          sesiones.push({ num: 2, dia: asig.dia2, estado: asig.estadoAsistencia2 || 'Sin registrar', historial: asig.historial2 || [] });
         }
 
         sesiones.forEach(ses => {
           let colorEstado = obtenerColorEstadoAsistencia(ses.estado);
+          let asistenciasCount = ses.historial.filter(h => h.estado === 'Asistió').length;
+          let totalHistorial = ses.historial.length;
+          let pct = totalHistorial > 0 ? Math.round((asistenciasCount / totalHistorial) * 100) : (ses.estado === 'Asistió' ? 100 : 0);
+
+          // Construcción de puntos de colores para el historial visual
+          let puntosHtml = '';
+          if (ses.historial.length === 0) {
+            puntosHtml = `<span class="attendance-dot" style="background: ${colorEstado};" title="${ses.estado}"></span>`;
+          } else {
+            puntosHtml = ses.historial.map(h => {
+              let c = obtenerColorEstadoAsistencia(h.estado);
+              return `<span class="attendance-dot" style="background: ${c};" title="${h.fecha || 'Fecha'}: ${h.estado}"></span>`;
+            }).join('');
+          }
 
           contenedor.innerHTML += `
             <div class="card" style="border-left: 4px solid ${asig.color};">
@@ -2227,10 +2285,18 @@
               <div style="background: var(--bg-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
                 <div class="section-flex" style="margin-bottom: 4px;">
                   <span style="font-size: 11px; color: var(--text-muted);">Efectividad de Asistencia</span>
-                  <strong style="font-size: 12px; color: ${colorEstado};">${ses.estado === 'Asistió' ? '100%' : (ses.estado === 'Sin registrar' ? 'Pendiente' : '0%')}</strong>
+                  <strong style="font-size: 12px; color: ${colorEstado};">${pct}%</strong>
                 </div>
-                <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-                  <div style="width: ${ses.estado === 'Asistió' ? '100%' : '0%'}; height: 100%; background: ${colorEstado};"></div>
+                <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                  <div style="width: ${pct}%; height: 100%; background: ${colorEstado};"></div>
+                </div>
+
+                <!-- Registro visual con puntos de colores -->
+                <div style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px;">
+                  <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Histórico de Sesiones:</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                    ${puntosHtml}
+                  </div>
                 </div>
               </div>
             </div>
