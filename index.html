@@ -124,6 +124,7 @@
     .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
     .month-day { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; position: relative; }
     .month-day.has-events { border-color: var(--primary); background: rgba(99,102,241,0.1); font-weight: bold; }
+    .month-day.is-festivo { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); color: var(--danger); font-weight: bold; }
     .month-day.selected { border-color: var(--calendar-accent); background: rgba(236,72,153,0.15); }
 
     .streak-header-card { background: linear-gradient(135deg, #1E1B4B, #311042); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
@@ -191,7 +192,10 @@
 
     <div class="day-navigator">
       <button class="day-nav-btn" onclick="cambiarDiaHome(-1)">‹</button>
-      <div class="day-nav-title" id="home-nav-titulo-dia">Hoy</div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+        <div class="day-nav-title" id="home-nav-titulo-dia" style="margin-bottom: 0;">Hoy</div>
+        <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irDiaActualHome()">Ir a hoy</button>
+      </div>
       <button class="day-nav-btn" onclick="cambiarDiaHome(1)">›</button>
     </div>
     
@@ -288,6 +292,7 @@
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px; background: var(--danger);" onclick="abrirModalFestivo()">+ Festivo</button>
     </header>
     <p class="fecha">Organiza tus clases oficiales y sesiones de estudio.</p>
     
@@ -302,7 +307,10 @@
     <div id="subview-diaria" class="horario-subview active">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarDiaHorario(-1)">‹</button>
-        <div class="day-nav-title" id="horario-nav-titulo-dia">Hoy</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <div class="day-nav-title" id="horario-nav-titulo-dia" style="margin-bottom: 0;">Hoy</div>
+          <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irDiaActualHorario()">Ir a hoy</button>
+        </div>
         <button class="day-nav-btn" onclick="cambiarDiaHorario(1)">›</button>
       </div>
       <div id="container-diaria-huecos" class="grid"></div>
@@ -312,7 +320,10 @@
     <div id="subview-semanal" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaHorario(-1)">‹</button>
-        <div class="day-nav-title" id="horario-nav-titulo-semana">Semana actual</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <div class="day-nav-title" id="horario-nav-titulo-semana" style="margin-bottom: 0;">Semana actual</div>
+          <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irSemanaActualHorario()">Ir a semana actual</button>
+        </div>
         <button class="day-nav-btn" onclick="cambiarSemanaHorario(1)">›</button>
       </div>
       <div id="container-semanal-dinamico" class="grid"></div>
@@ -322,7 +333,10 @@
     <div id="subview-mensual" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarMesHorario(-1)">‹</button>
-        <div class="day-nav-title" id="horario-nav-titulo-mes">Mes actual</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <div class="day-nav-title" id="horario-nav-titulo-mes" style="margin-bottom: 0;">Mes actual</div>
+          <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irMesActualHorario()">Ir a mes actual</button>
+        </div>
         <button class="day-nav-btn" onclick="cambiarMesHorario(1)">›</button>
       </div>
       <div class="card" style="padding: 12px;">
@@ -336,7 +350,10 @@
     <div id="subview-calendario" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(-1)">‹</button>
-        <div class="day-nav-title" id="cuadrante-nav-titulo-semana">Semana actual</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+          <div class="day-nav-title" id="cuadrante-nav-titulo-semana" style="margin-bottom: 0;">Semana actual</div>
+          <button class="btn-accion-txt" style="color: var(--primary); font-size: 10px; font-weight: bold; cursor: pointer;" onclick="irSemanaActualCuadrante()">Ir a semana actual</button>
+        </div>
         <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(1)">›</button>
       </div>
       <div class="card" style="padding: 10px;">
@@ -695,6 +712,30 @@
     </div>
   </div>
 
+  <div id="modalFestivo" class="modal" onclick="cerrarModalFestivoFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Añadir Nuevo Festivo</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalFestivo()">✕</span>
+      </div>
+      <div class="form-group">
+        <label>Motivo / Nombre del Festivo</label>
+        <input type="text" id="input-festivo-nombre" class="form-control" placeholder="Ej. Fiesta patronal...">
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Desde fecha</label>
+          <input type="date" id="input-festivo-inicio" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Hasta fecha</label>
+          <input type="date" id="input-festivo-fin" class="form-control">
+        </div>
+      </div>
+      <button class="btn-main" style="background: var(--danger);" onclick="guardarNuevoFestivo()">Guardar festivo</button>
+    </div>
+  </div>
+
   <div id="modalCentro" class="modal" onclick="cerrarModalCentroFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -1012,6 +1053,13 @@
       { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-28", fechaFin: "2026-09-28" }
     ];
 
+    let listaFestivos = JSON.parse(localStorage.getItem('ritmo_festivos')) || [
+      { nombre: "Festivo Local", inicio: "2026-10-07", fin: "2026-10-07" },
+      { nombre: "Vacaciones de Navidad", inicio: "2026-12-22", fin: "2027-01-07" },
+      { nombre: "Carnaval / Festivo Lectivo", inicio: "2027-02-08", fin: "2027-02-10" },
+      { nombre: "Semana Santa", inicio: "2027-03-22", fin: "2027-03-29" }
+    ];
+
     let rachaActual = parseInt(localStorage.getItem('ritmo_racha')) || 0;
     let minutosEstudiadosTotal = parseInt(localStorage.getItem('ritmo_mins_estudio')) || 0;
 
@@ -1021,6 +1069,7 @@
       localStorage.setItem('ritmo_repertorio', JSON.stringify(repertorioCategorias));
       localStorage.setItem('ritmo_tareas', JSON.stringify(tareasPendientes));
       localStorage.setItem('ritmo_objetivos', JSON.stringify(objetivosDiarios));
+      localStorage.setItem('ritmo_festivos', JSON.stringify(listaFestivos));
       localStorage.setItem('ritmo_racha', rachaActual);
       localStorage.setItem('ritmo_mins_estudio', minutosEstudiadosTotal);
     }
@@ -1033,6 +1082,7 @@
         repertorio: repertorioCategorias,
         tareas: tareasPendientes,
         objetivos: objetivosDiarios,
+        festivos: listaFestivos,
         racha: rachaActual,
         minutos: minutosEstudiadosTotal,
         fechaExportacion: new Date().toISOString()
@@ -1059,6 +1109,7 @@
             repertorioCategorias = datos.repertorio;
             tareasPendientes = datos.tareas || [];
             objetivosDiarios = datos.objetivos || [];
+            listaFestivos = datos.festivos || [];
             rachaActual = datos.racha || 0;
             minutosEstudiadosTotal = datos.minutos || 0;
             guardarDatos();
@@ -1121,8 +1172,18 @@
       actualizarHomePorFecha();
     }
 
+    function irDiaActualHome() {
+      fechaHomeActual = new Date();
+      actualizarHomePorFecha();
+    }
+
     function cambiarDiaHorario(dias) {
       fechaHorarioDiario.setDate(fechaHorarioDiario.getDate() + dias);
+      renderizarHorarioAvanzado();
+    }
+
+    function irDiaActualHorario() {
+      fechaHorarioDiario = new Date();
       renderizarHorarioAvanzado();
     }
 
@@ -1131,8 +1192,18 @@
       renderizarHorarioAvanzado();
     }
 
+    function irSemanaActualHorario() {
+      fechaHorarioSemana = new Date();
+      renderizarHorarioAvanzado();
+    }
+
     function cambiarSemanaCuadrante(semanas) {
       fechaHorarioCuadrante.setDate(fechaHorarioCuadrante.getDate() + (semanas * 7));
+      renderizarCuadranteSemanal();
+    }
+
+    function irSemanaActualCuadrante() {
+      fechaHorarioCuadrante = new Date();
       renderizarCuadranteSemanal();
     }
 
@@ -1151,13 +1222,48 @@
       renderizarHorarioAvanzado();
     }
 
-    function calcularFechasPeriodo(periodo) {
-      if (periodo === '1_cuatri') return { inicio: "2026-09-16", fin: "2027-01-31" };
-      if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
-      if (periodo === '1_trim') return { inicio: "2026-09-16", fin: "2026-11-30" };
-      if (periodo === '2_trim') return { inicio: "2026-12-01", fin: "2027-03-15" };
-      if (periodo === '3_trim') return { inicio: "2027-03-16", fin: "2027-06-30" };
-      return { inicio: "2026-09-16", fin: "2027-06-30" };
+    function irMesActualHorario() {
+      fechaHorarioMes = new Date();
+      renderizarHorarioAvanzado();
+    }
+
+    function esDiaFestivo(fechaIso) {
+      for (let f of listaFestivos) {
+        if (fechaIso >= f.inicio && fechaIso <= f.fin) return f.nombre;
+      }
+      return null;
+    }
+
+    function abrirModalFestivo() {
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-festivo-nombre').value = '';
+      document.getElementById('input-festivo-inicio').value = hoyStr;
+      document.getElementById('input-festivo-fin').value = hoyStr;
+      document.getElementById('modalFestivo').classList.add('active');
+    }
+
+    function cerrarModalFestivo() {
+      document.getElementById('modalFestivo').classList.remove('active');
+    }
+
+    function cerrarModalFestivoFuera(e) {
+      if (e.target.id === 'modalFestivo') cerrarModalFestivo();
+    }
+
+    function guardarNuevoFestivo() {
+      let nombre = document.getElementById('input-festivo-nombre').value.trim();
+      let inicio = document.getElementById('input-festivo-inicio').value;
+      let fin = document.getElementById('input-festivo-fin').value;
+
+      if (!nombre || !inicio) return;
+      if (!fin) fin = inicio;
+
+      listaFestivos.push({ nombre, inicio, fin });
+      guardarDatos();
+      renderizarHorarioAvanzado();
+      actualizarHomePorFecha();
+      cerrarModalFestivo();
+      alert('¡Festivo añadido correctamente! Las clases de ese periodo han sido suspendidas.');
     }
 
     function actualizarHomePorFecha() {
@@ -1172,43 +1278,62 @@
       document.getElementById('home-fecha-actual').textContent = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
       document.getElementById('home-nav-titulo-dia').textContent = `${fechaHomeActual.getDate()} ${fechaHomeActual.toLocaleString('es-ES', { month: 'short' })} (${yyyy})`;
 
-      let todasAsig = [];
-      centrosEstudios.forEach(c => {
-        c.asignaturas.forEach(a => {
-          todasAsig.push(a);
-          if (a.tieneSegunda && a.dia2) {
-            todasAsig.push({ ...a, dia: a.dia2, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
-          }
-        });
-      });
-
-      let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
-      let asigsHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
-      asigsHoy.sort((a,b) => a.inicio.localeCompare(b.inicio));
-
       const contAsig = document.getElementById('home-lista-asig-hoy');
-      if (asigsHoy.length === 0) {
-        contAsig.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 4px 0;">No hay asignaturas programadas para hoy.</p>`;
+      let nombreFestivo = esDiaFestivo(fechaIso);
+
+      if (nombreFestivo) {
+        contAsig.innerHTML = `<div style="padding: 8px 0; color: var(--danger); font-weight: bold; font-size: 13px;">🎉 Día Festivo: ${nombreFestivo} (Sin clases lectivas)</div>`;
       } else {
-        contAsig.innerHTML = asigsHoy.map(a => `
-          <div style="padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
-            <div style="font-weight: bold; font-size: 13px; color: ${a.color};">📚 ${a.nombre}</div>
-            <div style="font-size: 11px; color: var(--text-muted);">⏱️ ${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
-          </div>
-        `).join('');
+        let todasAsig = [];
+        centrosEstudios.forEach(c => {
+          c.asignaturas.forEach(a => {
+            todasAsig.push(a);
+            if (a.tieneSegunda && a.dia2) {
+              todasAsig.push({ ...a, dia: a.dia2, inicio: a.inicio2 || a.inicio, fin: a.fin2 || a.fin });
+            }
+          });
+        });
+
+        let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
+        let asigsHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
+        asigsHoy.sort((a,b) => a.inicio.localeCompare(b.inicio));
+
+        if (asigsHoy.length === 0) {
+          contAsig.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 4px 0;">No hay asignaturas programadas para hoy.</p>`;
+        } else {
+          contAsig.innerHTML = asigsHoy.map(a => `
+            <div style="padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
+              <div style="font-weight: bold; font-size: 13px; color: ${a.color};">📚 ${a.nombre}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">⏱️ ${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
+            </div>
+          `).join('');
+        }
       }
 
       let pendientesHoy = 0;
-      asigsHoy.forEach(a => {
-        let fechaIsoHoy = obtenerFechaIsoRealClase(a.dia, fechaHomeActual);
-        let historialArr = a.dia === a.dia2 ? (a.historial2 || []) : (a.historial1 || []);
-        let registroHoy = historialArr.find(h => h.isoFecha === fechaIsoHoy);
-        let estado = registroHoy ? registroHoy.estado : 'Sin registrar';
-        if (estado === 'Sin registrar') pendientesHoy++;
-      });
+      if (!nombreFestivo) {
+        let todasAsigCheck = [];
+        centrosEstudios.forEach(c => {
+          c.asignaturas.forEach(a => {
+            todasAsigCheck.push(a);
+            if (a.tieneSegunda && a.dia2) todasAsigCheck.push({ ...a, dia: a.dia2 });
+          });
+        });
+        let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
+        let asigsHoyCheck = todasAsigCheck.filter(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
+
+        asigsHoyCheck.forEach(a => {
+          let fechaIsoHoy = obtenerFechaIsoRealClase(a.dia, fechaHomeActual);
+          let historialArr = a.dia === a.dia2 ? (a.historial2 || []) : (a.historial1 || []);
+          let registroHoy = historialArr.find(h => h.isoFecha === fechaIsoHoy);
+          let estado = registroHoy ? registroHoy.estado : 'Sin registrar';
+          if (estado === 'Sin registrar') pendientesHoy++;
+        });
+      }
       document.getElementById('home-asistencia-pendientes-num').textContent = pendientesHoy;
       document.getElementById('home-asistencia-label-txt').textContent = pendientesHoy === 1 ? 'clase pendiente hoy' : 'clases pendientes hoy';
 
+      let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
       let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIso || s.dia === diaSemanaStr);
       const prevSesiones = document.getElementById('preview-sesiones-estudio-home');
       if (sesionesHoy.length === 0) {
@@ -1356,6 +1481,8 @@
       
       document.getElementById('horario-nav-titulo-dia').textContent = `${fechaHorarioDiario.getDate()} ${fechaHorarioDiario.toLocaleString('es-ES', { month: 'short' })} (${yyyy})`;
 
+      let nombreFestivoHoy = esDiaFestivo(fechaIsoDiaria);
+
       let todasAsig = [];
       centrosEstudios.forEach(c => {
         c.asignaturas.forEach(a => {
@@ -1366,7 +1493,7 @@
         });
       });
 
-      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
+      let eventosHoy = nombreFestivoHoy ? [] : todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
       let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIsoDiaria || s.dia === diaSemanaStr);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
       
@@ -1375,7 +1502,18 @@
 
       const contDiaria = document.getElementById('container-diaria-huecos');
       contDiaria.innerHTML = '';
-      if (eventosHoy.length === 0 && sesionesHoy.length === 0 && tareasHoy.length === 0) {
+      
+      if (nombreFestivoHoy) {
+        contDiaria.innerHTML += `
+          <div class="card" style="border-left: 4px solid var(--danger); background: rgba(239, 68, 68, 0.05);">
+            <span class="badge-danger">🎉 Día Festivo</span>
+            <h4 style="margin-top: 6px; color: var(--danger);">${nombreFestivoHoy}</h4>
+            <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">Las clases lectivas normales están suspendidas para este día.</p>
+          </div>
+        `;
+      }
+
+      if (eventosHoy.length === 0 && sesionesHoy.length === 0 && tareasHoy.length === 0 && !nombreFestivoHoy) {
         contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases para este día.</p>`;
       } else {
         eventosHoy.forEach(ev => {
@@ -1432,17 +1570,20 @@
         let diaActual = new Date(lunesSemana);
         diaActual.setDate(lunesSemana.getDate() + idx);
         let isoStr = diaActual.toISOString().split('T')[0];
-        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+        let festivoDia = esDiaFestivo(isoStr);
+
+        let asigsDelDia = festivoDia ? [] : todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
         let sesDelDia = sesionesEstudio.filter(s => s.fecha === isoStr || s.dia === dNombre);
 
         contSemana.innerHTML += `
           <div class="card" style="background: var(--bg-main);">
             <div class="section-flex" style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 8px;">
               <h4 style="color: var(--primary);">${dNombre} (${diaActual.getDate()} ${diaActual.toLocaleString('es-ES', { month: 'short' })})</h4>
-              <span class="badge">${asigsDelDia.length + sesDelDia.length} eventos</span>
+              <span class="badge">${festivoDia ? 'Festivo' : (asigsDelDia.length + sesDelDia.length + ' eventos')}</span>
             </div>
-            ${asigsDelDia.length === 0 && sesDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin eventos en esta fecha.</p>` : ''}
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+            ${festivoDia ? `<p style="font-size: 12px; color: var(--danger); font-weight: bold;">🎉 Festivo: ${festivoDia}</p>` : ''}
+            ${asigsDelDia.length === 0 && sesDelDia.length === 0 && !festivoDia ? `<p style="font-size: 12px; color: var(--text-muted);">Sin eventos en esta fecha.</p>` : ''}
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
               ${asigsDelDia.map(a => `
                 <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color}; cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
                   <strong style="font-size: 12px;">📚 ${a.nombre}</strong>
@@ -1480,12 +1621,15 @@
         let dFecha = new Date(anioIdx, mesIdx, dia);
         let isoD = `${anioIdx}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
         let dSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dFecha.getDay()];
-        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || sesionesEstudio.some(s => s.fecha === isoD || s.dia === dSemStr) || tareasPendientes.some(t => t.fecha === isoD);
+        
+        let festivoMes = esDiaFestivo(isoD);
+        let tieneEv = !festivoMes && (todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || sesionesEstudio.some(s => s.fecha === isoD || s.dia === dSemStr) || tareasPendientes.some(t => t.fecha === isoD));
         let esSel = fechaSeleccionadaMes.toISOString().split('T')[0] === isoD;
 
         let divD = document.createElement('div');
-        divD.className = `month-day ${tieneEv ? 'has-events' : ''} ${esSel ? 'selected' : ''}`;
+        divD.className = `month-day ${festivoMes ? 'is-festivo' : (tieneEv ? 'has-events' : '')} ${esSel ? 'selected' : ''}`;
         divD.textContent = dia;
+        divD.title = festivoMes ? `Festivo: ${festivoMes}` : '';
         divD.onclick = () => {
           fechaSeleccionadaMes = dFecha;
           renderizarHorarioAvanzado();
@@ -1503,6 +1647,7 @@
       let dd = String(fechaSeleccionadaMes.getDate()).padStart(2, '0');
       let isoStr = `${yyyy}-${mm}-${dd}`;
       let diaSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaSeleccionadaMes.getDay()];
+      let festivoDia = esDiaFestivo(isoStr);
 
       document.getElementById('titulo-eventos-dia-mes').textContent = `Eventos del ${fechaSeleccionadaMes.getDate()} de ${fechaSeleccionadaMes.toLocaleString('es-ES', { month: 'long' })} (${yyyy}):`;
 
@@ -1514,13 +1659,23 @@
         });
       });
 
-      let eventos = todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+      let eventos = festivoDia ? [] : todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
       let sesiones = sesionesEstudio.filter(s => s.fecha === isoStr || s.dia === diaSemStr);
       let tareas = tareasPendientes.filter(t => t.fecha === isoStr);
 
       const cont = document.getElementById('container-eventos-dia-mes');
       cont.innerHTML = '';
-      if (eventos.length === 0 && sesiones.length === 0 && tareas.length === 0) {
+      
+      if (festivoDia) {
+        cont.innerHTML += `
+          <div class="card" style="border-left: 4px solid var(--danger); background: rgba(239, 68, 68, 0.05);">
+            <strong style="font-size: 13px; color: var(--danger);">🎉 Día Festivo: ${festivoDia}</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Las clases están suspendidas.</p>
+          </div>
+        `;
+      }
+
+      if (eventos.length === 0 && sesiones.length === 0 && tareas.length === 0 && !festivoDia) {
         cont.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">Ningún evento programado para este día.</p>`;
         return;
       }
@@ -1577,7 +1732,9 @@
       diasCortos.forEach((dStr, idx) => {
         let dActual = new Date(lunesSemana);
         dActual.setDate(lunesSemana.getDate() + idx);
-        trHead.innerHTML += `<th>${dStr} ${dActual.getDate()}/${dActual.getMonth()+1}</th>`;
+        let isoStr = dActual.toISOString().split('T')[0];
+        let festivoCol = esDiaFestivo(isoStr);
+        trHead.innerHTML += `<th style="${festivoCol ? 'color: var(--danger);' : ''}">${dStr} ${dActual.getDate()}/${dActual.getMonth()+1}</th>`;
       });
 
       const tbody = document.getElementById('tbody-horario-sincronizado');
@@ -1595,93 +1752,106 @@
           let dActual = new Date(lunesSemana);
           dActual.setDate(lunesSemana.getDate() + dIdx);
           let isoStr = dActual.toISOString().split('T')[0];
+          let festivoCelda = esDiaFestivo(isoStr);
 
           let td = document.createElement('td');
-          
-          let eventosEnCelda = todasLasAsignaturas.filter(a => {
-            let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
-            return a.dia === dia && enRango && a.inicio === hora;
-          });
 
-          let sesionesEnCelda = sesionesEstudio.filter(s => (s.fecha === isoStr || s.dia === dia) && s.inicio === hora);
-
-          let totalEvs = eventosEnCelda.length + sesionesEnCelda.length;
-
-          if (totalEvs > 0) {
-            let contenedorParalelo = document.createElement('div');
-            contenedorParalelo.style.display = "flex";
-            contenedorParalelo.style.gap = "2px";
-            contenedorParalelo.style.width = "100%";
-            contenedorParalelo.style.position = "absolute";
-            contenedorParalelo.style.top = "1px";
-            contenedorParalelo.style.left = "1px";
-            contenedorParalelo.style.right = "1px";
-
-            eventosEnCelda.forEach(ev => {
-              let idxInicio = horasDisponibles.indexOf(ev.inicio);
-              let idxFin = horasDisponibles.indexOf(ev.fin);
-              let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
-              let alturaPx = numBloques * 30;
-
-              let bloqueDiv = document.createElement('div');
-              bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
-              bloqueDiv.style.height = `${alturaPx - 2}px`;
-              bloqueDiv.style.backgroundColor = ev.color + "30";
-              bloqueDiv.style.borderLeft = `3px solid ${ev.color}`;
-              bloqueDiv.style.color = ev.color;
-              bloqueDiv.style.fontWeight = "bold";
-              bloqueDiv.style.fontSize = "9px";
-              bloqueDiv.style.padding = "4px 2px";
-              bloqueDiv.style.borderRadius = "3px";
-              bloqueDiv.style.overflow = "hidden";
-              bloqueDiv.style.textOverflow = "ellipsis";
-              bloqueDiv.style.whiteSpace = "nowrap";
-              bloqueDiv.style.zIndex = "3";
-              bloqueDiv.style.textAlign = "left";
-              bloqueDiv.style.cursor = "pointer";
-              bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
-              bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong>`;
-              bloqueDiv.onclick = () => abrirDetalleAsignaturaModal(ev.nombre, ev.docente, ev.aula, ev.email || '-', ev.tel || '-', `${ev.dia} ${ev.inicio}-${ev.fin}`, ev.periodo);
-              contenedorParalelo.appendChild(bloqueDiv);
-            });
-
-            sesionesEnCelda.forEach(ses => {
-              let idxInicio = horasDisponibles.indexOf(ses.inicio);
-              let idxFin = horasDisponibles.indexOf(ses.fin);
-              let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
-              let alturaPx = numBloques * 30;
-
-              let bloqueDiv = document.createElement('div');
-              bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
-              bloqueDiv.style.height = `${alturaPx - 2}px`;
-              bloqueDiv.style.backgroundColor = "rgba(56, 189, 248, 0.15)";
-              bloqueDiv.style.border = `1px dashed var(--study-accent)`;
-              bloqueDiv.style.color = "var(--study-accent)";
-              bloqueDiv.style.fontWeight = "bold";
-              bloqueDiv.style.fontSize = "9px";
-              bloqueDiv.style.padding = "4px 2px";
-              bloqueDiv.style.borderRadius = "3px";
-              bloqueDiv.style.overflow = "hidden";
-              bloqueDiv.style.textOverflow = "ellipsis";
-              bloqueDiv.style.whiteSpace = "nowrap";
-              bloqueDiv.style.zIndex = "3";
-              bloqueDiv.style.textAlign = "left";
-              bloqueDiv.title = `Estudio: ${ses.titulo} (${ses.inicio}-${ses.fin})`;
-              bloqueDiv.innerHTML = `⏱️ ${ses.titulo}`;
-              contenedorParalelo.appendChild(bloqueDiv);
-            });
-
-            td.appendChild(contenedorParalelo);
-          } else {
-            let cubierto = todasLasAsignaturas.some(a => {
-              let idxIni = horasDisponibles.indexOf(a.inicio);
-              let idxF = horasDisponibles.indexOf(a.fin);
-              let idxAct = horasDisponibles.indexOf(hora);
+          if (festivoCelda && hora === "10:00") {
+            td.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
+            let festDiv = document.createElement('div');
+            festDiv.style.color = "var(--danger)";
+            festDiv.style.fontSize = "9px";
+            festDiv.style.fontWeight = "bold";
+            festDiv.style.textAlign = "center";
+            festDiv.style.padding = "4px";
+            festDiv.textContent = `🎉 ${festivoCelda}`;
+            td.appendChild(festDiv);
+          } else if (!festivoCelda) {
+            let eventosEnCelda = todasLasAsignaturas.filter(a => {
               let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
-              return a.dia === dia && enRango && idxAct > idxIni && idxAct < idxF;
+              return a.dia === dia && enRango && a.inicio === hora;
             });
-            if (cubierto) {
-              td.style.backgroundColor = "rgba(99, 102, 241, 0.03)";
+
+            let sesionesEnCelda = sesionesEstudio.filter(s => (s.fecha === isoStr || s.dia === dia) && s.inicio === hora);
+
+            let totalEvs = eventosEnCelda.length + sesionesEnCelda.length;
+
+            if (totalEvs > 0) {
+              let contenedorParalelo = document.createElement('div');
+              contenedorParalelo.style.display = "flex";
+              contenedorParalelo.style.gap = "2px";
+              contenedorParalelo.style.width = "100%";
+              contenedorParalelo.style.position = "absolute";
+              contenedorParalelo.style.top = "1px";
+              contenedorParalelo.style.left = "1px";
+              contenedorParalelo.style.right = "1px";
+
+              eventosEnCelda.forEach(ev => {
+                let idxInicio = horasDisponibles.indexOf(ev.inicio);
+                let idxFin = horasDisponibles.indexOf(ev.fin);
+                let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
+                let alturaPx = numBloques * 30;
+
+                let bloqueDiv = document.createElement('div');
+                bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
+                bloqueDiv.style.height = `${alturaPx - 2}px`;
+                bloqueDiv.style.backgroundColor = ev.color + "30";
+                bloqueDiv.style.borderLeft = `3px solid ${ev.color}`;
+                bloqueDiv.style.color = ev.color;
+                bloqueDiv.style.fontWeight = "bold";
+                bloqueDiv.style.fontSize = "9px";
+                bloqueDiv.style.padding = "4px 2px";
+                bloqueDiv.style.borderRadius = "3px";
+                bloqueDiv.style.overflow = "hidden";
+                bloqueDiv.style.textOverflow = "ellipsis";
+                bloqueDiv.style.whiteSpace = "nowrap";
+                bloqueDiv.style.zIndex = "3";
+                bloqueDiv.style.textAlign = "left";
+                bloqueDiv.style.cursor = "pointer";
+                bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
+                bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong>`;
+                bloqueDiv.onclick = () => abrirDetalleAsignaturaModal(ev.nombre, ev.docente, ev.aula, ev.email || '-', ev.tel || '-', `${ev.dia} ${ev.inicio}-${ev.fin}`, ev.periodo);
+                contenedorParalelo.appendChild(bloqueDiv);
+              });
+
+              sesionesEnCelda.forEach(ses => {
+                let idxInicio = horasDisponibles.indexOf(ses.inicio);
+                let idxFin = horasDisponibles.indexOf(ses.fin);
+                let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
+                let alturaPx = numBloques * 30;
+
+                let bloqueDiv = document.createElement('div');
+                bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
+                bloqueDiv.style.height = `${alturaPx - 2}px`;
+                bloqueDiv.style.backgroundColor = "rgba(56, 189, 248, 0.15)";
+                bloqueDiv.style.border = `1px dashed var(--study-accent)`;
+                bloqueDiv.style.color = "var(--study-accent)";
+                bloqueDiv.style.fontWeight = "bold";
+                bloqueDiv.style.fontSize = "9px";
+                bloqueDiv.style.padding = "4px 2px";
+                bloqueDiv.style.borderRadius = "3px";
+                bloqueDiv.style.overflow = "hidden";
+                bloqueDiv.style.textOverflow = "ellipsis";
+                bloqueDiv.style.whiteSpace = "nowrap";
+                bloqueDiv.style.zIndex = "3";
+                bloqueDiv.style.textAlign = "left";
+                bloqueDiv.title = `Estudio: ${ses.titulo} (${ses.inicio}-${ses.fin})`;
+                bloqueDiv.innerHTML = `⏱️ ${ses.titulo}`;
+                contenedorParalelo.appendChild(bloqueDiv);
+              });
+
+              td.appendChild(contenedorParalelo);
+            } else {
+              let cubierto = todasLasAsignaturas.some(a => {
+                let idxIni = horasDisponibles.indexOf(a.inicio);
+                let idxF = horasDisponibles.indexOf(a.fin);
+                let idxAct = horasDisponibles.indexOf(hora);
+                let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
+                return a.dia === dia && enRango && idxAct > idxIni && idxAct < idxF;
+              });
+              if (cubierto) {
+                td.style.backgroundColor = "rgba(99, 102, 241, 0.03)";
+              }
             }
           }
 
@@ -2569,7 +2739,7 @@
       let listaSesionesPasarLista = [];
       centro.asignaturas.forEach((asig, idxOriginal) => {
         let fechaIso1 = obtenerFechaIsoRealClase(asig.dia, fechaHorarioAsistencia);
-        let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin;
+        let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin && !esDiaFestivo(fechaIso1);
 
         if (enRango1) {
           let historial1 = asig.historial1 || [];
@@ -2593,7 +2763,7 @@
 
         if (asig.tieneSegunda && asig.dia2) {
           let fechaIso2 = obtenerFechaIsoRealClase(asig.dia2, fechaHorarioAsistencia);
-          let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin;
+          let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin && !esDiaFestivo(fechaIso2);
 
           if (enRango2) {
             let historial2 = asig.historial2 || [];
@@ -2618,7 +2788,7 @@
       });
 
       if (listaSesionesPasarLista.length === 0) {
-        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay clases programadas para esta semana según sus periodos lectivos.</p>`;
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay clases programadas para esta semana (posibles festivos o periodos vacacionales).</p>`;
         return;
       }
 
