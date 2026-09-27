@@ -2448,52 +2448,66 @@
         return;
       }
       
-      centro.asignaturas.forEach((asig, idx) => {
-        let fechaSesion1 = obtenerFechaRealClase(asig.dia);
-        let estadoActual1 = asig.estadoAsistencia || 'Sin registrar';
-        let badgeColor1 = obtenerColorEstadoAsistencia(estadoActual1);
-        let cardBg1 = estadoActual1 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor1) + ', 0.08)';
+      // Creamos una lista aplanada de bloques de sesión (Sesión 1 y Sesión 2 si existe)
+      let listaSesionesPasarLista = [];
+      centro.asignaturas.forEach((asig, idxOriginal) => {
+        listaSesionesPasarLista.push({
+          asigIdx: idxOriginal,
+          sesionNum: 1,
+          nombre: asig.nombre,
+          docente: asig.docente,
+          aula: asig.aula,
+          color: asig.color,
+          dia: asig.dia,
+          inicio: asig.inicio,
+          fin: asig.fin,
+          estado: asig.estadoAsistencia || 'Sin registrar'
+        });
+
+        if (asig.tieneSegunda && asig.dia2) {
+          listaSesionesPasarLista.push({
+            asigIdx: idxOriginal,
+            sesionNum: 2,
+            nombre: asig.nombre + " (2ª Sesión)",
+            docente: asig.docente,
+            aula: asig.aula,
+            color: asig.color,
+            dia: asig.dia2,
+            inicio: asig.inicio2 || asig.inicio,
+            fin: asig.fin2 || asig.fin,
+            estado: asig.estadoAsistencia2 || 'Sin registrar'
+          });
+        }
+      });
+
+      // ORDENAR: Las que NO están registradas van primero, las ya registradas bajan al final
+      listaSesionesPasarLista.sort((a, b) => {
+        let aPendiente = a.estado === 'Sin registrar' ? 0 : 1;
+        let bPendiente = b.estado === 'Sin registrar' ? 0 : 1;
+        return aPendiente - bPendiente;
+      });
+
+      listaSesionesPasarLista.forEach(item => {
+        let fechaSesion = obtenerFechaRealClase(item.dia);
+        let badgeColor = obtenerColorEstadoAsistencia(item.estado);
+        let cardBg = item.estado === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor) + ', 0.08)';
 
         contenedor.innerHTML += `
-          <div class="card" style="background: ${cardBg1}; border-left: 4px solid ${badgeColor1};">
+          <div class="card" style="background: ${cardBg}; border-left: 4px solid ${badgeColor};">
             <div class="section-flex">
-              <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 1: ${fechaSesion1} (${asig.dia} ${asig.inicio})</span>
-              <span class="badge" style="background: ${badgeColor1}25; color: ${badgeColor1};">${estadoActual1}</span>
+              <span class="badge" style="background: ${item.color}25; color: ${item.color};">📅 ${fechaSesion} (${item.dia} ${item.inicio})</span>
+              <span class="badge" style="background: ${badgeColor}25; color: ${badgeColor};">${item.estado}</span>
             </div>
-            <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${asig.nombre}</h4>
+            <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${item.nombre}</h4>
             <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 1)">Asistió</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 1)">Falta</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso', 1)">Retraso</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada', 1)">Justificada</button>
-              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase', 1)">No clase</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${item.asigIdx}, 'Asistió', ${item.sesionNum})">Asistió</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${item.asigIdx}, 'Falta', ${item.sesionNum})">Falta</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${item.asigIdx}, 'Retraso', ${item.sesionNum})">Retraso</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${item.asigIdx}, 'Justificada', ${item.sesionNum})">Justificada</button>
+              <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${item.asigIdx}, 'No hubo clase', ${item.sesionNum})">No clase</button>
             </div>
           </div>
         `;
-
-        if (asig.tieneSegunda && asig.dia2) {
-          let fechaSesion2 = obtenerFechaRealClase(asig.dia2);
-          let estadoActual2 = asig.estadoAsistencia2 || 'Sin registrar';
-          let badgeColor2 = obtenerColorEstadoAsistencia(estadoActual2);
-          let cardBg2 = estadoActual2 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor2) + ', 0.08)';
-
-          contenedor.innerHTML += `
-            <div class="card" style="background: ${cardBg2}; border-left: 4px solid ${badgeColor2};">
-              <div class="section-flex">
-                <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 2: ${fechaSesion2} (${asig.dia2} ${asig.inicio2})</span>
-                <span class="badge" style="background: ${badgeColor2}25; color: ${badgeColor2};">${estadoActual2}</span>
-              </div>
-              <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${asig.nombre} (2ª Sesión)</h4>
-              <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 2)">Asistió</button>
-                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 2)">Falta</button>
-                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #F59E0B;" onclick="registrarAsistencia(${idx}, 'Retraso', 2)">Retraso</button>
-                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #3B82F6;" onclick="registrarAsistencia(${idx}, 'Justificada', 2)">Justificada</button>
-                <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #64748B;" onclick="registrarAsistencia(${idx}, 'No hubo clase', 2)">No clase</button>
-              </div>
-            </div>
-          `;
-        }
       });
     }
 
