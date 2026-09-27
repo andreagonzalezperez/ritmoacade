@@ -884,7 +884,7 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-01", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-10-16", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -1029,12 +1029,12 @@
     }
 
     function calcularFechasPeriodo(periodo) {
-      if (periodo === '1_cuatri') return { inicio: "2026-09-01", fin: "2027-01-31" };
+      if (periodo === '1_cuatri') return { inicio: "2026-10-16", fin: "2027-01-31" };
       if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
-      if (periodo === '1_trim') return { inicio: "2026-09-01", fin: "2026-11-30" };
+      if (periodo === '1_trim') return { inicio: "2026-10-16", fin: "2026-11-30" };
       if (periodo === '2_trim') return { inicio: "2026-12-01", fin: "2027-03-15" };
       if (periodo === '3_trim') return { inicio: "2027-03-16", fin: "2027-06-30" };
-      return { inicio: "2026-09-01", fin: "2027-06-30" };
+      return { inicio: "2026-10-16", fin: "2027-06-30" };
     }
 
     function actualizarHomePorFecha() {
@@ -1342,8 +1342,8 @@
               bloqueDiv.style.borderLeft = `3px solid ${ev.color}`;
               bloqueDiv.style.color = ev.color;
               bloqueDiv.style.fontWeight = "bold";
-              bloqueDiv.style.fontSize = "8px";
-              bloqueDiv.style.padding = "2px";
+              bloqueDiv.style.fontSize = "9px";
+              bloqueDiv.style.padding = "4px 2px";
               bloqueDiv.style.borderRadius = "3px";
               bloqueDiv.style.overflow = "hidden";
               bloqueDiv.style.textOverflow = "ellipsis";
@@ -1351,7 +1351,7 @@
               bloqueDiv.style.zIndex = "3";
               bloqueDiv.style.textAlign = "left";
               bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
-              bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong><br><span style="font-size:7px; color:var(--text-muted);">${ev.inicio}-${ev.fin}</span>`;
+              bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong>`;
               contenedorParalelo.appendChild(bloqueDiv);
             });
 
@@ -1625,7 +1625,7 @@
             </div>
             <h4>${p.titulo}</h4>
             ${p.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</p>` : ''}
-            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al${p.fechaFin})</p>` : ''}
+            ${p.esObj ? `<p style="font-size: 11px; color: var(--primary); margin-top: 4px;">🎯 Objetivo (${p.fechaInicio} al ${p.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 8px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalPiezaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarPiezaRepertorio(${idx})">Eliminar</button>
@@ -1874,11 +1874,11 @@
       }
       centro.asignaturas.forEach((asig, idx) => {
         let textoPeriodo = "Periodo general";
-        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (Hasta 31 Ene)";
+        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (Desde 16 Oct - 31 Ene)";
         else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb - 1 Jun)";
-        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (Hasta 27 Nov)";
-        else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (28 Nov - 5 Mar)";
-        else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (5 Mar - 22 Jun)";
+        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (Desde 16 Oct - 30 Nov)";
+        else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic - 15 Mar)";
+        else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar - 30 Jun)";
 
         let infoSesiones = `1ª Sesión: ${asig.dia} (${asig.inicio} - ${asig.fin})`;
         if (asig.tieneSegunda && asig.dia2) {
@@ -2149,9 +2149,10 @@
         let fechaSesion1 = obtenerFechaDeDiaSemana(asig.dia);
         let estadoActual1 = asig.estadoAsistencia || 'Sin registrar';
         let badgeColor1 = obtenerColorEstadoAsistencia(estadoActual1);
+        let cardBg1 = estadoActual1 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor1) + ', 0.08)';
 
         contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${asig.color};">
+          <div class="card" style="background: ${cardBg1}; border-left: 4px solid ${badgeColor1};">
             <div class="section-flex">
               <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 1: ${fechaSesion1} (${asig.dia} ${asig.inicio})</span>
               <span class="badge" style="background: ${badgeColor1}25; color: ${badgeColor1};">${estadoActual1}</span>
@@ -2171,9 +2172,10 @@
           let fechaSesion2 = obtenerFechaDeDiaSemana(asig.dia2);
           let estadoActual2 = asig.estadoAsistencia2 || 'Sin registrar';
           let badgeColor2 = obtenerColorEstadoAsistencia(estadoActual2);
+          let cardBg2 = estadoActual2 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor2) + ', 0.08)';
 
           contenedor.innerHTML += `
-            <div class="card" style="border-left: 4px solid ${asig.color};">
+            <div class="card" style="background: ${cardBg2}; border-left: 4px solid ${badgeColor2};">
               <div class="section-flex">
                 <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 2: ${fechaSesion2} (${asig.dia2} ${asig.inicio2})</span>
                 <span class="badge" style="background: ${badgeColor2}25; color: ${badgeColor2};">${estadoActual2}</span>
@@ -2199,6 +2201,13 @@
       if (estado === 'Justificada') return '#3B82F6';
       if (estado === 'No hubo clase') return '#64748B';
       return '#9CA3AF';
+    }
+
+    function hexToRgb(hex) {
+      let c = hex.replace('#','');
+      if(c.length === 3) c = c.split('').map(x => x + x).join('');
+      let num = parseInt(c, 16);
+      return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
     }
 
     function renderizarEstadisticasAsistenciaCentro() {
