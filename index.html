@@ -719,6 +719,10 @@
         <label>Título / Materia</label>
         <input type="text" id="input-sesion-titulo-txt" class="form-control" placeholder="Ej. Ensayo general de repertorio...">
       </div>
+      <div class="form-group">
+        <label>Espacio Reservado (Reserva)</label>
+        <input type="text" id="input-sesion-reserva" class="form-control" placeholder="Ej. Cabina 3, Estudio de piano 2...">
+      </div>
       <div class="row-2">
         <div class="form-group">
           <label>Día</label>
@@ -747,7 +751,17 @@
           <select id="input-sesion-fin" class="form-control"></select>
         </div>
       </div>
-      <button class="btn-main" onclick="guardarOActualizarSesionEstudio()">Guardar sesión</button>
+
+      <!-- TRIANGULACIÓN: VINCULACIÓN CON OBJETIVO / TAREA -->
+      <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;">
+      <div class="form-group">
+        <label>🎯 Vincular con Tarea o Crear Objetivo Diario</label>
+        <select id="input-sesion-vinculo-tarea" class="form-control">
+          <option value="">-- Sin vinculación (Solo sesión) --</option>
+        </select>
+      </div>
+
+      <button class="btn-main" onclick="guardarOActualizarSesionEstudio()">Guardar sesión y sincronizar objetivo</button>
     </div>
   </div>
 
@@ -1099,7 +1113,7 @@
     ];
 
     let sesionesEstudio = JSON.parse(localStorage.getItem('ritmo_sesiones_estudio')) || [
-      { titulo: "Práctica de técnica instrumental", dia: "Lun", fecha: "2026-09-28", inicio: "11:00", fin: "12:30" }
+      { titulo: "Práctica de técnica instrumental", reserva: "Cabina 1", dia: "Lun", fecha: "2026-09-28", inicio: "11:00", fin: "12:30", vinculo: "" }
     ];
 
     let repertorioCategorias = JSON.parse(localStorage.getItem('ritmo_repertorio')) || [
@@ -1442,7 +1456,7 @@
       if (sesionesHoy.length === 0) {
         prevSesiones.innerHTML = `Sin sesiones de estudio programadas para hoy.`;
       } else {
-        prevSesiones.innerHTML = sesionesHoy.map(s => `⏱️ ${s.inicio} - ${s.fin}: ${s.titulo}`).join('<br>');
+        prevSesiones.innerHTML = sesionesHoy.map(s => `⏱️ ${s.inicio} - ${s.fin}: ${s.titulo} ${s.reserva ? `(📍 ${s.reserva})` : ''}`).join('<br>');
       }
     }
 
@@ -1512,18 +1526,51 @@
               </div>
             </div>
             <h4 style="margin-top: 6px; color: var(--study-accent);">🎵 ${s.titulo}</h4>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">📅 Fecha: ${s.fecha || 'N/D'}</p>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+              <span>📅 Fecha: ${s.fecha || 'N/D'}</span>
+              ${s.reserva ? `<span>🏛️ Reserva: <strong>${s.reserva}</strong></span>` : ''}
+              ${s.vinculo ? `<span>🎯 Vinculado a: <strong>${s.vinculo}</strong></span>` : ''}
+            </div>
           </div>
         `;
       });
+    }
+
+    function poblarSelectVinculosSesion() {
+      const sel = document.getElementById('input-sesion-vinculo-tarea');
+      sel.innerHTML = `<option value="">-- Sin vinculación (Solo sesión) --</option>`;
+      
+      if (tareasPendientes.length > 0) {
+        let optGroup = document.createElement('optgroup');
+        optGroup.label = "Vincular con Tarea Pendiente";
+        tareasPendientes.forEach(t => {
+          let opt = document.createElement('option');
+          opt.value = `Tarea: ${t.titulo}`;
+          opt.textContent = `📝 Tarea: ${t.titulo} (${t.asignatura})`;
+          optGroup.appendChild(opt);
+        });
+        sel.appendChild(optGroup);
+      }
+
+      let optGroupObj = document.createElement('optgroup');
+      optGroupObj.label = "Crear Objetivo Diario directo";
+      optGroupObj.value = "crear_obj";
+      // Añadimos opción genérica basada en el título de la sesión
+      let optGen = document.createElement('option');
+      optGen.value = "crear_objetivo_automatico";
+      optGen.textContent = "🎯 Convertir automáticamente en Objetivo Diario";
+      optGroupObj.appendChild(optGen);
+      sel.appendChild(optGroupObj);
     }
 
     function abrirModalSesionEstudioCrear() {
       document.getElementById('modal-sesion-titulo').textContent = 'Programar Sesión de Estudio';
       document.getElementById('input-edit-index-sesion').value = '-1';
       document.getElementById('input-sesion-titulo-txt').value = '';
+      document.getElementById('input-sesion-reserva').value = '';
       let hoyStr = new Date().toISOString().split('T')[0];
       document.getElementById('input-sesion-fecha').value = hoyStr;
+      poblarSelectVinculosSesion();
       document.getElementById('modalSesionEstudio').classList.add('active');
     }
 
@@ -1532,10 +1579,13 @@
       document.getElementById('modal-sesion-titulo').textContent = 'Editar Sesión de Estudio';
       document.getElementById('input-edit-index-sesion').value = idx;
       document.getElementById('input-sesion-titulo-txt').value = s.titulo;
+      document.getElementById('input-sesion-reserva').value = s.reserva || '';
       document.getElementById('input-sesion-dia').value = s.dia;
       document.getElementById('input-sesion-fecha').value = s.fecha || new Date().toISOString().split('T')[0];
       document.getElementById('input-sesion-inicio').value = s.inicio;
       document.getElementById('input-sesion-fin').value = s.fin;
+      poblarSelectVinculosSesion();
+      document.getElementById('input-sesion-vinculo-tarea').value = s.vinculo || '';
       document.getElementById('modalSesionEstudio').classList.add('active');
     }
 
@@ -1549,18 +1599,37 @@
 
     function guardarOActualizarSesionEstudio() {
       let titulo = document.getElementById('input-sesion-titulo-txt').value.trim();
+      let reserva = document.getElementById('input-sesion-reserva').value.trim();
       let dia = document.getElementById('input-sesion-dia').value;
       let fecha = document.getElementById('input-sesion-fecha').value;
       let inicio = document.getElementById('input-sesion-inicio').value;
       let fin = document.getElementById('input-sesion-fin').value;
+      let vinculo = document.getElementById('input-sesion-vinculo-tarea').value;
       let editIndex = parseInt(document.getElementById('input-edit-index-sesion').value);
 
       if (!titulo) return;
 
+      // Triangulación: Si se eligió vincular o crear objetivo, lo añadimos a objetivosDiarios
+      if (vinculo) {
+        let textoObjetivo = vinculo === "crear_objetivo_automatico" ? `Sesión de Estudio: ${titulo}` : vinculo;
+        // Evitamos duplicar exactamente el mismo objetivo para esa misma fecha si ya existe
+        let existeObj = objetivosDiarios.some(o => o.titulo === textoObjetivo && o.fechaInicio === fecha);
+        if (!existeObj) {
+          objetivosDiarios.push({
+            titulo: textoObjetivo,
+            fechaInicio: fecha,
+            fechaFin: fecha
+          });
+          renderizarObjetivos();
+        }
+      }
+
+      let datosSesion = { titulo, reserva, dia, fecha, inicio, fin, vinculo };
+
       if (editIndex === -1) {
-        sesionesEstudio.push({ titulo, dia, fecha, inicio, fin });
+        sesionesEstudio.push(datosSesion);
       } else {
-        sesionesEstudio[editIndex] = { titulo, dia, fecha, inicio, fin };
+        sesionesEstudio[editIndex] = datosSesion;
       }
 
       guardarDatos();
@@ -1649,7 +1718,11 @@
                 <span style="color: var(--study-accent); font-weight: bold;">${ses.inicio} - ${ses.fin}</span>
                 <span class="badge-study">⏱️ Sesión de Estudio</span>
               </div>
-              <h4>🎵 ${ses.titulo}</h4>
+              <h4 style="color: var(--study-accent);">🎵 ${ses.titulo}</h4>
+              <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">
+                ${ses.reserva ? `🏛️ Reserva: <strong>${ses.reserva}</strong>` : ''}
+                ${ses.vinculo ? `<br>🎯 Vinculado: <strong>${ses.vinculo}</strong>` : ''}
+              </p>
             </div>
           `;
         });
@@ -1709,7 +1782,7 @@
               ${sesDelDia.map(s => `
                 <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border: 1px dashed var(--study-accent);">
                   <strong style="font-size: 12px; color: var(--study-accent);">⏱️ ${s.titulo}</strong>
-                  <div style="font-size: 11px; color: var(--text-muted);">${s.inicio} - ${s.fin}</div>
+                  <div style="font-size: 11px; color: var(--text-muted);">${s.inicio} - ${s.fin} ${s.reserva ? `• 🏛️ ${s.reserva}` : ''}</div>
                 </div>
               `).join('')}
             </div>
@@ -1811,7 +1884,7 @@
         cont.innerHTML += `
           <div class="card" style="border: 2px dashed var(--study-accent); background: rgba(56,189,248,0.05);">
             <strong style="font-size: 13px; color: var(--study-accent);">⏱️ ${s.titulo}</strong>
-            <div style="font-size: 12px; color: var(--text-muted);">${s.inicio} - ${s.fin} (Sesión de Estudio)</div>
+            <div style="font-size: 12px; color: var(--text-muted);">${s.inicio} - ${s.fin} ${s.reserva ? `• 🏛️ ${s.reserva}` : ''} (Sesión de Estudio)</div>
           </div>
         `;
       });
@@ -1954,7 +2027,7 @@
                 bloqueDiv.style.whiteSpace = "nowrap";
                 bloqueDiv.style.zIndex = "3";
                 bloqueDiv.style.textAlign = "left";
-                bloqueDiv.title = `Estudio: ${ses.titulo} (${ses.inicio}-${ses.fin})`;
+                bloqueDiv.title = `Estudio: ${ses.titulo} (${ses.inicio}-${ses.fin}) ${ses.reserva ? `[Reserva: ${ses.reserva}]` : ''}`;
                 bloqueDiv.innerHTML = `⏱️ ${ses.titulo}`;
                 contenedorParalelo.appendChild(bloqueDiv);
               });
@@ -3172,7 +3245,7 @@
       });
 
       sesionesEstudio.forEach(s => {
-        opcionesHtml += `<option value="[Sesión Estudio] ${s.titulo}">⏱️ ${s.titulo}</option>`;
+        opcionesHtml += `<option value="[Sesión Estudio] ${s.titulo}">⏱️ ${s.titulo} ${s.reserva ? `(${s.reserva})` : ''}</option>`;
       });
 
       tareasPendientes.forEach(t => {
