@@ -117,7 +117,6 @@
     .horario-subview, .streak-subview { display: none !important; flex-direction: column; gap: 14px; }
     .horario-subview.active, .streak-subview.active { display: flex !important; }
 
-    /* Estilo Cuadrante Grid Completo */
     .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 520px; overflow-y: auto; }
     .calendar-table { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 10px; table-layout: fixed; }
     .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 2px; text-align: center; height: 30px; vertical-align: top; position: relative; }
@@ -326,7 +325,7 @@
       <div id="container-eventos-dia-mes" class="grid"></div>
     </div>
 
-    <!-- Subvista Cuadrante Semanal (Bloques Enteros con Solapamiento Paralelo) -->
+    <!-- Subvista Cuadrante Semanal -->
     <div id="subview-calendario" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(-1)">‹</button>
@@ -335,7 +334,7 @@
       </div>
       <div class="card" style="padding: 10px;">
         <div class="section-flex" style="margin-bottom: 8px;">
-          <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal (Bloques Enteros)</h4>
+          <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal</h4>
         </div>
         <div class="calendar-grid-container">
           <table class="calendar-table">
@@ -857,7 +856,7 @@
   <div id="modalObjetivo" class="modal" onclick="cerrarModalObjetivoFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Nuevo Objetivo Diario</h3>
+        <h3 id="modal-obj-titulo">Nuevo Objetivo Diario</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalObjetivo()">✕</span>
       </div>
       <input type="hidden" id="input-edit-index-obj" value="-1">
@@ -885,7 +884,7 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-26", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-01", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -898,11 +897,11 @@
     ];
 
     let tareasPendientes = JSON.parse(localStorage.getItem('ritmo_tareas')) || [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-26", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-26", fechaFin: "2026-09-26" }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-27", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-27", fechaFin: "2026-09-27" }
     ];
 
     let objetivosDiarios = JSON.parse(localStorage.getItem('ritmo_objetivos')) || [
-      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-26", fechaFin: "2026-09-26" }
+      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-27", fechaFin: "2026-09-27" }
     ];
 
     let rachaActual = parseInt(localStorage.getItem('ritmo_racha')) || 0;
@@ -968,7 +967,6 @@
     let categoriaRepertorioActual = "";
     let colorSeleccionadoHex = "#6366F1";
     
-    // Sincronización exacta con el día de hoy del dispositivo
     let fechaHomeActual = new Date();
     let fechaHorarioDiario = new Date();
     let fechaHorarioSemana = new Date();
@@ -1085,7 +1083,6 @@
     }
 
     function renderizarHorarioAvanzado() {
-      // 1. Vista Diaria
       let yyyy = fechaHorarioDiario.getFullYear();
       let mm = String(fechaHorarioDiario.getMonth() + 1).padStart(2, '0');
       let dd = String(fechaHorarioDiario.getDate()).padStart(2, '0');
@@ -1149,7 +1146,6 @@
         });
       }
 
-      // 2. Vista Semanal por Fechas
       let dSemana = new Date(fechaHorarioSemana);
       let day = dSemana.getDay();
       let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
@@ -1187,7 +1183,6 @@
         `;
       });
 
-      // 3. Vista Mensual
       let mesIdx = fechaHorarioMes.getMonth();
       let anioIdx = fechaHorarioMes.getFullYear();
       document.getElementById('horario-nav-titulo-mes').textContent = `${fechaHorarioMes.toLocaleString('es-ES', { month: 'long' })} ${anioIdx}`;
@@ -1270,7 +1265,6 @@
       });
     }
 
-    // --- CUADRANTE SEMANAL CON BLOQUES ENTEROS Y SOLAPAMIENTO PARALELO ---
     function renderizarCuadranteSemanal() {
       let dSemana = new Date(fechaHorarioCuadrante);
       let day = dSemana.getDay();
@@ -1318,7 +1312,6 @@
 
           let td = document.createElement('td');
           
-          // Buscar eventos que comiencen exactamente en esta hora o que abarquen este bloque entero
           let eventosEnCelda = todasLasAsignaturas.filter(a => {
             let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
             return a.dia === dia && enRango && a.inicio === hora;
@@ -1329,37 +1322,41 @@
             contenedorParalelo.style.display = "flex";
             contenedorParalelo.style.gap = "2px";
             contenedorParalelo.style.width = "100%";
+            contenedorParalelo.style.position = "absolute";
+            contenedorParalelo.style.top = "1px";
+            contenedorParalelo.style.left = "1px";
+            contenedorParalelo.style.right = "1px";
+
+            let totalEvs = eventosEnCelda.length;
 
             eventosEnCelda.forEach(ev => {
               let idxInicio = horasDisponibles.indexOf(ev.inicio);
               let idxFin = horasDisponibles.indexOf(ev.fin);
               let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
-              let alturaPx = numBloques * 30; // 30px por cada celda de media hora
+              let alturaPx = numBloques * 30;
 
               let bloqueDiv = document.createElement('div');
-              bloqueDiv.style.flex = "1";
-              bloqueDiv.style.position = "absolute";
-              bloqueDiv.style.top = "1px";
-              bloqueDiv.style.left = "1px";
-              bloqueDiv.style.right = "1px";
+              bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
               bloqueDiv.style.height = `${alturaPx - 2}px`;
               bloqueDiv.style.backgroundColor = ev.color + "30";
               bloqueDiv.style.borderLeft = `3px solid ${ev.color}`;
               bloqueDiv.style.color = ev.color;
               bloqueDiv.style.fontWeight = "bold";
-              bloqueDiv.style.fontSize = "9px";
-              bloqueDiv.style.padding = "3px";
+              bloqueDiv.style.fontSize = "8px";
+              bloqueDiv.style.padding = "2px";
               bloqueDiv.style.borderRadius = "3px";
               bloqueDiv.style.overflow = "hidden";
+              bloqueDiv.style.textOverflow = "ellipsis";
+              bloqueDiv.style.whiteSpace = "nowrap";
               bloqueDiv.style.zIndex = "3";
               bloqueDiv.style.textAlign = "left";
-              bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong><br><span style="font-size:8px; color:var(--text-muted);">${ev.inicio}-${ev.fin}</span>`;
+              bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
+              bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong><br><span style="font-size:7px; color:var(--text-muted);">${ev.inicio}-${ev.fin}</span>`;
               contenedorParalelo.appendChild(bloqueDiv);
             });
 
             td.appendChild(contenedorParalelo);
           } else {
-            // Verificar si la celda está ocupada por un bloque que empezó antes
             let cubierto = todasLasAsignaturas.some(a => {
               let idxIni = horasDisponibles.indexOf(a.inicio);
               let idxF = horasDisponibles.indexOf(a.fin);
@@ -1661,7 +1658,7 @@
       document.getElementById('input-desc-pieza').value = p.desc || '';
       document.getElementById('input-pieza-es-obj').checked = p.esObj || false;
       document.getElementById('input-pieza-fecha-inicio').value = p.fechaInicio || new Date().toISOString().split('T')[0];
-      document.getElementById('input-pieza-fecha-fin').value = p.fechaFin || new Date().toISOString().split('T')[0];
+      document.getElementById('input-pieza-fecha-fin').value = p.fechaFin || p.fechaInicio || new Date().toISOString().split('T')[0];
       document.getElementById('modalPieza').classList.add('active');
     }
 
@@ -1941,7 +1938,26 @@
       }
 
       colorSeleccionadoHex = asig.color;
+      document.querySelectorAll('.color-option').forEach(el => {
+        if (el.style.backgroundColor === asig.color || rgbToHex(el.style.backgroundColor) === asig.color.toLowerCase()) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
       document.getElementById('modalAsignatura').classList.add('active');
+    }
+
+    function rgbToHex(rgb) {
+      if (!rgb.startsWith('rgb')) return rgb;
+      let sep = rgb.indexOf(",") > -1 ? "," : " ";
+      rgb = rgb.substr(4).split(")")[0].split(sep);
+      let r = (+rgb[0]).toString(16), g = (+rgb[1]).toString(16), b = (+rgb[2]).toString(16);
+      if (r.length == 1) r = "0" + r;
+      if (g.length == 1) g = "0" + g;
+      if (b.length == 1) b = "0" + b;
+      return "#" + r + g + b;
     }
 
     function cerrarModalAsignatura() { document.getElementById('modalAsignatura').classList.remove('active'); }
@@ -2098,6 +2114,10 @@
     function abrirAsistenciaDetalle(nombreCentro) {
       centroActivo = nombreCentro;
       document.getElementById('titulo-asistencia-centro').textContent = nombreCentro;
+      
+      let tabs = document.querySelectorAll('#vista-asistencia-detalle .horario-tab');
+      if(tabs.length > 0) cambiarAsistenciaTab('control', tabs[0]);
+
       renderizarControlAsistenciaCentro();
       cambiarVista('asistencia-detalle');
     }
@@ -2191,32 +2211,34 @@
       }
 
       centro.asignaturas.forEach((asig) => {
-        let estado1 = asig.estadoAsistencia || 'Sin registrar';
-        let color1 = obtenerColorEstadoAsistencia(estado1);
-
-        contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${asig.color};">
-            <div class="section-flex">
-              <h4>${asig.nombre} (Sesión 1 - ${asig.dia})</h4>
-              <span class="badge" style="background: ${color1}25; color: ${color1};">${estado1}</span>
-            </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
-          </div>
-        `;
-
+        let sesiones = [{ num: 1, dia: asig.dia, estado: asig.estadoAsistencia || 'Sin registrar' }];
         if (asig.tieneSegunda && asig.dia2) {
-          let estado2 = asig.estadoAsistencia2 || 'Sin registrar';
-          let color2 = obtenerColorEstadoAsistencia(estado2);
+          sesiones.push({ num: 2, dia: asig.dia2, estado: asig.estadoAsistencia2 || 'Sin registrar' });
+        }
+
+        sesiones.forEach(ses => {
+          let colorEstado = obtenerColorEstadoAsistencia(ses.estado);
+
           contenedor.innerHTML += `
             <div class="card" style="border-left: 4px solid ${asig.color};">
               <div class="section-flex">
-                <h4>${asig.nombre} (Sesión 2 - ${asig.dia2})</h4>
-                <span class="badge" style="background: ${color2}25; color: ${color2};">${estado2}</span>
+                <h4 style="color: var(--text-main);">${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
+                <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${ses.estado}</span>
               </div>
-              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Docente: ${asig.docente} | Aula: ${asig.aula}</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Día asignado: ${ses.dia} • Docente: ${asig.docente}</p>
+              
+              <div style="background: var(--bg-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                <div class="section-flex" style="margin-bottom: 4px;">
+                  <span style="font-size: 11px; color: var(--text-muted);">Efectividad de Asistencia</span>
+                  <strong style="font-size: 12px; color: ${colorEstado};">${ses.estado === 'Asistió' ? '100%' : (ses.estado === 'Sin registrar' ? 'Pendiente' : '0%')}</strong>
+                </div>
+                <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
+                  <div style="width: ${ses.estado === 'Asistió' ? '100%' : '0%'}; height: 100%; background: ${colorEstado};"></div>
+                </div>
+              </div>
             </div>
           `;
-        }
+        });
       });
     }
 
