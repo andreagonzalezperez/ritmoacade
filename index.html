@@ -106,32 +106,6 @@
     .badge-danger { font-size: 10px; color: #EF4444; background: rgba(239,68,68,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-voluntaria { font-size: 10px; color: #34D399; background: rgba(52, 211, 153, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
-    /* WIDGET ALARGADO DE CUENTA ATRÁS */
-    .countdown-widget-card {
-      background: linear-gradient(135deg, #161E2E, #1E1B4B);
-      border: 1px solid var(--primary);
-      border-radius: 16px;
-      padding: 16px;
-    }
-    .countdown-item-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-main);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 8px;
-    }
-    .countdown-item-row.urgente {
-      border-color: var(--danger);
-      background: rgba(239, 68, 68, 0.05);
-    }
-    .countdown-item-row.proximo {
-      border-color: var(--warning);
-      background: rgba(245, 158, 11, 0.05);
-    }
-
     .section-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
     .horario-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
@@ -212,7 +186,10 @@
           <div class="titulo">RitmoAcade</div>
         </div>
       </div>
-      <button class="btn-config" onclick="cambiarVista('mas')">⚙️</button>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-config" title="Objetivos Diarios" onclick="cambiarVista('objetivos')">🎯</button>
+        <button class="btn-config" title="Ajustes" onclick="cambiarVista('mas')">⚙️</button>
+      </div>
     </header>
 
     <div class="fecha" id="home-fecha-actual">Cargando fecha...</div>
@@ -229,47 +206,20 @@
     <h2 style="margin-bottom: 16px;">Tu día, de un vistazo.</h2>
 
     <div class="grid">
-      <!-- WIDGET ALARGADO Y GRANDE DE CUENTA ATRÁS DE TAREAS -->
-      <div class="countdown-widget-card interactive" onclick="cambiarVista('tareas')">
-        <div class="section-flex" style="margin-bottom: 6px;">
-          <h4 style="color: var(--text-main); font-size: 14px;">⏳ Próximas Entregas y Plazos</h4>
-          <span class="link-txt">Gestionar todas ›</span>
-        </div>
-        <div id="home-widget-cuenta-atras-container">
-          <p style="font-size: 12px; color: var(--text-muted);">Cargando plazos...</p>
-        </div>
-      </div>
-
+      <!-- 1º WIDGET: ASIGNATURAS DE HOY -->
       <div class="card" id="home-widget-asignaturas" onclick="cambiarVista('horario')">
         <span class="badge">ASIGNATURAS DE HOY</span>
         <div id="home-lista-asig-hoy" style="margin-top: 8px;">Cargando...</div>
       </div>
 
+      <!-- 2º WIDGETS PEQUEÑOS (ASISTENCIA Y RACHA) -->
       <div class="row-2">
-        <div class="card interactive" onclick="cambiarVista('tareas')">
-          <div class="stat-top">
-            <span class="num" id="contador-tareas-num">0</span>
-            <span class="link-txt">Ver listado ›</span>
-          </div>
-          <div class="label">tareas pendientes</div>
-        </div>
-
         <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
           <div class="stat-top">
             <span class="num" id="home-asistencia-pendientes-num" style="color: var(--warning);">0</span>
             <span class="link-txt">Pasar lista ›</span>
           </div>
           <div class="label" id="home-asistencia-label-txt">clases pendientes hoy</div>
-        </div>
-      </div>
-
-      <div class="row-2">
-        <div class="card interactive" onclick="cambiarVista('objetivos')">
-          <div class="stat-top">
-            <span class="num" id="num-objetivos-home">0</span>
-            <span class="link-txt">Ver metas ›</span>
-          </div>
-          <div class="label">objetivos diarios</div>
         </div>
         
         <div class="card interactive" onclick="cambiarVista('racha-panel')">
@@ -282,6 +232,18 @@
         </div>
       </div>
 
+      <!-- 3º WIDGET: TAREAS PENDIENTES -->
+      <div class="card interactive" onclick="cambiarVista('tareas')">
+        <div class="section-flex" style="margin-bottom: 6px;">
+          <h4 style="color: var(--text-main); font-size: 14px;">📝 Próximas Tareas y Plazos</h4>
+          <span class="link-txt">Gestionar todas ›</span>
+        </div>
+        <div id="home-widget-cuenta-atras-container">
+          <p style="font-size: 12px; color: var(--text-muted);">Cargando plazos...</p>
+        </div>
+      </div>
+
+      <!-- 4º WIDGET: SESIONES DE ESTUDIO -->
       <div class="card interactive" onclick="cambiarVista('sesiones-estudio')">
         <div class="section-flex">
           <h4>Sesiones de Estudio Programadas</h4>
@@ -534,6 +496,14 @@
           <button class="btn-main" style="margin-top:0; padding: 10px; font-size: 12px; background: var(--primary);" onclick="document.getElementById('input-archivo-importar').click()">Restaurar datos</button>
           <input type="file" id="input-archivo-importar" style="display:none" accept=".json" onchange="importarCopiaSeguridad(event)">
         </div>
+      </div>
+
+      <div class="card interactive" onclick="cambiarVista('objetivos')">
+        <div class="section-flex">
+          <h4>🎯 Objetivos Diarios</h4>
+          <span class="link-txt">Gestionar ›</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Metas de estudio y planificación por fechas</p>
       </div>
 
       <div class="card interactive" onclick="cambiarVista('sesiones-estudio')">
@@ -1397,7 +1367,7 @@
           let info = calcularDiasRestantes(t.fecha);
           let rowClass = info.dias <= 0 ? 'urgente' : (info.dias <= 2 ? 'proximo' : '');
           return `
-            <div class="countdown-item-row ${rowClass}">
+            <div class="countdown-item-row ${rowClass}" style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-top: 8px;">
               <div>
                 <strong style="font-size: 13px; display: block;">📝 ${t.titulo}</strong>
                 <span style="font-size: 11px; color: var(--text-muted);">${t.asignatura}</span>
@@ -2165,7 +2135,6 @@
     function renderizarObjetivos() {
       const contenedor = document.getElementById('lista-objetivos-container');
       contenedor.innerHTML = '';
-      document.getElementById('num-objetivos-home').textContent = objetivosDiarios.length;
       if (objetivosDiarios.length === 0) {
         contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay objetivos diarios.</p>`;
         return;
@@ -2445,12 +2414,10 @@
       contenedor.innerHTML = '';
       if (tareasPendientes.length === 0) {
         contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay tareas pendientes.</p>`;
-        document.getElementById('contador-tareas-num').textContent = '0';
         actualizarPanelRachaEInsignias();
         actualizarHomePorFecha();
         return;
       }
-      document.getElementById('contador-tareas-num').textContent = tareasPendientes.length;
 
       tareasPendientes.forEach((t, idx) => {
         let badgePrioClass = 'badge';
@@ -3066,7 +3033,6 @@
         }
       });
 
-      // Renderizar dividido en columnas/bloques por cada día de la semana (Lunes a Domingo)
       diasNombres.forEach((dNombre, idx) => {
         let diaActual = new Date(lunesSemana);
         diaActual.setDate(lunesSemana.getDate() + idx);
@@ -3121,13 +3087,6 @@
       if (estado === 'Justificada') return '#3B82F6';
       if (estado === 'No hubo clase') return '#64748B';
       return '#9CA3AF';
-    }
-
-    function hexToRgb(hex) {
-      let c = hex.replace('#','');
-      if(c.length === 3) c = c.split('').map(x => x + x).join('');
-      let num = parseInt(c, 16);
-      return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
     }
 
     function renderizarEstadisticasAsistenciaCentro() {
