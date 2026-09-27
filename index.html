@@ -198,7 +198,6 @@
     <h2 style="margin-bottom: 16px;">Tu día, de un vistazo.</h2>
 
     <div class="grid">
-      <!-- Widget 1: Asignaturas del día -->
       <div class="card" id="home-widget-asignaturas" onclick="cambiarVista('horario')">
         <span class="badge">ASIGNATURAS DE HOY</span>
         <div id="home-lista-asig-hoy" style="margin-top: 8px;">Cargando...</div>
@@ -241,7 +240,6 @@
         </div>
       </div>
 
-      <!-- Widget: Sesiones de Estudio -->
       <div class="card interactive" onclick="cambiarVista('sesiones-estudio')">
         <div class="section-flex">
           <h4>Sesiones de Estudio Programadas</h4>
@@ -636,6 +634,17 @@
   </nav>
 
   <!-- ================= MODALES ================= -->
+  <!-- Modal Detalle Asignatura (Pantalla Emergente) -->
+  <div id="modalDetalleAsignatura" class="modal" onclick="cerrarModalDetalleAsignaturaFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3 id="detalle-asig-modal-nombre">Detalles de la Asignatura</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalDetalleAsignatura()">✕</span>
+      </div>
+      <div class="grid" style="gap: 10px;" id="detalle-asig-modal-body"></div>
+    </div>
+  </div>
+
   <div id="modalSesionEstudio" class="modal" onclick="cerrarModalSesionEstudioFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -712,6 +721,16 @@
         <div class="form-group">
           <label>Aula</label>
           <input type="text" id="input-asig-aula" class="form-control" placeholder="Aula...">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Email del Profesor</label>
+          <input type="email" id="input-asig-email" class="form-control" placeholder="profesor@email.com">
+        </div>
+        <div class="form-group">
+          <label>Teléfono del Profesor</label>
+          <input type="tel" id="input-asig-tel" class="form-control" placeholder="+34 ...">
         </div>
       </div>
       <div class="row-2">
@@ -958,6 +977,7 @@
         asignaturas: [
           { 
             nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", 
+            email: "martinez@conservatorio.es", tel: "+34600112233",
             dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", 
             periodo: "1_cuatri", fechaInicio: "2026-09-16", fechaFin: "2027-01-31", 
             estadoAsistencia: "Sin registrar", historial1: [], historial2: [] 
@@ -1153,14 +1173,13 @@
         contAsig.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 4px 0;">No hay asignaturas programadas para hoy.</p>`;
       } else {
         contAsig.innerHTML = asigsHoy.map(a => `
-          <div style="padding: 6px 0; border-bottom: 1px solid var(--border);">
+          <div style="padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
             <div style="font-weight: bold; font-size: 13px; color: ${a.color};">📚 ${a.nombre}</div>
             <div style="font-size: 11px; color: var(--text-muted);">⏱️ ${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
           </div>
         `).join('');
       }
 
-      // Preview Sesiones de estudio en Home
       let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIso || s.dia === diaSemanaStr);
       const prevSesiones = document.getElementById('preview-sesiones-estudio-home');
       if (sesionesHoy.length === 0) {
@@ -1168,6 +1187,48 @@
       } else {
         prevSesiones.innerHTML = sesionesHoy.map(s => `⏱️ ${s.inicio} - ${s.fin}: ${s.titulo}`).join('<br>');
       }
+    }
+
+    // --- MODAL DETALLE ASIGNATURA ---
+    function abrirDetalleAsignaturaModal(nombre, docente, aula, email, tel, horario, periodo) {
+      document.getElementById('detalle-asig-modal-nombre').textContent = nombre;
+      let textoPeriodo = "Periodo general";
+      if (periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (16 Sep 2026 - 31 Ene 2027)";
+      else if (periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb 2027 - 1 Jun 2027)";
+      else if (periodo === '1_trim') textoPeriodo = "1º Trimestre (16 Sep 2026 - 30 Nov 2026)";
+      else if (periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic 2026 - 15 Mar 2027)";
+      else if (periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar 2027 - 30 Jun 2027)";
+
+      const body = document.getElementById('detalle-asig-modal-body');
+      body.innerHTML = `
+        <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Docente</div>
+          <div style="font-size: 14px; font-weight: bold;">👤 ${docente}</div>
+        </div>
+        <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Aula / Espacio</div>
+          <div style="font-size: 14px; font-weight: bold;">📍 ${aula}</div>
+        </div>
+        <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Contacto del Profesor</div>
+          <div style="font-size: 13px;">✉️ Email: <a href="mailto:${email}" style="color: var(--primary);">${email}</a></div>
+          <div style="font-size: 13px; margin-top: 4px;">📞 Teléfono: <a href="tel:${tel}" style="color: var(--primary);">${tel}</a></div>
+        </div>
+        <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Horario y Periodo</div>
+          <div style="font-size: 13px;">📅 Sesión: ${horario}</div>
+          <div style="font-size: 13px; color: var(--primary); margin-top: 2px;">Lectivo: ${textoPeriodo}</div>
+        </div>
+      `;
+      document.getElementById('modalDetalleAsignatura').classList.add('active');
+    }
+
+    function cerrarModalDetalleAsignatura() {
+      document.getElementById('modalDetalleAsignatura').classList.remove('active');
+    }
+
+    function cerrarModalDetalleAsignaturaFuera(e) {
+      if (e.target.id === 'modalDetalleAsignatura') cerrarModalDetalleAsignatura();
     }
 
     function renderizarSesionesEstudio() {
@@ -1291,7 +1352,7 @@
       } else {
         eventosHoy.forEach(ev => {
           contDiaria.innerHTML += `
-            <div class="card" style="border-left: 4px solid ${ev.color};">
+            <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}')">
               <div class="section-flex">
                 <span style="color: ${ev.color}; font-weight: bold;">${ev.inicio} - ${ev.fin}</span>
                 <span class="badge" style="background: ${ev.color}25; color: ${ev.color};">${ev.dia}</span>
@@ -1355,7 +1416,7 @@
             ${asigsDelDia.length === 0 && sesDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin eventos en esta fecha.</p>` : ''}
             <div style="display: flex; flex-direction: column; gap: 6px;">
               ${asigsDelDia.map(a => `
-                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color};">
+                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color}; cursor: pointer;" onclick="abrirDetalleAsignaturaModal('${a.nombre}', '${a.docente}', '${a.aula}', '${a.email || '-'}', '${a.tel || '-'}', '${a.dia} ${a.inicio}-${a.fin}', '${a.periodo}')">
                   <strong style="font-size: 12px;">📚 ${a.nombre}</strong>
                   <div style="font-size: 11px; color: var(--text-muted);">${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
                 </div>
@@ -1438,7 +1499,7 @@
 
       eventos.forEach(ev => {
         cont.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${ev.color};">
+          <div class="card interactive" style="border-left: 4px solid ${ev.color};" onclick="abrirDetalleAsignaturaModal('${ev.nombre}', '${ev.docente}', '${ev.aula}', '${ev.email || '-'}', '${ev.tel || '-'}', '${ev.dia} ${ev.inicio}-${ev.fin}', '${ev.periodo}')">
             <strong style="font-size: 13px;">📚 ${ev.nombre}</strong>
             <div style="font-size: 12px; color: var(--text-muted);">${ev.inicio} - ${ev.fin} • 📍 ${ev.aula}</div>
           </div>
@@ -1549,8 +1610,10 @@
               bloqueDiv.style.whiteSpace = "nowrap";
               bloqueDiv.style.zIndex = "3";
               bloqueDiv.style.textAlign = "left";
+              bloqueDiv.style.cursor = "pointer";
               bloqueDiv.title = `${ev.nombre} (${ev.inicio}-${ev.fin})`;
               bloqueDiv.innerHTML = `<strong>${ev.nombre}</strong>`;
+              bloqueDiv.onclick = () => abrirDetalleAsignaturaModal(ev.nombre, ev.docente, ev.aula, ev.email || '-', ev.tel || '-', `${ev.dia} ${ev.inicio}-${ev.fin}`, ev.periodo);
               contenedorParalelo.appendChild(bloqueDiv);
             });
 
@@ -2104,10 +2167,10 @@
         }
 
         contenedor.innerHTML += `
-          <div class="card" style="border-left: 4px solid ${asig.color};">
+          <div class="card interactive" style="border-left: 4px solid ${asig.color};" onclick="abrirDetalleAsignaturaModal('${asig.nombre}', '${asig.docente}', '${asig.aula}', '${asig.email || '-'}', '${asig.tel || '-'}', '${asig.dia} ${asig.inicio}-${asig.fin}', '${asig.periodo}')">
             <div class="section-flex">
               <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">${asig.dia} • ${asig.inicio}</span>
-              <div>
+              <div onclick="event.stopPropagation()">
                 <button class="btn-accion-txt btn-editar" onclick="abrirModalAsignaturaEditar(${idx})">Editar</button>
                 <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
               </div>
@@ -2127,6 +2190,8 @@
       document.getElementById('input-asig-nombre').value = '';
       document.getElementById('input-asig-docente').value = '';
       document.getElementById('input-asig-aula').value = '';
+      document.getElementById('input-asig-email').value = '';
+      document.getElementById('input-asig-tel').value = '';
       document.getElementById('input-asig-periodo').value = '1_cuatri';
       document.getElementById('input-tiene-segunda-sesion').checked = false;
       document.getElementById('bloque-segunda-sesion').style.display = 'none';
@@ -2141,6 +2206,8 @@
       document.getElementById('input-asig-nombre').value = asig.nombre;
       document.getElementById('input-asig-docente').value = asig.docente;
       document.getElementById('input-asig-aula').value = asig.aula;
+      document.getElementById('input-asig-email').value = asig.email || '';
+      document.getElementById('input-asig-tel').value = asig.tel || '';
       document.getElementById('input-asig-dia').value = asig.dia;
       document.getElementById('input-asig-inicio').value = asig.inicio;
       document.getElementById('input-asig-fin').value = asig.fin;
@@ -2185,6 +2252,8 @@
       const nombre = document.getElementById('input-asig-nombre').value.trim();
       const docente = document.getElementById('input-asig-docente').value.trim() || 'Docente';
       const aula = document.getElementById('input-asig-aula').value.trim() || 'Aula';
+      const email = document.getElementById('input-asig-email').value.trim();
+      const tel = document.getElementById('input-asig-tel').value.trim();
       const dia = document.getElementById('input-asig-dia').value;
       const inicio = document.getElementById('input-asig-inicio').value;
       const fin = document.getElementById('input-asig-fin').value;
@@ -2204,7 +2273,7 @@
       if (centro) {
         if (editIndex === -1) {
           centro.asignaturas.push({
-            nombre, docente, aula, dia, inicio, fin, periodo,
+            nombre, docente, aula, email, tel, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
             color: colorSeleccionadoHex, estadoAsistencia: 'Sin registrar', estadoAsistencia2: 'Sin registrar',
@@ -2213,7 +2282,7 @@
         } else {
           centro.asignaturas[editIndex] = {
             ...centro.asignaturas[editIndex],
-            nombre, docente, aula, dia, inicio, fin, periodo,
+            nombre, docente, aula, email, tel, dia, inicio, fin, periodo,
             tieneSegunda, dia2, inicio2, fin2,
             fechaInicio: fechasRango.inicio, fechaFin: fechasRango.fin,
             color: colorSeleccionadoHex
@@ -2303,16 +2372,23 @@
       }
     }
 
-    function obtenerFechaDeDiaSemana(diaStr) {
+    // --- CÁLCULO DE FECHA REAL DE LA ASIGNATURA SEGÚN CUADRANTE ---
+    function obtenerFechaRealClase(diaStr) {
       let diasMap = { "Dom": 0, "Lun": 1, "Mar": 2, "Mié": 3, "Jue": 4, "Vie": 5, "Sáb": 6 };
       let targetDay = diasMap[diaStr] !== undefined ? diasMap[diaStr] : 1;
-      let d = new Date(fechaHomeActual);
+      
+      let d = new Date(fechaHorarioCuadrante);
       let currentDay = d.getDay();
-      let distance = targetDay - currentDay;
-      d.setDate(d.getDate() + distance);
-      let yyyy = d.getFullYear();
-      let mm = String(d.getMonth() + 1).padStart(2, '0');
-      let dd = String(d.getDate()).padStart(2, '0');
+      let diffToMonday = d.getDate() - currentDay + (currentDay === 0 ? -6 : 1);
+      let lunesSemana = new Date(d.setDate(diffToMonday));
+      
+      let dClase = new Date(lunesSemana);
+      let dayIndex = targetDay === 0 ? 6 : targetDay - 1;
+      dClase.setDate(lunesSemana.getDate() + dayIndex);
+
+      let yyyy = dClase.getFullYear();
+      let mm = String(dClase.getMonth() + 1).padStart(2, '0');
+      let dd = String(dClase.getDate()).padStart(2, '0');
       return `${dd}/${mm}/${yyyy}`;
     }
 
@@ -2345,7 +2421,7 @@
       const centro = centrosEstudios.find(c => c.nombre === centroActivo);
       if (centro && centro.asignaturas[asigIdx]) {
         let asig = centro.asignaturas[asigIdx];
-        let fechaSesion = obtenerFechaDeDiaSemana(sesionNum === 2 ? asig.dia2 : asig.dia);
+        let fechaSesion = obtenerFechaRealClase(sesionNum === 2 ? asig.dia2 : asig.dia);
 
         if (sesionNum === 2) {
           asig.estadoAsistencia2 = estado;
@@ -2373,7 +2449,7 @@
       }
       
       centro.asignaturas.forEach((asig, idx) => {
-        let fechaSesion1 = obtenerFechaDeDiaSemana(asig.dia);
+        let fechaSesion1 = obtenerFechaRealClase(asig.dia);
         let estadoActual1 = asig.estadoAsistencia || 'Sin registrar';
         let badgeColor1 = obtenerColorEstadoAsistencia(estadoActual1);
         let cardBg1 = estadoActual1 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor1) + ', 0.08)';
@@ -2396,7 +2472,7 @@
         `;
 
         if (asig.tieneSegunda && asig.dia2) {
-          let fechaSesion2 = obtenerFechaDeDiaSemana(asig.dia2);
+          let fechaSesion2 = obtenerFechaRealClase(asig.dia2);
           let estadoActual2 = asig.estadoAsistencia2 || 'Sin registrar';
           let badgeColor2 = obtenerColorEstadoAsistencia(estadoActual2);
           let cardBg2 = estadoActual2 === 'Sin registrar' ? 'var(--bg-card)' : 'rgba(' + hexToRgb(badgeColor2) + ', 0.08)';
