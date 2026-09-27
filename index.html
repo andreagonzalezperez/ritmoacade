@@ -212,12 +212,13 @@
           <div class="label">tareas pendientes</div>
         </div>
 
-        <div class="card interactive" onclick="cambiarVista('estudio')">
+        <!-- WIDGET DE ASISTENCIA RÁPIDA SINCRONIZADO -->
+        <div class="card interactive" onclick="cambiarVista('asistencia-centros')">
           <div class="stat-top">
-            <span class="num" id="num-minutos">0</span>
-            <span class="unit">min</span>
+            <span class="num" id="home-asistencia-pendientes-num" style="color: var(--warning);">0</span>
+            <span class="link-txt">Pasar lista ›</span>
           </div>
-          <div class="label">min estudiados (Ir a Pomodoro ›)</div>
+          <div class="label" id="home-asistencia-label-txt">clases pendientes hoy</div>
         </div>
       </div>
 
@@ -1080,7 +1081,7 @@
     let fechaHorarioDiario = new Date();
     let fechaHorarioSemana = new Date();
     let fechaHorarioCuadrante = new Date();
-    let fechaHorarioAsistencia = new Date(); // Sincronizado para asistencia
+    let fechaHorarioAsistencia = new Date();
     let fechaHorarioMes = new Date();
     let fechaSeleccionadaMes = new Date();
 
@@ -1190,6 +1191,15 @@
           </div>
         `).join('');
       }
+
+      // Actualizar widget de asistencia rápida en Home (calculando cuántas clases de hoy están pendientes)
+      let pendientesHoy = 0;
+      asigsHoy.forEach(a => {
+        let estado = a.dia === a.dia2 ? (a.estadoAsistencia2 || 'Sin registrar') : (a.estadoAsistencia || 'Sin registrar');
+        if (estado === 'Sin registrar') pendientesHoy++;
+      });
+      document.getElementById('home-asistencia-pendientes-num').textContent = pendientesHoy;
+      document.getElementById('home-asistencia-label-txt').textContent = pendientesHoy === 1 ? 'clase pendiente hoy' : 'clases pendientes hoy';
 
       let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIso || s.dia === diaSemanaStr);
       const prevSesiones = document.getElementById('preview-sesiones-estudio-home');
@@ -1741,7 +1751,6 @@
     function actualizarPanelRachaEInsignias() {
       document.getElementById('home-racha-num').textContent = `🔥 ${rachaActual}`;
       document.getElementById('panel-racha-dias').textContent = `${rachaActual} DÍAS`;
-      document.getElementById('num-minutos').textContent = minutosEstudiadosTotal;
 
       let totalAsignaturas = 0;
       centrosEstudios.forEach(c => totalAsignaturas += c.asignaturas.length);
@@ -2466,6 +2475,7 @@
 
         guardarDatos();
         renderizarControlAsistenciaCentro();
+        actualizarHomePorFecha();
         actualizarPanelRachaEInsignias();
       }
     }
@@ -2493,7 +2503,6 @@
       
       let listaSesionesPasarLista = [];
       centro.asignaturas.forEach((asig, idxOriginal) => {
-        // Comprobación estricta de Sesión 1 dentro del periodo lectivo y semana seleccionada
         let fechaIso1 = obtenerFechaIsoRealClase(asig.dia, fechaHorarioAsistencia);
         let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin;
 
@@ -2508,11 +2517,11 @@
             dia: asig.dia,
             inicio: asig.inicio,
             fin: asig.fin,
-            estado: asig.estadoAsistencia || 'Sin registrar'
+            estado: asig.estadoAsistencia || 'Sin registrar',
+            isoFecha: fechaIso1
           });
         }
 
-        // Comprobación estricta de Sesión 2 dentro del periodo lectivo y semana seleccionada
         if (asig.tieneSegunda && asig.dia2) {
           let fechaIso2 = obtenerFechaIsoRealClase(asig.dia2, fechaHorarioAsistencia);
           let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin;
@@ -2528,7 +2537,8 @@
               dia: asig.dia2,
               inicio: asig.inicio2 || asig.inicio,
               fin: asig.fin2 || asig.fin,
-              estado: asig.estadoAsistencia2 || 'Sin registrar'
+              estado: asig.estadoAsistencia2 || 'Sin registrar',
+              isoFecha: fechaIso2
             });
           }
         }
@@ -2539,11 +2549,15 @@
         return;
       }
 
-      // Ordenar: Pendientes arriba, marcadas abajo
+      // ORDEN CRONOLÓGICO Y POR ESTADO (Fecha/Hora primero, y pendientes arriba)
       listaSesionesPasarLista.sort((a, b) => {
         let aPendiente = a.estado === 'Sin registrar' ? 0 : 1;
         let bPendiente = b.estado === 'Sin registrar' ? 0 : 1;
-        return aPendiente - bPendiente;
+        if (aPendiente !== bPendiente) return aPendiente - bPendiente; // Pendientes primero
+
+        // Si ambas tienen el mismo estado, ordenar estrictamente por fecha y hora
+        if (a.isoFecha !== b.isoFecha) return a.isoFecha.localeCompare(b.isoFecha);
+        return a.inicio.localeCompare(b.inicio);
       });
 
       listaSesionesPasarLista.forEach(item => {
@@ -2706,8 +2720,6 @@
             rachaActual = Math.max(rachaActual, 1);
             guardarDatos();
 
-            const minsElem = document.getElementById('num-minutos');
-            if (minsElem) minsElem.textContent = minutosEstudiadosTotal;
             actualizarPanelRachaEInsignias();
             alert(`¡Pomodoro completado! Se han sumado ${minsAgregados} minutos y tu racha ha comenzado. 🎉`);
           }
