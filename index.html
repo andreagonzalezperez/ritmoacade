@@ -1080,7 +1080,7 @@
     let fechaHorarioDiario = new Date();
     let fechaHorarioSemana = new Date();
     let fechaHorarioCuadrante = new Date();
-    let fechaHorarioAsistencia = new Date(); // Sincronizado con el cuadrante para asistencia
+    let fechaHorarioAsistencia = new Date(); // Sincronizado para asistencia
     let fechaHorarioMes = new Date();
     let fechaSeleccionadaMes = new Date();
 
@@ -2471,7 +2471,6 @@
     }
 
     function renderizarControlAsistenciaCentro() {
-      // Actualizar título del navegador de semanas en asistencia
       let dSemana = new Date(fechaHorarioAsistencia);
       let day = dSemana.getDay();
       let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
@@ -2494,7 +2493,7 @@
       
       let listaSesionesPasarLista = [];
       centro.asignaturas.forEach((asig, idxOriginal) => {
-        // Comprobar Sesión 1 dentro del periodo lectivo y semana seleccionada
+        // Comprobación estricta de Sesión 1 dentro del periodo lectivo y semana seleccionada
         let fechaIso1 = obtenerFechaIsoRealClase(asig.dia, fechaHorarioAsistencia);
         let enRango1 = fechaIso1 >= asig.fechaInicio && fechaIso1 <= asig.fechaFin;
 
@@ -2513,7 +2512,7 @@
           });
         }
 
-        // Comprobar Sesión 2 dentro del periodo lectivo y semana seleccionada
+        // Comprobación estricta de Sesión 2 dentro del periodo lectivo y semana seleccionada
         if (asig.tieneSegunda && asig.dia2) {
           let fechaIso2 = obtenerFechaIsoRealClase(asig.dia2, fechaHorarioAsistencia);
           let enRango2 = fechaIso2 >= asig.fechaInicio && fechaIso2 <= asig.fechaFin;
@@ -2540,7 +2539,7 @@
         return;
       }
 
-      // ORDENAR: Las que NO están registradas van primero, las ya registradas bajan al final
+      // Ordenar: Pendientes arriba, marcadas abajo
       listaSesionesPasarLista.sort((a, b) => {
         let aPendiente = a.estado === 'Sin registrar' ? 0 : 1;
         let bPendiente = b.estado === 'Sin registrar' ? 0 : 1;
