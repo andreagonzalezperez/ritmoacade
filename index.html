@@ -16,6 +16,7 @@
       --warning: #F59E0B;
       --danger: #EF4444;
       --calendar-accent: #EC4899;
+      --study-accent: #38BDF8;
       --streak-color: #FF9600;
       --streak-bg: rgba(255, 150, 0, 0.15);
     }
@@ -100,22 +101,20 @@
     .label { font-size: 12px; color: var(--text-muted); }
 
     .badge { font-size: 10px; color: var(--primary); background: rgba(99,102,241,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .badge-study { font-size: 10px; color: var(--study-accent); background: rgba(56,189,248,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-warn { font-size: 10px; color: #F59E0B; background: rgba(245,158,11,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-danger { font-size: 10px; color: #EF4444; background: rgba(239,68,68,0.15); padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
     .section-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .rep-preview { display: flex; gap: 8px; }
-    .pill-rep { font-size: 12px; background: var(--bg-main); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-    .horario-tabs, .streak-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
-    .horario-tab, .streak-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
-    .horario-tab.active, .streak-tab.active { background: var(--primary); color: white; }
+    .horario-tabs { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; gap: 2px; }
+    .horario-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; }
+    .horario-tab.active { background: var(--primary); color: white; }
     .horario-tab.tab-calendar { color: var(--calendar-accent); }
     .horario-tab.tab-calendar.active { background: var(--calendar-accent); color: white; }
-    .streak-tab.active { background: var(--streak-color); color: white; }
 
-    .horario-subview, .streak-subview { display: none !important; flex-direction: column; gap: 14px; }
-    .horario-subview.active, .streak-subview.active { display: flex !important; }
+    .horario-subview { display: none !important; flex-direction: column; gap: 14px; }
+    .horario-subview.active { display: flex !important; }
 
     .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 520px; overflow-y: auto; }
     .calendar-table { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 10px; table-layout: fixed; }
@@ -152,9 +151,7 @@
       cursor: pointer;
       transition: transform 0.15s ease;
     }
-    .attendance-dot:hover {
-      transform: scale(1.3);
-    }
+    .attendance-dot:hover { transform: scale(1.3); }
 
     .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #111827; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 14px 0 32px 0; z-index: 9999; }
     .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; padding: 6px 0; }
@@ -201,11 +198,10 @@
     <h2 style="margin-bottom: 16px;">Tu día, de un vistazo.</h2>
 
     <div class="grid">
-      <div class="card interactive" onclick="cambiarVista('horario')">
-        <span class="badge">PRÓXIMO EVENTO</span>
-        <h3 id="home-evento-titulo">Cargando evento...</h3>
-        <p id="home-evento-desc">Comprobando planificación...</p>
-        <div class="footer-info" id="home-evento-info">Estudio Principal • (Ver horario ›)</div>
+      <!-- Widget 1: Asignaturas del día (o frase corta si no hay) -->
+      <div class="card" id="home-widget-asignaturas" onclick="cambiarVista('horario')">
+        <span class="badge">ASIGNATURAS DE HOY</span>
+        <div id="home-lista-asig-hoy" style="margin-top: 8px;">Cargando...</div>
       </div>
 
       <div class="row-2">
@@ -245,13 +241,14 @@
         </div>
       </div>
 
-      <div class="card interactive" onclick="cambiarVista('repertorio')">
+      <!-- Widget Modificado: Sesiones de Estudio -->
+      <div class="card interactive" onclick="cambiarVista('horario')">
         <div class="section-flex">
-          <h4>Repertorio Activo</h4>
-          <span class="link-txt">Ver todo ›</span>
+          <h4>Sesiones de Estudio Programadas</h4>
+          <span class="link-txt">Ver calendario ›</span>
         </div>
-        <div class="rep-preview" id="preview-repertorio-home">
-          <div class="pill-rep">🎷 Repertorio general</div>
+        <div id="preview-sesiones-estudio-home" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+          Comprobando bloques de práctica...
         </div>
       </div>
     </div>
@@ -293,8 +290,9 @@
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalSesionEstudio()">+ Sesión de estudio</button>
     </header>
-    <p class="fecha">Organiza tus clases, ensayos y tareas por fecha exacta.</p>
+    <p class="fecha">Organiza tus clases oficiales y sesiones de estudio.</p>
     
     <div class="horario-tabs">
       <div class="horario-tab active" onclick="cambiarHorarioTab('diaria', this)">Diaria</div>
@@ -619,6 +617,48 @@
   </nav>
 
   <!-- ================= MODALES ================= -->
+  <div id="modalSesionEstudio" class="modal" onclick="cerrarModalSesionEstudioFuera(event)">
+    <div class="modal-content">
+      <div class="section-flex" style="margin-bottom: 12px;">
+        <h3>Programar Sesión de Estudio</h3>
+        <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalSesionEstudio()">✕</span>
+      </div>
+      <div class="form-group">
+        <label>Título / Materia</label>
+        <input type="text" id="input-sesion-titulo" class="form-control" placeholder="Ej. Ensayo general de repertorio...">
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Día</label>
+          <select id="input-sesion-dia" class="form-control">
+            <option value="Lun">Lunes</option>
+            <option value="Mar">Martes</option>
+            <option value="Mié">Miércoles</option>
+            <option value="Jue">Jueves</option>
+            <option value="Vie">Viernes</option>
+            <option value="Sáb">Sábado</option>
+            <option value="Dom">Domingo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha exacta</label>
+          <input type="date" id="input-sesion-fecha" class="form-control">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Hora Inicio</label>
+          <select id="input-sesion-inicio" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label>Hora Fin</label>
+          <select id="input-sesion-fin" class="form-control"></select>
+        </div>
+      </div>
+      <button class="btn-main" onclick="guardarSesionEstudio()">Guardar sesión</button>
+    </div>
+  </div>
+
   <div id="modalCentro" class="modal" onclick="cerrarModalCentroFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
@@ -909,16 +949,20 @@
       }
     ];
 
+    let sesionesEstudio = JSON.parse(localStorage.getItem('ritmo_sesiones_estudio')) || [
+      { titulo: "Práctica de técnica instrumental", dia: "Lun", fecha: "2026-09-28", inicio: "11:00", fin: "12:30" }
+    ];
+
     let repertorioCategorias = JSON.parse(localStorage.getItem('ritmo_repertorio')) || [
       { nombre: "Saxofón", emoji: "🎷", piezas: [{ titulo: "Sonata para Saxofón Alto", autor: "Creston", desc: "Primer movimiento" }] }
     ];
 
     let tareasPendientes = JSON.parse(localStorage.getItem('ritmo_tareas')) || [
-      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-20", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-20", fechaFin: "2026-09-20" }
+      { titulo: "Repasar articulación compases 30-45", asignatura: "Saxofón", prioridad: "Urgente", fecha: "2026-09-28", desc: "Pasaje rápido.", esObj: true, fechaInicio: "2026-09-28", fechaFin: "2026-09-28" }
     ];
 
     let objetivosDiarios = JSON.parse(localStorage.getItem('ritmo_objetivos')) || [
-      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-20", fechaFin: "2026-09-20" }
+      { titulo: "Repasar articulación compases 30-45", fechaInicio: "2026-09-28", fechaFin: "2026-09-28" }
     ];
 
     let rachaActual = parseInt(localStorage.getItem('ritmo_racha')) || 0;
@@ -926,6 +970,7 @@
 
     function guardarDatos() {
       localStorage.setItem('ritmo_centros', JSON.stringify(centrosEstudios));
+      localStorage.setItem('ritmo_sesiones_estudio', JSON.stringify(sesionesEstudio));
       localStorage.setItem('ritmo_repertorio', JSON.stringify(repertorioCategorias));
       localStorage.setItem('ritmo_tareas', JSON.stringify(tareasPendientes));
       localStorage.setItem('ritmo_objetivos', JSON.stringify(objetivosDiarios));
@@ -937,6 +982,7 @@
     function exportarCopiaSeguridad() {
       let datosBackup = {
         centros: centrosEstudios,
+        sesiones: sesionesEstudio,
         repertorio: repertorioCategorias,
         tareas: tareasPendientes,
         objetivos: objetivosDiarios,
@@ -962,6 +1008,7 @@
           let datos = JSON.parse(e.target.result);
           if (datos.centros && datos.repertorio) {
             centrosEstudios = datos.centros;
+            sesionesEstudio = datos.sesiones || [];
             repertorioCategorias = datos.repertorio;
             tareasPendientes = datos.tareas || [];
             objetivosDiarios = datos.objetivos || [];
@@ -1045,7 +1092,6 @@
       renderizarHorarioAvanzado();
     }
 
-    // --- CÁLCULO DE FECHAS OFICIALES (1º Cuatrimestre desde 16 de septiembre) ---
     function calcularFechasPeriodo(periodo) {
       if (periodo === '1_cuatri') return { inicio: "2026-09-16", fin: "2027-01-31" };
       if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
@@ -1078,22 +1124,28 @@
       });
 
       let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
-      
-      let asigHoy = todasAsig.find(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
-      let tareaDelDia = tareasPendientes.find(t => t.fecha === fechaIso);
+      let asigsHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin);
+      asigsHoy.sort((a,b) => a.inicio.localeCompare(b.inicio));
 
-      if (asigHoy) {
-        document.getElementById('home-evento-titulo').textContent = `${asigHoy.nombre}`;
-        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Periodo lectivo activo`;
-        document.getElementById('home-evento-info').textContent = `📍 ${asigHoy.aula} • ⏱️ ${asigHoy.inicio} - ${asigHoy.fin} (Ver horario ›)`;
-      } else if (tareaDelDia) {
-        document.getElementById('home-evento-titulo').textContent = `📝 Tarea: ${tareaDelDia.titulo}`;
-        document.getElementById('home-evento-desc').textContent = tareaDelDia.desc || 'Sin descripción';
-        document.getElementById('home-evento-info').textContent = `Asignatura: ${tareaDelDia.asignatura} • Prioridad: ${tareaDelDia.prioridad}`;
+      const contAsig = document.getElementById('home-lista-asig-hoy');
+      if (asigsHoy.length === 0) {
+        contAsig.innerHTML = `<p style="font-size: 13px; color: var(--text-muted); padding: 4px 0;">No hay asignaturas programadas para hoy.</p>`;
       } else {
-        document.getElementById('home-evento-titulo').textContent = 'Sin clases lectivas programadas';
-        document.getElementById('home-evento-desc').textContent = 'Jornada libre de eventos académicos para este día.';
-        document.getElementById('home-evento-info').textContent = 'Estudio Principal • ⏱️ Horario flexible';
+        contAsig.innerHTML = asigsHoy.map(a => `
+          <div style="padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <div style="font-weight: bold; font-size: 13px; color: ${a.color};">📚 ${a.nombre}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">⏱️ ${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
+          </div>
+        `).join('');
+      }
+
+      // Preview Sesiones de estudio en Home
+      let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIso || s.dia === diaSemanaStr);
+      const prevSesiones = document.getElementById('preview-sesiones-estudio-home');
+      if (sesionesHoy.length === 0) {
+        prevSesiones.innerHTML = `Sin sesiones de estudio programadas para hoy.`;
+      } else {
+        prevSesiones.innerHTML = sesionesHoy.map(s => `⏱️ ${s.inicio} - ${s.fin}: ${s.titulo}`).join('<br>');
       }
     }
 
@@ -1117,34 +1169,40 @@
       });
 
       let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
+      let sesionesHoy = sesionesEstudio.filter(s => s.fecha === fechaIsoDiaria || s.dia === diaSemanaStr);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
+      
       eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
+      sesionesHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
 
       const contDiaria = document.getElementById('container-diaria-huecos');
       contDiaria.innerHTML = '';
-      if (eventosHoy.length === 0 && tareasHoy.length === 0) {
-        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases lectivas para este día.</p>`;
+      if (eventosHoy.length === 0 && sesionesHoy.length === 0 && tareasHoy.length === 0) {
+        contDiaria.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay eventos ni clases para este día.</p>`;
       } else {
-        let ultimaHoraFin = "08:00";
-        eventosHoy.forEach((ev, idx) => {
-          if (idx > 0 && ev.inicio > ultimaHoraFin) {
-            contDiaria.innerHTML += `
-              <div style="background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--success); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: var(--success); text-align: center;">
-                ✨ Hueco libre (${ultimaHoraFin} - ${ev.inicio}) • Ideal para estudio autónomo
-              </div>
-            `;
-          }
+        eventosHoy.forEach(ev => {
           contDiaria.innerHTML += `
             <div class="card" style="border-left: 4px solid ${ev.color};">
               <div class="section-flex">
                 <span style="color: ${ev.color}; font-weight: bold;">${ev.inicio} - ${ev.fin}</span>
                 <span class="badge" style="background: ${ev.color}25; color: ${ev.color};">${ev.dia}</span>
               </div>
-              <h4>${ev.nombre}</h4>
+              <h4>📚 ${ev.nombre}</h4>
               <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">📍 ${ev.aula} • 👤 ${ev.docente}</p>
             </div>
           `;
-          ultimaHoraFin = ev.fin;
+        });
+
+        sesionesHoy.forEach(ses => {
+          contDiaria.innerHTML += `
+            <div class="card" style="border: 2px dashed var(--study-accent); background: rgba(56,189,248,0.05);">
+              <div class="section-flex">
+                <span style="color: var(--study-accent); font-weight: bold;">${ses.inicio} - ${ses.fin}</span>
+                <span class="badge-study">⏱️ Sesión de Estudio</span>
+              </div>
+              <h4>🎵 ${ses.titulo}</h4>
+            </div>
+          `;
         });
 
         tareasHoy.forEach(t => {
@@ -1177,20 +1235,26 @@
         diaActual.setDate(lunesSemana.getDate() + idx);
         let isoStr = diaActual.toISOString().split('T')[0];
         let asigsDelDia = todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
-        asigsDelDia.sort((a,b) => a.inicio.localeCompare(b.inicio));
+        let sesDelDia = sesionesEstudio.filter(s => s.fecha === isoStr || s.dia === dNombre);
 
         contSemana.innerHTML += `
           <div class="card" style="background: var(--bg-main);">
             <div class="section-flex" style="border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 8px;">
               <h4 style="color: var(--primary);">${dNombre} (${diaActual.getDate()} ${diaActual.toLocaleString('es-ES', { month: 'short' })})</h4>
-              <span class="badge">${asigsDelDia.length} eventos</span>
+              <span class="badge">${asigsDelDia.length + sesDelDia.length} eventos</span>
             </div>
-            ${asigsDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin clases lectivas en esta fecha.</p>` : ''}
+            ${asigsDelDia.length === 0 && sesDelDia.length === 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Sin eventos en esta fecha.</p>` : ''}
             <div style="display: flex; flex-direction: column; gap: 6px;">
               ${asigsDelDia.map(a => `
                 <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border-left: 3px solid ${a.color};">
-                  <strong style="font-size: 12px;">${a.nombre}</strong>
+                  <strong style="font-size: 12px;">📚 ${a.nombre}</strong>
                   <div style="font-size: 11px; color: var(--text-muted);">${a.inicio} - ${a.fin} • 📍 ${a.aula}</div>
+                </div>
+              `).join('')}
+              ${sesDelDia.map(s => `
+                <div style="background: var(--bg-card); padding: 8px; border-radius: 8px; border: 1px dashed var(--study-accent);">
+                  <strong style="font-size: 12px; color: var(--study-accent);">⏱️ ${s.titulo}</strong>
+                  <div style="font-size: 11px; color: var(--text-muted);">${s.inicio} - ${s.fin}</div>
                 </div>
               `).join('')}
             </div>
@@ -1218,7 +1282,7 @@
         let dFecha = new Date(anioIdx, mesIdx, dia);
         let isoD = `${anioIdx}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
         let dSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dFecha.getDay()];
-        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || tareasPendientes.some(t => t.fecha === isoD);
+        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || sesionesEstudio.some(s => s.fecha === isoD || s.dia === dSemStr) || tareasPendientes.some(t => t.fecha === isoD);
         let esSel = fechaSeleccionadaMes.toISOString().split('T')[0] === isoD;
 
         let divD = document.createElement('div');
@@ -1253,11 +1317,12 @@
       });
 
       let eventos = todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+      let sesiones = sesionesEstudio.filter(s => s.fecha === isoStr || s.dia === diaSemStr);
       let tareas = tareasPendientes.filter(t => t.fecha === isoStr);
 
       const cont = document.getElementById('container-eventos-dia-mes');
       cont.innerHTML = '';
-      if (eventos.length === 0 && tareas.length === 0) {
+      if (eventos.length === 0 && sesiones.length === 0 && tareas.length === 0) {
         cont.innerHTML = `<p style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 10px;">Ningún evento programado para este día.</p>`;
         return;
       }
@@ -1265,8 +1330,16 @@
       eventos.forEach(ev => {
         cont.innerHTML += `
           <div class="card" style="border-left: 4px solid ${ev.color};">
-            <strong style="font-size: 13px;">${ev.nombre}</strong>
+            <strong style="font-size: 13px;">📚 ${ev.nombre}</strong>
             <div style="font-size: 12px; color: var(--text-muted);">${ev.inicio} - ${ev.fin} • 📍 ${ev.aula}</div>
+          </div>
+        `;
+      });
+      sesiones.forEach(s => {
+        cont.innerHTML += `
+          <div class="card" style="border: 2px dashed var(--study-accent); background: rgba(56,189,248,0.05);">
+            <strong style="font-size: 13px; color: var(--study-accent);">⏱️ ${s.titulo}</strong>
+            <div style="font-size: 12px; color: var(--text-muted);">${s.inicio} - ${s.fin} (Sesión de Estudio)</div>
           </div>
         `;
       });
@@ -1332,7 +1405,11 @@
             return a.dia === dia && enRango && a.inicio === hora;
           });
 
-          if (eventosEnCelda.length > 0) {
+          let sesionesEnCelda = sesionesEstudio.filter(s => (s.fecha === isoStr || s.dia === dia) && s.inicio === hora);
+
+          let totalEvs = eventosEnCelda.length + sesionesEnCelda.length;
+
+          if (totalEvs > 0) {
             let contenedorParalelo = document.createElement('div');
             contenedorParalelo.style.display = "flex";
             contenedorParalelo.style.gap = "2px";
@@ -1341,8 +1418,6 @@
             contenedorParalelo.style.top = "1px";
             contenedorParalelo.style.left = "1px";
             contenedorParalelo.style.right = "1px";
-
-            let totalEvs = eventosEnCelda.length;
 
             eventosEnCelda.forEach(ev => {
               let idxInicio = horasDisponibles.indexOf(ev.inicio);
@@ -1370,6 +1445,32 @@
               contenedorParalelo.appendChild(bloqueDiv);
             });
 
+            sesionesEnCelda.forEach(ses => {
+              let idxInicio = horasDisponibles.indexOf(ses.inicio);
+              let idxFin = horasDisponibles.indexOf(ses.fin);
+              let numBloques = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
+              let alturaPx = numBloques * 30;
+
+              let bloqueDiv = document.createElement('div');
+              bloqueDiv.style.flex = `0 0 calc(${100 / totalEvs}% - ${totalEvs > 1 ? 2 : 0}px)`;
+              bloqueDiv.style.height = `${alturaPx - 2}px`;
+              bloqueDiv.style.backgroundColor = "rgba(56, 189, 248, 0.15)";
+              bloqueDiv.style.border = `1px dashed var(--study-accent)`;
+              bloqueDiv.style.color = "var(--study-accent)";
+              bloqueDiv.style.fontWeight = "bold";
+              bloqueDiv.style.fontSize = "9px";
+              bloqueDiv.style.padding = "4px 2px";
+              bloqueDiv.style.borderRadius = "3px";
+              bloqueDiv.style.overflow = "hidden";
+              bloqueDiv.style.textOverflow = "ellipsis";
+              bloqueDiv.style.whiteSpace = "nowrap";
+              bloqueDiv.style.zIndex = "3";
+              bloqueDiv.style.textAlign = "left";
+              bloqueDiv.title = `Estudio: ${ses.titulo} (${ses.inicio}-${ses.fin})`;
+              bloqueDiv.innerHTML = `⏱️ ${ses.titulo}`;
+              contenedorParalelo.appendChild(bloqueDiv);
+            });
+
             td.appendChild(contenedorParalelo);
           } else {
             let cubierto = todasLasAsignaturas.some(a => {
@@ -1391,7 +1492,7 @@
     }
 
     function inicializarSelectoresHora() {
-      const sels = ['input-asig-inicio', 'input-asig-fin', 'input-asig-inicio2', 'input-asig-fin2'];
+      const sels = ['input-asig-inicio', 'input-asig-fin', 'input-asig-inicio2', 'input-asig-fin2', 'input-sesion-inicio', 'input-sesion-fin'];
       sels.forEach(id => {
         const sel = document.getElementById(id);
         if(sel) {
@@ -1401,6 +1502,37 @@
       });
       if(document.getElementById('input-asig-fin')) document.getElementById('input-asig-fin').value = "10:00";
       if(document.getElementById('input-asig-fin2')) document.getElementById('input-asig-fin2').value = "11:00";
+      if(document.getElementById('input-sesion-fin')) document.getElementById('input-sesion-fin').value = "12:00";
+    }
+
+    function abrirModalSesionEstudio() {
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-sesion-fecha').value = hoyStr;
+      document.getElementById('input-sesion-titulo').value = '';
+      document.getElementById('modalSesionEstudio').classList.add('active');
+    }
+
+    function cerrarModalSesionEstudio() {
+      document.getElementById('modalSesionEstudio').classList.remove('active');
+    }
+
+    function cerrarModalSesionEstudioFuera(e) {
+      if (e.target.id === 'modalSesionEstudio') cerrarModalSesionEstudio();
+    }
+
+    function guardarSesionEstudio() {
+      let titulo = document.getElementById('input-sesion-titulo').value.trim();
+      let dia = document.getElementById('input-sesion-dia').value;
+      let fecha = document.getElementById('input-sesion-fecha').value;
+      let inicio = document.getElementById('input-sesion-inicio').value;
+      let fin = document.getElementById('input-sesion-fin').value;
+
+      if (!titulo) return;
+      sesionesEstudio.push({ titulo, dia, fecha, inicio, fin });
+      guardarDatos();
+      renderizarHorarioAvanzado();
+      actualizarHomePorFecha();
+      cerrarModalSesionEstudio();
     }
 
     function toggleSegundaSesionInputs() {
@@ -1547,7 +1679,6 @@
     }
 
     function abrirModalObjetivoCrear() {
-      document.getElementById('modal-obj-titulo').textContent = 'Nuevo Objetivo Diario';
       document.getElementById('input-edit-index-obj').value = '-1';
       document.getElementById('input-titulo-obj').value = '';
       let hoyStr = new Date().toISOString().split('T')[0];
@@ -1558,7 +1689,6 @@
 
     function abrirModalObjetivoEditar(idx) {
       const obj = objetivosDiarios[idx];
-      document.getElementById('modal-obj-titulo').textContent = 'Editar Objetivo Diario';
       document.getElementById('input-edit-index-obj').value = idx;
       document.getElementById('input-titulo-obj').value = obj.titulo;
       document.getElementById('input-obj-fecha-inicio').value = obj.fechaInicio || new Date().toISOString().split('T')[0];
@@ -1606,10 +1736,6 @@
           </div>
         `;
       });
-      const previewHome = document.getElementById('preview-repertorio-home');
-      if (previewHome && repertorioCategorias.length > 0) {
-        previewHome.innerHTML = `<div class="pill-rep">${repertorioCategorias[0].emoji} ${repertorioCategorias[0].nombre} (${repertorioCategorias[0].piezas.length} piezas)</div>`;
-      }
       actualizarPanelRachaEInsignias();
     }
 
@@ -1745,7 +1871,7 @@
             <h4 style="margin-top: 6px;">${t.titulo}</h4>
             ${t.desc ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.desc}</p>` : ''}
             <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">📅 Fecha límite: ${t.fecha || 'N/D'}</p>
-            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo (${t.fechaInicio} al${t.fechaFin})</p>` : ''}
+            ${t.esObj ? `<p style="font-size: 11px; color: var(--primary);">🎯 Objetivo (${t.fechaInicio} al ${t.fechaFin})</p>` : ''}
             <div class="footer-info" style="text-align: right; margin-top: 6px;">
               <button class="btn-accion-txt btn-editar" onclick="abrirModalTareaEditar(${idx})">Editar</button>
               <button class="btn-accion-txt btn-eliminar" onclick="eliminarTarea(${idx})">Eliminar</button>
@@ -1758,7 +1884,6 @@
     }
 
     function abrirModalTareaParaCrear() {
-      document.getElementById('modal-tarea-titulo').textContent = 'Nueva Tarea Pendiente';
       document.getElementById('input-edit-index-tarea').value = '-1';
       document.getElementById('input-titulo-tarea').value = '';
       let hoyStr = new Date().toISOString().split('T')[0];
@@ -1780,7 +1905,6 @@
 
     function abrirModalTareaEditar(idx) {
       const t = tareasPendientes[idx];
-      document.getElementById('modal-tarea-titulo').textContent = 'Editar Tarea Pendiente';
       document.getElementById('input-edit-index-tarea').value = idx;
       document.getElementById('input-titulo-tarea').value = t.titulo;
       document.getElementById('input-prioridad-tarea').value = t.prioridad;
@@ -1909,7 +2033,7 @@
                 <button class="btn-accion-txt btn-eliminar" onclick="eliminarAsignatura(${idx})">Eliminar</button>
               </div>
             </div>
-            <h4 style="margin-top: 6px;">${asig.nombre}</h4>
+            <h4 style="margin-top: 6px;">📚 ${asig.nombre}</h4>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">👤 ${asig.docente} | 📍 ${asig.aula}</p>
             <p style="font-size: 11px; color: var(--text-main); margin-top: 4px;">📅 ${infoSesiones}</p>
             <p style="font-size: 11px; color: var(--primary); margin-top: 2px;">Lectivo: ${textoPeriodo}</p>
@@ -2181,7 +2305,7 @@
               <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 1: ${fechaSesion1} (${asig.dia} ${asig.inicio})</span>
               <span class="badge" style="background: ${badgeColor1}25; color: ${badgeColor1};">${estadoActual1}</span>
             </div>
-            <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre}</h4>
+            <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${asig.nombre}</h4>
             <div style="display: flex; gap: 4px; flex-wrap: wrap;">
               <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 1)">Asistió</button>
               <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 1)">Falta</button>
@@ -2204,7 +2328,7 @@
                 <span class="badge" style="background: ${asig.color}25; color: ${asig.color};">📅 Sesión 2: ${fechaSesion2} (${asig.dia2} ${asig.inicio2})</span>
                 <span class="badge" style="background: ${badgeColor2}25; color: ${badgeColor2};">${estadoActual2}</span>
               </div>
-              <h4 style="margin-top: 6px; margin-bottom: 8px;">${asig.nombre} (2ª Sesión)</h4>
+              <h4 style="margin-top: 6px; margin-bottom: 8px;">📚 ${asig.nombre} (2ª Sesión)</h4>
               <div style="display: flex; gap: 4px; flex-wrap: wrap;">
                 <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #10B981;" onclick="registrarAsistencia(${idx}, 'Asistió', 2)">Asistió</button>
                 <button class="btn-main" style="flex: 1; margin-top:0; padding: 6px; font-size: 10px; background: #EF4444;" onclick="registrarAsistencia(${idx}, 'Falta', 2)">Falta</button>
@@ -2270,7 +2394,7 @@
           contenedor.innerHTML += `
             <div class="card" style="border-left: 4px solid ${asig.color};">
               <div class="section-flex">
-                <h4 style="color: var(--text-main);">${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
+                <h4 style="color: var(--text-main);">📚 ${asig.nombre} ${sesiones.length > 1 ? `(Sesión ${ses.num})` : ''}</h4>
                 <span class="badge" style="background: ${colorEstado}25; color: ${colorEstado};">${ses.estado}</span>
               </div>
               <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Día asignado: ${ses.dia} • Docente: ${asig.docente}</p>
@@ -2297,7 +2421,6 @@
       });
     }
 
-    // --- MÉTODOS AUXILIARES Y POMODORO ---
     function actualizarSelectorPomodoroItems() {
       const sel = document.getElementById('pomodoro-item');
       sel.innerHTML = '';
@@ -2310,6 +2433,10 @@
             sel.innerHTML += `<option value="[Asignatura] ${a.nombre}">📚 ${a.nombre}</option>`;
           }
         });
+      });
+
+      sesionesEstudio.forEach(s => {
+        sel.innerHTML += `<option value="[Sesión Estudio] ${s.titulo}">⏱️ ${s.titulo}</option>`;
       });
 
       tareasPendientes.forEach(t => {
