@@ -118,10 +118,10 @@
     .horario-subview, .streak-subview { display: none !important; flex-direction: column; gap: 14px; }
     .horario-subview.active, .streak-subview.active { display: flex !important; }
 
-    /* Tabla Excel y Calendario Mensual */
+    /* Tabla Estilo Google Calendar */
     .calendar-grid-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; overflow-x: auto; max-height: 500px; overflow-y: auto; }
-    .calendar-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 10px; }
-    .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 4px; text-align: center; height: 26px; }
+    .calendar-table { width: 100%; border-collapse: collapse; min-width: 650px; font-size: 10px; table-layout: fixed; }
+    .calendar-table th, .calendar-table td { border: 1px solid var(--border); padding: 2px; text-align: center; height: 32px; vertical-align: top; overflow: hidden; }
     .calendar-table th { background: var(--bg-main); color: var(--text-muted); font-weight: 600; position: sticky; top: 0; z-index: 2; }
 
     .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -183,7 +183,6 @@
 
     <div class="fecha" id="home-fecha-actual">Sábado, 26 de septiembre de 2026</div>
 
-    <!-- Navegador de Días -->
     <div class="day-navigator">
       <button class="day-nav-btn" onclick="cambiarDiaHome(-1)">‹</button>
       <div class="day-nav-title" id="home-nav-titulo-dia">Hoy (26 Sep)</div>
@@ -305,7 +304,7 @@
       <div id="container-diaria-huecos" class="grid"></div>
     </div>
 
-    <!-- Subvista Semanal con Navegador -->
+    <!-- Subvista Semanal -->
     <div id="subview-semanal" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaHorario(-1)">‹</button>
@@ -329,7 +328,7 @@
       <div id="container-eventos-dia-mes" class="grid"></div>
     </div>
 
-    <!-- Subvista Cuadrante Semanal con Navegador de Semanas -->
+    <!-- Subvista Cuadrante Semanal (Estilo Google Calendar) -->
     <div id="subview-calendario" class="horario-subview">
       <div class="day-navigator">
         <button class="day-nav-btn" onclick="cambiarSemanaCuadrante(-1)">‹</button>
@@ -338,7 +337,7 @@
       </div>
       <div class="card" style="padding: 10px;">
         <div class="section-flex" style="margin-bottom: 8px;">
-          <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal</h4>
+          <h4 style="color: var(--calendar-accent); font-size: 14px;">📊 Cuadrante Semanal (Estilo G. Calendar)</h4>
         </div>
         <div class="calendar-grid-container">
           <table class="calendar-table">
@@ -434,7 +433,6 @@
     <p class="fecha">Preferencias, copias de seguridad y herramientas.</p>
 
     <div class="grid">
-      <!-- Copia de seguridad -->
       <div class="card" style="background: linear-gradient(135deg, #161E2E, #1E1B4B);">
         <div class="section-flex">
           <h4>💾 Copia de Seguridad</h4>
@@ -1087,7 +1085,7 @@
     }
 
     function renderizarHorarioAvanzado() {
-      // 1. Vista Diaria con Huecos Libres
+      // 1. Vista Diaria
       let yyyy = fechaHorarioDiario.getFullYear();
       let mm = String(fechaHorarioDiario.getMonth() + 1).padStart(2, '0');
       let dd = String(fechaHorarioDiario.getDate()).padStart(2, '0');
@@ -1108,8 +1106,6 @@
 
       let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
-
-      // Ordenar por hora de inicio
       eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
 
       const contDiaria = document.getElementById('container-diaria-huecos');
@@ -1119,7 +1115,6 @@
       } else {
         let ultimaHoraFin = "08:00";
         eventosHoy.forEach((ev, idx) => {
-          // Detectar hueco libre previo si hay distancia de tiempo
           if (idx > 0 && ev.inicio > ultimaHoraFin) {
             contDiaria.innerHTML += `
               <div style="background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--success); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: var(--success); text-align: center;">
@@ -1154,19 +1149,17 @@
         });
       }
 
-      // 2. Vista Semanal por Fechas Concretas
+      // 2. Vista Semanal por Fechas
       let dSemana = new Date(fechaHorarioSemana);
       let day = dSemana.getDay();
       let diffToMonday = dSemana.getDate() - day + (day === 0 ? -6 : 1);
       let lunesSemana = new Date(dSemana.setDate(diffToMonday));
-      
       let domingoSemana = new Date(lunesSemana);
       domingoSemana.setDate(domingoSemana.getDate() + 6);
       document.getElementById('horario-nav-titulo-semana').textContent = `${lunesSemana.getDate()} ${lunesSemana.toLocaleString('es-ES', { month: 'short' })} - ${domingoSemana.getDate()} ${domingoSemana.toLocaleString('es-ES', { month: 'short' })}`;
 
       const contSemana = document.getElementById('container-semanal-dinamico');
       contSemana.innerHTML = '';
-      
       let diasNombres = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
       diasNombres.forEach((dNombre, idx) => {
         let diaActual = new Date(lunesSemana);
@@ -1194,14 +1187,14 @@
         `;
       });
 
-      // 3. Vista Mensual Interactiva
+      // 3. Vista Mensual
       let mesIdx = fechaHorarioMes.getMonth();
       let anioIdx = fechaHorarioMes.getFullYear();
       document.getElementById('horario-nav-titulo-mes').textContent = `${fechaHorarioMes.toLocaleString('es-ES', { month: 'long' })} ${anioIdx}`;
 
       let primerDiaMes = new Date(anioIdx, mesIdx, 1);
       let ultimoDiaMes = new Date(anioIdx, mesIdx + 1, 0);
-      let startDayIndex = primerDiaMes.getDay() === 0 ? 6 : primerDiaMes.getDay() - 1; // Lunes start
+      let startDayIndex = primerDiaMes.getDay() === 0 ? 6 : primerDiaMes.getDay() - 1;
 
       const gridMes = document.getElementById('grid-calendario-mensual');
       gridMes.innerHTML = '';
@@ -1209,9 +1202,7 @@
         gridMes.innerHTML += `<div style="text-align: center; font-size: 10px; font-weight: bold; color: var(--text-muted); padding-bottom: 4px;">${d}</div>`;
       });
 
-      for (let i = 0; i < startDayIndex; i++) {
-        gridMes.innerHTML += `<div></div>`;
-      }
+      for (let i = 0; i < startDayIndex; i++) { gridMes.innerHTML += `<div></div>`; }
 
       for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
         let dFecha = new Date(anioIdx, mesIdx, dia);
@@ -1279,6 +1270,7 @@
       });
     }
 
+    // --- CUADRANTE SEMANAL CON COMPORTAMIENTO GOOGLE CALENDAR (SOLAPAMIENTO EN PARALELO) ---
     function renderizarCuadranteSemanal() {
       let dSemana = new Date(fechaHorarioCuadrante);
       let day = dSemana.getDay();
@@ -1299,7 +1291,6 @@
         });
       });
 
-      // Actualizar cabecera con fechas exactas del cuadrante
       let diasCortos = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
       let trHead = document.getElementById('thead-cuadrante-fechas');
       trHead.innerHTML = `<th style="width: 42px;">Hora</th>`;
@@ -1311,45 +1302,60 @@
 
       const tbody = document.getElementById('tbody-horario-sincronizado');
       tbody.innerHTML = '';
-      const diasSemana = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
       horasDisponibles.forEach(hora => {
         let tr = document.createElement('tr');
         let tdHora = document.createElement('td');
         tdHora.style.color = "var(--text-muted)";
+        tdHora.style.fontSize = "9px";
         tdHora.textContent = hora;
         tr.appendChild(tdHora);
 
-        diasSemana.forEach((dia, dIdx) => {
+        diasCortos.forEach((dia, dIdx) => {
           let dActual = new Date(lunesSemana);
           dActual.setDate(lunesSemana.getDate() + dIdx);
           let isoStr = dActual.toISOString().split('T')[0];
 
           let td = document.createElement('td');
-          let asigEncontrada = todasLasAsignaturas.find(a => a.dia === dia && a.inicio === hora && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+          
+          // Buscar eventos que comiencen exactamente en esta hora o cubran esta celda para este día
+          let eventosEnCelda = todasLasAsignaturas.filter(a => {
+            let inicioCeldaIdx = horasDisponibles.indexOf(hora);
+            let inicioAsigIdx = horasDisponibles.indexOf(a.inicio);
+            let finAsigIdx = horasDisponibles.indexOf(a.fin);
+            let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
+            return a.dia === dia && enRango && inicioCeldaIdx >= inicioAsigIdx && inicioCeldaIdx < finAsigIdx;
+          });
 
-          if (asigEncontrada) {
-            let idxInicio = horasDisponibles.indexOf(asigEncontrada.inicio);
-            let idxFin = horasDisponibles.indexOf(asigEncontrada.fin);
-            let rowspan = (idxFin > idxInicio) ? (idxFin - idxInicio) : 1;
+          if (eventosEnCelda.length > 0) {
+            // Comportamiento Google Calendar: si hay solapamiento, colocarlos en contenedor flexible lado a lado (paralelo)
+            let contenedorParalelo = document.createElement('div');
+            contenedorParalelo.style.display = "flex";
+            contenedorParalelo.style.gap = "2px";
+            contenedorParalelo.style.height = "100%";
+            contenedorParalelo.style.width = "100%";
 
-            td.setAttribute('rowspan', rowspan);
-            td.style.backgroundColor = asigEncontrada.color + "25";
-            td.style.color = asigEncontrada.color;
-            td.style.fontWeight = "bold";
-            td.style.verticalAlign = "middle";
-            td.style.borderRadius = "4px";
-            td.textContent = asigEncontrada.nombre;
-            tr.appendChild(td);
-          } else {
-            let cubierta = todasLasAsignaturas.some(a => {
-              let idxIni = horasDisponibles.indexOf(a.inicio);
-              let idxF = horasDisponibles.indexOf(a.fin);
-              let idxAct = horasDisponibles.indexOf(hora);
-              return a.dia === dia && idxAct > idxIni && idxAct < idxF && isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
+            eventosEnCelda.forEach(ev => {
+              let subDiv = document.createElement('div');
+              subDiv.style.flex = "1";
+              subDiv.style.backgroundColor = ev.color + "30";
+              subDiv.style.borderLeft = `3px solid ${ev.color}`;
+              subDiv.style.color = ev.color;
+              subDiv.style.fontWeight = "bold";
+              subDiv.style.fontSize = "9px";
+              subDiv.style.padding = "2px";
+              subDiv.style.borderRadius = "3px";
+              subDiv.style.overflow = "hidden";
+              subDiv.style.textAlign = "left";
+              subDiv.textContent = ev.nombre;
+              contenedorParalelo.appendChild(subDiv);
             });
-            if (!cubierta) tr.appendChild(td);
+
+            td.appendChild(contenedorParalelo);
+            td.style.padding = "1px";
           }
+
+          tr.appendChild(td);
         });
         tbody.appendChild(tr);
       });
