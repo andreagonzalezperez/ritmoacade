@@ -198,7 +198,7 @@
     <h2 style="margin-bottom: 16px;">Tu día, de un vistazo.</h2>
 
     <div class="grid">
-      <!-- Widget 1: Asignaturas del día (o frase corta si no hay) -->
+      <!-- Widget 1: Asignaturas del día -->
       <div class="card" id="home-widget-asignaturas" onclick="cambiarVista('horario')">
         <span class="badge">ASIGNATURAS DE HOY</span>
         <div id="home-lista-asig-hoy" style="margin-top: 8px;">Cargando...</div>
@@ -241,11 +241,11 @@
         </div>
       </div>
 
-      <!-- Widget Modificado: Sesiones de Estudio -->
-      <div class="card interactive" onclick="cambiarVista('horario')">
+      <!-- Widget: Sesiones de Estudio -->
+      <div class="card interactive" onclick="cambiarVista('sesiones-estudio')">
         <div class="section-flex">
           <h4>Sesiones de Estudio Programadas</h4>
-          <span class="link-txt">Ver calendario ›</span>
+          <span class="link-txt">Gestionar ›</span>
         </div>
         <div id="preview-sesiones-estudio-home" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
           Comprobando bloques de práctica...
@@ -290,7 +290,6 @@
   <div id="vista-horario" class="view">
     <header>
       <div class="titulo">Horarios y Planificación</div>
-      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 12px; font-size: 12px;" onclick="abrirModalSesionEstudio()">+ Sesión de estudio</button>
     </header>
     <p class="fecha">Organiza tus clases oficiales y sesiones de estudio.</p>
     
@@ -453,6 +452,14 @@
         </div>
       </div>
 
+      <div class="card interactive" onclick="cambiarVista('sesiones-estudio')">
+        <div class="section-flex">
+          <h4>⏱️ Sesiones de Estudio</h4>
+          <span class="link-txt">Gestionar ›</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Programa tus bloques y prácticas de instrumento</p>
+      </div>
+
       <div class="card interactive" onclick="cambiarVista('centros-estudio')">
         <div class="section-flex">
           <h4>🏛️ Asignaturas y Centros</h4>
@@ -488,6 +495,18 @@
   </div>
 
   <!-- ================= VISTAS SECUNDARIAS DE AJUSTES ================= -->
+  <div id="vista-sesiones-estudio" class="view">
+    <header>
+      <div class="titulo">Sesiones de Estudio</div>
+      <button class="btn-config" onclick="cambiarVista('mas')">‹</button>
+    </header>
+    <div class="section-flex" style="margin-bottom: 14px;">
+      <p class="fecha" style="margin-bottom:0;">Bloques de práctica programados.</p>
+      <button class="btn-main" style="width: auto; margin-top: 0; padding: 8px 14px; font-size: 13px;" onclick="abrirModalSesionEstudioCrear()">+ Añadir sesión</button>
+    </div>
+    <div class="grid" id="lista-sesiones-estudio-container"></div>
+  </div>
+
   <div id="vista-centros-estudio" class="view">
     <header>
       <div class="titulo">Centros de Estudios</div>
@@ -620,12 +639,13 @@
   <div id="modalSesionEstudio" class="modal" onclick="cerrarModalSesionEstudioFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3>Programar Sesión de Estudio</h3>
+        <h3 id="modal-sesion-titulo">Programar Sesión de Estudio</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalSesionEstudio()">✕</span>
       </div>
+      <input type="hidden" id="input-edit-index-sesion" value="-1">
       <div class="form-group">
         <label>Título / Materia</label>
-        <input type="text" id="input-sesion-titulo" class="form-control" placeholder="Ej. Ensayo general de repertorio...">
+        <input type="text" id="input-sesion-titulo-txt" class="form-control" placeholder="Ej. Ensayo general de repertorio...">
       </div>
       <div class="row-2">
         <div class="form-group">
@@ -655,7 +675,7 @@
           <select id="input-sesion-fin" class="form-control"></select>
         </div>
       </div>
-      <button class="btn-main" onclick="guardarSesionEstudio()">Guardar sesión</button>
+      <button class="btn-main" onclick="guardarOActualizarSesionEstudio()">Guardar sesión</button>
     </div>
   </div>
 
@@ -1056,6 +1076,7 @@
       inicializarSelectoresHora();
       inicializarPaletaColores();
       renderizarCentros();
+      renderizarSesionesEstudio();
       renderizarNotasCentros();
       renderizarAsistenciaCentros();
       renderizarRepertorioCategorias();
@@ -1146,6 +1167,94 @@
         prevSesiones.innerHTML = `Sin sesiones de estudio programadas para hoy.`;
       } else {
         prevSesiones.innerHTML = sesionesHoy.map(s => `⏱️ ${s.inicio} - ${s.fin}: ${s.titulo}`).join('<br>');
+      }
+    }
+
+    function renderizarSesionesEstudio() {
+      const contenedor = document.getElementById('lista-sesiones-estudio-container');
+      contenedor.innerHTML = '';
+      if (sesionesEstudio.length === 0) {
+        contenedor.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px;">No hay sesiones de estudio programadas.</p>`;
+        return;
+      }
+      sesionesEstudio.forEach((s, idx) => {
+        contenedor.innerHTML += `
+          <div class="card" style="border: 2px dashed var(--study-accent); background: rgba(56,189,248,0.05);">
+            <div class="section-flex">
+              <span class="badge-study">⏱️ ${s.dia} • ${s.inicio} - ${s.fin}</span>
+              <div>
+                <button class="btn-accion-txt btn-editar" onclick="abrirModalSesionEstudioEditar(${idx})">Editar</button>
+                <button class="btn-accion-txt btn-eliminar" onclick="eliminarSesionEstudio(${idx})">Eliminar</button>
+              </div>
+            </div>
+            <h4 style="margin-top: 6px; color: var(--study-accent);">🎵 ${s.titulo}</h4>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">📅 Fecha: ${s.fecha || 'N/D'}</p>
+          </div>
+        `;
+      });
+    }
+
+    function abrirModalSesionEstudioCrear() {
+      document.getElementById('modal-sesion-titulo').textContent = 'Programar Sesión de Estudio';
+      document.getElementById('input-edit-index-sesion').value = '-1';
+      document.getElementById('input-sesion-titulo-txt').value = '';
+      let hoyStr = new Date().toISOString().split('T')[0];
+      document.getElementById('input-sesion-fecha').value = hoyStr;
+      document.getElementById('modalSesionEstudio').classList.add('active');
+    }
+
+    function abrirModalSesionEstudioEditar(idx) {
+      let s = sesionesEstudio[idx];
+      document.getElementById('modal-sesion-titulo').textContent = 'Editar Sesión de Estudio';
+      document.getElementById('input-edit-index-sesion').value = idx;
+      document.getElementById('input-sesion-titulo-txt').value = s.titulo;
+      document.getElementById('input-sesion-dia').value = s.dia;
+      document.getElementById('input-sesion-fecha').value = s.fecha || new Date().toISOString().split('T')[0];
+      document.getElementById('input-sesion-inicio').value = s.inicio;
+      document.getElementById('input-sesion-fin').value = s.fin;
+      document.getElementById('modalSesionEstudio').classList.add('active');
+    }
+
+    function cerrarModalSesionEstudio() {
+      document.getElementById('modalSesionEstudio').classList.remove('active');
+    }
+
+    function cerrarModalSesionEstudioFuera(e) {
+      if (e.target.id === 'modalSesionEstudio') cerrarModalSesionEstudio();
+    }
+
+    function guardarOActualizarSesionEstudio() {
+      let titulo = document.getElementById('input-sesion-titulo-txt').value.trim();
+      let dia = document.getElementById('input-sesion-dia').value;
+      let fecha = document.getElementById('input-sesion-fecha').value;
+      let inicio = document.getElementById('input-sesion-inicio').value;
+      let fin = document.getElementById('input-sesion-fin').value;
+      let editIndex = parseInt(document.getElementById('input-edit-index-sesion').value);
+
+      if (!titulo) return;
+
+      if (editIndex === -1) {
+        sesionesEstudio.push({ titulo, dia, fecha, inicio, fin });
+      } else {
+        sesionesEstudio[editIndex] = { titulo, dia, fecha, inicio, fin };
+      }
+
+      guardarDatos();
+      renderizarSesionesEstudio();
+      renderizarHorarioAvanzado();
+      actualizarHomePorFecha();
+      actualizarSelectorPomodoroItems();
+      cerrarModalSesionEstudio();
+    }
+
+    function eliminarSesionEstudio(idx) {
+      if (confirm('¿Eliminar esta sesión de estudio?')) {
+        sesionesEstudio.splice(idx, 1);
+        guardarDatos();
+        renderizarSesionesEstudio();
+        renderizarHorarioAvanzado();
+        actualizarHomePorFecha();
+        actualizarSelectorPomodoroItems();
       }
     }
 
@@ -1503,36 +1612,6 @@
       if(document.getElementById('input-asig-fin')) document.getElementById('input-asig-fin').value = "10:00";
       if(document.getElementById('input-asig-fin2')) document.getElementById('input-asig-fin2').value = "11:00";
       if(document.getElementById('input-sesion-fin')) document.getElementById('input-sesion-fin').value = "12:00";
-    }
-
-    function abrirModalSesionEstudio() {
-      let hoyStr = new Date().toISOString().split('T')[0];
-      document.getElementById('input-sesion-fecha').value = hoyStr;
-      document.getElementById('input-sesion-titulo').value = '';
-      document.getElementById('modalSesionEstudio').classList.add('active');
-    }
-
-    function cerrarModalSesionEstudio() {
-      document.getElementById('modalSesionEstudio').classList.remove('active');
-    }
-
-    function cerrarModalSesionEstudioFuera(e) {
-      if (e.target.id === 'modalSesionEstudio') cerrarModalSesionEstudio();
-    }
-
-    function guardarSesionEstudio() {
-      let titulo = document.getElementById('input-sesion-titulo').value.trim();
-      let dia = document.getElementById('input-sesion-dia').value;
-      let fecha = document.getElementById('input-sesion-fecha').value;
-      let inicio = document.getElementById('input-sesion-inicio').value;
-      let fin = document.getElementById('input-sesion-fin').value;
-
-      if (!titulo) return;
-      sesionesEstudio.push({ titulo, dia, fecha, inicio, fin });
-      guardarDatos();
-      renderizarHorarioAvanzado();
-      actualizarHomePorFecha();
-      cerrarModalSesionEstudio();
     }
 
     function toggleSegundaSesionInputs() {
