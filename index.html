@@ -856,7 +856,7 @@
   <div id="modalObjetivo" class="modal" onclick="cerrarModalObjetivoFuera(event)">
     <div class="modal-content">
       <div class="section-flex" style="margin-bottom: 12px;">
-        <h3 id="modal-obj-titulo">Nuevo Objetivo Diario</h3>
+        <h3>Nuevo Objetivo Diario</h3>
         <span style="font-size: 20px; cursor: pointer; color: var(--text-muted);" onclick="cerrarModalObjetivo()">✕</span>
       </div>
       <input type="hidden" id="input-edit-index-obj" value="-1">
@@ -884,7 +884,7 @@
       {
         nombre: "Conservatorio Superior de Música",
         asignaturas: [
-          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-10-16", fechaFin: "2027-01-31", estadoAsistencia: "Asistió" }
+          { nombre: "Saxofón", docente: "Prof. Martínez", aula: "Estudio 1", dia: "Lun", inicio: "09:00", fin: "10:30", color: "#EC4899", periodo: "1_cuatri", fechaInicio: "2026-09-01", fechaFin: "2027-01-31", estadoAsistencia: "Sin registrar" }
         ],
         notas: [
           { asig: "Saxofón", tipo: "Audición Trimestral", valor: 8.5, obs: "Muy buena interpretación." }
@@ -1029,12 +1029,12 @@
     }
 
     function calcularFechasPeriodo(periodo) {
-      if (periodo === '1_cuatri') return { inicio: "2026-10-16", fin: "2027-01-31" };
+      if (periodo === '1_cuatri') return { inicio: "2026-09-01", fin: "2027-01-31" };
       if (periodo === '2_cuatri') return { inicio: "2027-02-01", fin: "2027-06-01" };
-      if (periodo === '1_trim') return { inicio: "2026-10-16", fin: "2026-11-30" };
+      if (periodo === '1_trim') return { inicio: "2026-09-01", fin: "2026-11-30" };
       if (periodo === '2_trim') return { inicio: "2026-12-01", fin: "2027-03-15" };
       if (periodo === '3_trim') return { inicio: "2027-03-16", fin: "2027-06-30" };
-      return { inicio: "2026-10-16", fin: "2027-06-30" };
+      return { inicio: "2026-09-01", fin: "2027-06-30" };
     }
 
     function actualizarHomePorFecha() {
@@ -1060,16 +1060,13 @@
       });
 
       let diaSemanaStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][fechaHomeActual.getDay()];
-      let asigHoy = todasAsig.find(a => {
-        let enRangoFechas = fechaIso >= a.fechaInicio && fechaIso <= a.fechaFin;
-        return a.dia === diaSemanaStr && enRangoFechas;
-      });
+      let asigHoy = todasAsig.find(a => a.dia === diaSemanaStr);
 
       let tareaDelDia = tareasPendientes.find(t => t.fecha === fechaIso);
 
       if (asigHoy) {
         document.getElementById('home-evento-titulo').textContent = `${asigHoy.nombre}`;
-        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Periodo lectivo activo`;
+        document.getElementById('home-evento-desc').textContent = `Docente: ${asigHoy.docente} • Horario semanal regular`;
         document.getElementById('home-evento-info').textContent = `📍 ${asigHoy.aula} • ⏱️ ${asigHoy.inicio} - ${asigHoy.fin} (Ver horario ›)`;
       } else if (tareaDelDia) {
         document.getElementById('home-evento-titulo').textContent = `📝 Tarea: ${tareaDelDia.titulo}`;
@@ -1101,7 +1098,7 @@
         });
       });
 
-      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr && fechaIsoDiaria >= a.fechaInicio && fechaIsoDiaria <= a.fechaFin);
+      let eventosHoy = todasAsig.filter(a => a.dia === diaSemanaStr);
       let tareasHoy = tareasPendientes.filter(t => t.fecha === fechaIsoDiaria);
       eventosHoy.sort((a, b) => a.inicio.localeCompare(b.inicio));
 
@@ -1160,8 +1157,7 @@
       diasNombres.forEach((dNombre, idx) => {
         let diaActual = new Date(lunesSemana);
         diaActual.setDate(lunesSemana.getDate() + idx);
-        let isoStr = diaActual.toISOString().split('T')[0];
-        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+        let asigsDelDia = todasAsig.filter(a => a.dia === dNombre);
         asigsDelDia.sort((a,b) => a.inicio.localeCompare(b.inicio));
 
         contSemana.innerHTML += `
@@ -1203,7 +1199,7 @@
         let dFecha = new Date(anioIdx, mesIdx, dia);
         let isoD = `${anioIdx}-${String(mesIdx+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
         let dSemStr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"][dFecha.getDay()];
-        let tieneEv = todasAsig.some(a => a.dia === dSemStr && isoD >= a.fechaInicio && isoD <= a.fechaFin) || tareasPendientes.some(t => t.fecha === isoD);
+        let tieneEv = todasAsig.some(a => a.dia === dSemStr) || tareasPendientes.some(t => t.fecha === isoD);
         let esSel = fechaSeleccionadaMes.toISOString().split('T')[0] === isoD;
 
         let divD = document.createElement('div');
@@ -1237,7 +1233,7 @@
         });
       });
 
-      let eventos = todasAsig.filter(a => a.dia === diaSemStr && isoStr >= a.fechaInicio && isoStr <= a.fechaFin);
+      let eventos = todasAsig.filter(a => a.dia === diaSemStr);
       let tareas = tareasPendientes.filter(t => t.fecha === isoStr);
 
       const cont = document.getElementById('container-eventos-dia-mes');
@@ -1306,16 +1302,9 @@
         tr.appendChild(tdHora);
 
         diasCortos.forEach((dia, dIdx) => {
-          let dActual = new Date(lunesSemana);
-          dActual.setDate(lunesSemana.getDate() + dIdx);
-          let isoStr = dActual.toISOString().split('T')[0];
-
           let td = document.createElement('td');
           
-          let eventosEnCelda = todasLasAsignaturas.filter(a => {
-            let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
-            return a.dia === dia && enRango && a.inicio === hora;
-          });
+          let eventosEnCelda = todasLasAsignaturas.filter(a => a.dia === dia && a.inicio === hora);
 
           if (eventosEnCelda.length > 0) {
             let contenedorParalelo = document.createElement('div');
@@ -1361,8 +1350,7 @@
               let idxIni = horasDisponibles.indexOf(a.inicio);
               let idxF = horasDisponibles.indexOf(a.fin);
               let idxAct = horasDisponibles.indexOf(hora);
-              let enRango = isoStr >= a.fechaInicio && isoStr <= a.fechaFin;
-              return a.dia === dia && enRango && idxAct > idxIni && idxAct < idxF;
+              return a.dia === dia && idxAct > idxIni && idxAct < idxF;
             });
             if (cubierto) {
               td.style.backgroundColor = "rgba(99, 102, 241, 0.03)";
@@ -1874,9 +1862,9 @@
       }
       centro.asignaturas.forEach((asig, idx) => {
         let textoPeriodo = "Periodo general";
-        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (Desde 16 Oct - 31 Ene)";
+        if (asig.periodo === '1_cuatri') textoPeriodo = "1º Cuatrimestre (1 Sep - 31 Ene)";
         else if (asig.periodo === '2_cuatri') textoPeriodo = "2º Cuatrimestre (1 Feb - 1 Jun)";
-        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (Desde 16 Oct - 30 Nov)";
+        else if (asig.periodo === '1_trim') textoPeriodo = "1º Trimestre (1 Sep - 30 Nov)";
         else if (asig.periodo === '2_trim') textoPeriodo = "2º Trimestre (1 Dic - 15 Mar)";
         else if (asig.periodo === '3_trim') textoPeriodo = "3º Trimestre (16 Mar - 30 Jun)";
 
