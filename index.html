@@ -182,7 +182,7 @@
       <div class="header-user">
         <span class="avatar">🎵</span>
         <div>
-          <div class="sub">Bienvenido de nuevo</div>
+          <div class="sub">Bienvenida de nuevo</div>
           <div class="titulo">RitmoAcade</div>
         </div>
       </div>
@@ -380,7 +380,7 @@
     <header>
       <div class="titulo">Estudio y Práctica</div>
     </header>
-    <p class="fecha">Mide tu tiempo mediante Pomodoro o cronómetro libre.</p>
+    <p class="fecha">Mide tu tiempo mediante Pomodoro o cronómetro libre (activo en segundo plano con Wake Lock).</p>
 
     <div class="grid">
       <!-- MÓDULO 1: POMODORO -->
@@ -1555,7 +1555,6 @@
       let optGroupObj = document.createElement('optgroup');
       optGroupObj.label = "Crear Objetivo Diario directo";
       optGroupObj.value = "crear_obj";
-      // Añadimos opción genérica basada en el título de la sesión
       let optGen = document.createElement('option');
       optGen.value = "crear_objetivo_automatico";
       optGen.textContent = "🎯 Convertir automáticamente en Objetivo Diario";
@@ -1609,10 +1608,8 @@
 
       if (!titulo) return;
 
-      // Triangulación: Si se eligió vincular o crear objetivo, lo añadimos a objetivosDiarios
       if (vinculo) {
         let textoObjetivo = vinculo === "crear_objetivo_automatico" ? `Sesión de Estudio: ${titulo}` : vinculo;
-        // Evitamos duplicar exactamente el mismo objetivo para esa misma fecha si ya existe
         let existeObj = objetivosDiarios.some(o => o.titulo === textoObjetivo && o.fechaInicio === fecha);
         if (!existeObj) {
           objetivosDiarios.push({
@@ -3293,11 +3290,37 @@
       }
     });
 
-    let pomodoroActivo = false, pomodoroIntervalo = null, segundosRestantes = 25 * 60;
-    function togglePomodoro() {
+    // --- WAKE LOCK API PARA SEGUNDO PLANO ---
+    let wakeLock = null;
+    async function solicitarWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+        } catch (err) {
+          console.error(`Error al solicitar WakeLock: ${err.name}, ${err.message}`);
+        }
+      }
+    }
+    function liberarWakeLock() {
+      if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    }
+
+    let pomodoroActivo = false, pomodoroIntervalo = null, pomodoroFinTimestamp = 0;
+    async function togglePomodoro() {
       const btn = document.getElementById('btn-pomodoro-accion');
       const duracionSel = document.getElementById('pomodoro-duracion-select');
       const display = document.getElementById('pomodoro-display');
+
+      let minutosElegidos = 25;
+      if (duracionSel.value === 'custom') {
+        minutosElegidos = parseInt(document.getElementById('pomodoro-duracion-custom').value) || 30;
+      } else {
+        minutosElegidos = parseInt(duracionSel.value);
+      }
 
       if (!pomodoroActivo) {
         pomodoroActivo = true;
@@ -3306,26 +3329,25 @@
         btn.textContent = "Pausar / Finalizar";
         btn.style.background = "#EF4444";
         
-        let minutosElegidos = 25;
-        if (duracionSel.value === 'custom') {
-          minutosElegidos = parseInt(document.getElementById('pomodoro-duracion-custom').value) || 30;
-        } else {
-          minutosElegidos = parseInt(duracionSel.value);
-        }
-        segundosRestantes = minutosElegidos * 60;
+        await solicitarWakeLock();
+        pomodoroFinTimestamp = Date.now() + (minutosElegidos * 60 * 1000);
 
         pomodoroIntervalo = setInterval(() => {
-          if (segundosRestantes > 0) {
-            segundosRestantes--;
-            let m = Math.floor(segundosRestantes / 60), s = segundosRestantes % 60;
-            display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-          } else {
+          let ahora = Date.now();
+          let segundosRestantes = Math.max(0, Math.round((pomodoroFinTimestamp - ahora) / 1000));
+
+          let m = Math.floor(segundosRestantes / 60);
+          let s = segundosRestantes % 60;
+          display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+          if (segundosRestantes <= 0) {
             clearInterval(pomodoroIntervalo);
             pomodoroActivo = false;
             duracionSel.disabled = false;
             document.getElementById('pomodoro-duracion-custom').disabled = false;
             btn.textContent = "Iniciar Pomodoro";
             btn.style.background = "var(--primary)";
+            liberarWakeLock();
             
             minutosEstudiadosTotal += minutosElegidos;
             rachaActual = Math.max(rachaActual, 1);
@@ -3342,11 +3364,12 @@
         document.getElementById('pomodoro-duracion-custom').disabled = false;
         btn.textContent = "Iniciar Pomodoro";
         btn.style.background = "var(--primary)";
+        liberarWakeLock();
       }
     }
 
-    let cronoActivo = false, cronoIntervalo = null, segundosTranscurridos = 0;
-    function toggleCronometro() {
+    let cronoActivo = false, cronoIntervalo = null, cronoInicioTimestamp = 0;
+    async function toggleCronometro() {
       const btn = document.getElementById('btn-crono-accion');
       const display = document.getElementById('crono-display');
 
@@ -3355,11 +3378,12 @@
         btn.textContent = "Detener y Guardar";
         btn.style.background = "#EF4444";
         btn.style.color = "#FFF";
-        segundosTranscurridos = 0;
-        display.textContent = "00:00:00";
+        
+        await solicitarWakeLock();
+        cronoInicioTimestamp = Date.now();
 
         cronoIntervalo = setInterval(() => {
-          segundosTranscurridos++;
+          let segundosTranscurridos = Math.floor((Date.now() - cronoInicioTimestamp) / 1000);
           let h = Math.floor(segundosTranscurridos / 3600);
           let m = Math.floor((segundosTranscurridos % 3600) / 60);
           let s = segundosTranscurridos % 60;
@@ -3371,8 +3395,11 @@
         btn.textContent = "Iniciar Cronómetro";
         btn.style.background = "var(--study-accent)";
         btn.style.color = "#0B0F19";
+        liberarWakeLock();
 
-        let minutosPracticados = Math.round(segundosTranscurridos / 60);
+        let segundosTotales = Math.floor((Date.now() - cronoInicioTimestamp) / 1000);
+        let minutosPracticados = Math.round(segundosTotales / 60);
+
         if (minutosPracticados > 0) {
           minutosEstudiadosTotal += minutosPracticados;
           rachaActual = Math.max(rachaActual, 1);
@@ -3382,7 +3409,6 @@
         } else {
           alert('La sesión fue demasiado corta para registrar minutos.');
         }
-        segundosTranscurridos = 0;
         display.textContent = "00:00:00";
       }
     }
